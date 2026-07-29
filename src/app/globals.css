@@ -2,8 +2,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500;600;700&display=swap");
-
 :root {
   --ink: #1a1a1c;
   --porcelain: #f3f4f6;

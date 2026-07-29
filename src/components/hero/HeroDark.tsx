@@ -79,7 +79,7 @@ export function HeroDark() {
                 width={1065}
                 height={586}
                 priority
-                quality={100}
+                quality={85}
                 className="relative z-[1] max-h-full w-auto max-w-[min(76vw,280px)] object-contain sm:max-w-[min(68vw,320px)] lg:max-w-[360px]"
                 sizes="(max-width:640px) 76vw, (max-width:1024px) 68vw, 360px"
               />

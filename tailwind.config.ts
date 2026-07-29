@@ -14,8 +14,8 @@ const config: Config = {
         indigo: { accent: "#1e3a5f", light: "#2a5080" },
       },
       fontFamily: {
-        display: ['"Shippori Mincho"', '"Zen Old Mincho"', "Georgia", "serif"],
-        body: ['"Noto Serif JP"', "Georgia", "serif"],
+        display: ["var(--font-display)", '"Zen Old Mincho"', "Georgia", "serif"],
+        body: ["var(--font-body)", "Georgia", "serif"],
       },
       animation: {
         float: "float 9s ease-in-out infinite",

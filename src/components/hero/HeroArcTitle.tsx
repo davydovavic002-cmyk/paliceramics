@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { siteContent } from "@/lib/content";
 
-const FONT = '"Shippori Mincho", "Zen Old Mincho", Georgia, serif';
-
 /** Compact arc — sits close above the bowl */
 const CX = 200;
 const CY = 168;
@@ -71,7 +69,7 @@ export function HeroArcTitle() {
               textAnchor="middle"
               dominantBaseline="middle"
               fill="#F3F4F6"
-              fontFamily={FONT}
+              fontFamily="var(--font-display)"
               fontSize="36"
               fontWeight="500"
               transform={`rotate(${rotate}, ${x}, ${y})`}

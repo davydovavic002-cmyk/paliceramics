@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { Header } from "@/components/hero/Header";
+import { notoSerifJP, shipporiMincho } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${notoSerifJP.variable} ${shipporiMincho.variable}`}>
       <body className="font-body antialiased">
         <LanguageProvider>
           <Header />

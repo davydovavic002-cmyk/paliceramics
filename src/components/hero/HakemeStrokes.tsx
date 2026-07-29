@@ -53,6 +53,7 @@ function StrokeImage({ stroke, width }: { stroke: number; width: number }) {
       alt=""
       width={682}
       height={256}
+      sizes="(max-width: 768px) 280px, 440px"
       draggable={false}
       className="h-auto max-w-none select-none"
       style={{ width, height: "auto" }}
