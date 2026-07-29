@@ -37,26 +37,25 @@ export function HeroDark() {
   };
 
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-[#38383c]">
+    <section className="relative isolate min-h-[100dvh] overflow-hidden bg-[#38383c]">
       <AmbientLightCanvas />
       <JapandiBackground />
       <ForegroundBokehCanvas />
       <DustMotesCanvas />
       <HakemeStrokes />
 
-      {/* Unified 12-col grid — same max-width & gutters as header */}
-      <div className="relative z-10 mx-auto min-h-screen max-w-[1800px] px-8 lg:px-16">
-        {/* Stage — balanced around header (~14vh) and bottom rail (~13vh) */}
-        <div className="flex min-h-screen flex-col items-center justify-center pt-[14vh] pb-[11vh] lg:pt-[13vh] lg:pb-[12vh]">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-[1800px] flex-col px-5 lg:min-h-screen lg:px-16">
+        {/* Center stage */}
+        <div className="flex flex-1 flex-col items-center justify-center pt-[max(3.5rem,env(safe-area-inset-top))] pb-2 lg:min-h-screen lg:justify-center lg:pt-[13vh] lg:pb-[12vh]">
           <motion.div
-            className="pointer-events-none flex w-full max-w-[min(80vw,520px)] flex-col items-center gap-4 lg:gap-5"
+            className="pointer-events-none flex w-full max-w-[min(92vw,520px)] flex-col items-center gap-3 sm:gap-4 lg:gap-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <HeroArcTitle />
 
-            <div className="relative flex h-[28vh] min-h-[200px] w-full items-end justify-center lg:h-[32vh] lg:max-h-[400px]">
+            <div className="relative flex h-[22vh] min-h-[150px] w-full items-end justify-center sm:h-[24vh] sm:min-h-[170px] lg:h-[32vh] lg:min-h-[200px] lg:max-h-[400px]">
               <div
                 className="pointer-events-none absolute left-1/2 top-[18%] h-[72%] w-[78%] -translate-x-1/2 rounded-[50%] opacity-90"
                 style={{
@@ -81,33 +80,63 @@ export function HeroDark() {
                 height={586}
                 priority
                 quality={100}
-                className="relative z-[1] max-h-full w-auto max-w-[min(68vw,360px)] object-contain lg:max-w-[360px]"
-                sizes="(max-width:768px) 68vw, 360px"
+                className="relative z-[1] max-h-full w-auto max-w-[min(76vw,280px)] object-contain sm:max-w-[min(68vw,320px)] lg:max-w-[360px]"
+                sizes="(max-width:640px) 76vw, (max-width:1024px) 68vw, 360px"
               />
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom rail — raised on desktop; in-flow on mobile */}
-        <div className="mt-16 grid grid-cols-12 items-end gap-x-6 gap-y-10 lg:absolute lg:inset-x-16 lg:bottom-[max(6rem,12vh)] lg:mt-0">
-          <CeramicSpecs className="col-span-12 lg:col-span-4 xl:col-span-3" />
+        {/* Bottom rail */}
+        <motion.div
+          className="shrink-0 space-y-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:space-y-6 lg:absolute lg:inset-x-16 lg:bottom-[max(6rem,12vh)] lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-6 lg:space-y-0 lg:pb-0 lg:pt-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <CeramicSpecs className="lg:col-span-4 xl:col-span-3" />
 
           <div className="hidden lg:col-span-4 lg:block xl:col-span-6" aria-hidden />
 
-          <motion.div
-            className="col-span-12 flex flex-col items-start gap-5 lg:col-span-4 lg:col-start-10 lg:items-end xl:col-span-3 xl:col-start-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <div className="flex items-end gap-5">
+          <div className="flex flex-col items-center gap-4 lg:col-span-4 lg:col-start-10 lg:items-end xl:col-span-3 xl:col-start-10">
+            <div className="flex items-end justify-center gap-3 sm:gap-5">
               <motion.div key={`btn1-${language}`} animate={fade}>
-                <CeramicButton href="#collection" size="lg" intent="primary" kanji={hero.ctaPrimaryKanji}>
+                <CeramicButton
+                  href="#collection"
+                  size="md"
+                  intent="primary"
+                  kanji={hero.ctaPrimaryKanji}
+                  className="lg:hidden"
+                >
+                  {hero.ctaPrimary[language]}
+                </CeramicButton>
+                <CeramicButton
+                  href="#collection"
+                  size="lg"
+                  intent="primary"
+                  kanji={hero.ctaPrimaryKanji}
+                  className="hidden lg:inline-flex"
+                >
                   {hero.ctaPrimary[language]}
                 </CeramicButton>
               </motion.div>
               <motion.div key={`btn2-${language}`} animate={fade}>
-                <CeramicButton href="#about" size="lg" intent="secondary" kanji={hero.ctaSecondaryKanji}>
+                <CeramicButton
+                  href="#about"
+                  size="md"
+                  intent="secondary"
+                  kanji={hero.ctaSecondaryKanji}
+                  className="lg:hidden"
+                >
+                  {hero.ctaSecondary[language]}
+                </CeramicButton>
+                <CeramicButton
+                  href="#about"
+                  size="lg"
+                  intent="secondary"
+                  kanji={hero.ctaSecondaryKanji}
+                  className="hidden lg:inline-flex"
+                >
                   {hero.ctaSecondary[language]}
                 </CeramicButton>
               </motion.div>
@@ -115,13 +144,13 @@ export function HeroDark() {
 
             <motion.p
               key={`tag-${language}`}
-              className="font-body text-[12px] tracking-[0.22em] text-[#E8E8E8]/75 lg:text-right"
+              className="max-w-[18rem] text-center font-body text-[10px] leading-relaxed tracking-[0.16em] text-[#E8E8E8]/75 sm:text-[11px] sm:tracking-[0.2em] lg:max-w-none lg:text-right lg:text-[12px] lg:tracking-[0.22em]"
               animate={fade}
             >
               {hero.heroTag[language]}
             </motion.p>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

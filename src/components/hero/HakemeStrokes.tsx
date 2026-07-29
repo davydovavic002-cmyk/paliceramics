@@ -62,7 +62,10 @@ function StrokeImage({ stroke, width }: { stroke: number; width: number }) {
 
 export function HakemeStrokes() {
   return (
-    <div className="pointer-events-none absolute inset-0 z-[3] overflow-hidden" aria-hidden>
+    <div
+      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden max-md:opacity-75 [&>div:nth-child(n+6)]:max-md:hidden"
+      aria-hidden
+    >
       {placements.map((s, i) => (
         <div
           key={i}

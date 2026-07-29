@@ -39,7 +39,7 @@ export function HeroArcTitle() {
 
   return (
     <motion.header
-      className="relative z-10 flex w-[min(88vw,420px)] flex-col items-center gap-5 lg:gap-6"
+      className="relative z-10 flex w-[min(92vw,420px)] flex-col items-center gap-4 sm:gap-5 lg:gap-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
@@ -51,7 +51,7 @@ export function HeroArcTitle() {
       {/* Level 1 — display */}
       <svg
         viewBox="0 0 400 96"
-        className="box-content h-[clamp(4rem,10vw,5.25rem)] w-full overflow-visible pb-2"
+        className="box-content h-[clamp(3.25rem,11vw,5.25rem)] w-full overflow-visible pb-1 sm:pb-2"
         aria-hidden
       >
         <path
@@ -85,7 +85,7 @@ export function HeroArcTitle() {
       {/* Level 2 — caption */}
       <motion.p
         key={`arc-cap-${language}`}
-        className="font-body text-[12px] tracking-[0.28em] text-[#E8E8E8]"
+        className="font-body text-[10px] tracking-[0.22em] text-[#E8E8E8] sm:text-[12px] sm:tracking-[0.28em]"
         animate={fade}
         aria-hidden
       >
