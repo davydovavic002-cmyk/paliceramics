@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { siteContent } from "@/lib/content";
+import { handleSectionClick } from "@/lib/scrollToSection";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import type { NavItem } from "@/types";
 
@@ -23,7 +24,11 @@ function NavHankoItem({
   onNavigate?: () => void;
 }) {
   return (
-    <a href={item.href} className={NAV_LINK} onClick={onNavigate}>
+    <a
+      href={item.href}
+      className={NAV_LINK}
+      onClick={(e) => handleSectionClick(e, item.href, onNavigate)}
+    >
       <span className="font-display text-[15px] leading-none text-[#F5F5F5]/88 transition-colors duration-300 group-hover:text-white">
         {item.kanji}
       </span>
@@ -114,7 +119,7 @@ export function Header() {
               <a
                 href={item.href}
                 className="flex items-center gap-4 py-3.5 transition-colors active:bg-[#3a3a3e]"
-                onClick={() => setOpen(false)}
+                onClick={(e) => handleSectionClick(e, item.href, () => setOpen(false))}
               >
                 <span className="font-display w-6 text-center text-lg leading-none text-[#F5F5F5]">
                   {item.kanji}

@@ -16,6 +16,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", '"Zen Old Mincho"', "Georgia", "serif"],
         body: ["var(--font-body)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       animation: {
         float: "float 9s ease-in-out infinite",

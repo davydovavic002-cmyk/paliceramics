@@ -1,7 +1,8 @@
 "use client";
 
-import type { ReactNode, ButtonHTMLAttributes } from "react";
+import type { MouseEvent, ReactNode, ButtonHTMLAttributes } from "react";
 import Link from "next/link";
+import { handleSectionClick } from "@/lib/scrollToSection";
 
 type Size = "sm" | "md" | "lg";
 type Intent = "primary" | "secondary";
@@ -77,6 +78,18 @@ export function CeramicButton({
       <span className="leading-none opacity-90">{children}</span>
     </>
   );
+
+  if (href?.startsWith("#")) {
+    return (
+      <a
+        href={href}
+        className={cls}
+        onClick={(e: MouseEvent<HTMLAnchorElement>) => handleSectionClick(e, href)}
+      >
+        {inner}
+      </a>
+    );
+  }
 
   if (href) {
     return (
