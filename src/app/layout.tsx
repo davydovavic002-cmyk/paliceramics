@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { Header } from "@/components/hero/Header";
+import { HashScrollHandler } from "@/components/HashScrollHandler";
 import { notoSerifJP, shipporiMincho } from "@/lib/fonts";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en" className={`${notoSerifJP.variable} ${shipporiMincho.variable}`}>
       <body className="font-body antialiased">
         <LanguageProvider>
+          <HashScrollHandler />
           <Header />
           <main>{children}</main>
         </LanguageProvider>

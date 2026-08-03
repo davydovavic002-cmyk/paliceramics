@@ -1,23 +1,41 @@
 import type { MouseEvent } from "react";
 
-const HEADER_OFFSET = 96;
+const MAX_ATTEMPTS = 12;
+const RETRY_MS = 80;
 
-/** Smooth-scroll to an in-page section; accounts for fixed header. */
-export function scrollToSection(hash: string) {
-  const id = hash.replace(/^#/, "");
+function getTarget(hash: string) {
+  const id = hash.replace(/^#/, "").trim();
+  return id ? document.getElementById(id) : null;
+}
+
+/** Smooth-scroll to an in-page section; respects Tailwind scroll-mt on targets. */
+export function scrollToSection(hash: string, attempt = 0) {
+  if (!hash.startsWith("#")) return false;
+
+  const id = hash.slice(1);
   if (!id) {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
+    window.history.replaceState(null, "", window.location.pathname);
+    return true;
   }
 
-  const target = document.getElementById(id);
-  if (!target) return;
+  const target = getTarget(hash);
+  if (!target) {
+    if (attempt < MAX_ATTEMPTS) {
+      window.setTimeout(() => scrollToSection(hash, attempt + 1), RETRY_MS);
+    }
+    return false;
+  }
 
-  const top =
-    target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-
-  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
   window.history.replaceState(null, "", `#${id}`);
+  return true;
+}
+
+export function scrollToHashFromLocation() {
+  const hash = window.location.hash;
+  if (!hash) return;
+  scrollToSection(hash);
 }
 
 export function handleSectionClick(
