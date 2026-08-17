@@ -1,8 +1,15 @@
+@import "@fontsource/noto-serif-jp/400.css";
+@import "@fontsource/noto-serif-jp/500.css";
+@import "@fontsource/shippori-mincho/400.css";
+@import "@fontsource/shippori-mincho/500.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
 :root {
+  --font-body: "Noto Serif JP", Georgia, serif;
+  --font-display: "Shippori Mincho", Georgia, serif;
+  --font-sans: system-ui, sans-serif;
   --ink: #1a1a1c;
   --porcelain: #f3f4f6;
   --porcelain-muted: #e5e5e5;

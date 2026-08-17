@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { DemoControlsProvider } from "@/context/DemoControlsContext";
 import { CookieConsentProvider } from "@/context/CookieConsentContext";
-import { notoSerifJP, shipporiMincho } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +20,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pl" className={`${notoSerifJP.variable} ${shipporiMincho.variable}`}>
+    <html lang="pl">
       <body className="font-body antialiased">
         <script
           dangerouslySetInnerHTML={{
