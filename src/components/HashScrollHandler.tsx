@@ -6,7 +6,15 @@ import { scrollToHashFromLocation, scrollToSection } from "@/lib/scrollToSection
 /** Global in-page anchor scrolling — works for nav, CTAs, and direct #hash URLs. */
 export function HashScrollHandler() {
   useEffect(() => {
-    scrollToHashFromLocation();
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    if (window.location.hash) {
+      scrollToHashFromLocation();
+    } else {
+      window.scrollTo(0, 0);
+    }
 
     const onClick = (event: MouseEvent) => {
       const target = event.target;
@@ -17,6 +25,9 @@ export function HashScrollHandler() {
 
       const hash = link.getAttribute("href");
       if (!hash || hash === "#") return;
+
+      const section = document.getElementById(hash.slice(1));
+      if (!section) return;
 
       event.preventDefault();
       scrollToSection(hash);

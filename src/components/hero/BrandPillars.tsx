@@ -16,7 +16,7 @@ export function BrandPillars() {
   return (
     <section
       id="atelier"
-      className="relative border-y border-porcelain/[0.06] bg-[#323234] py-20 lg:py-28"
+      className="relative border-y border-porcelain/[0.06] bg-[#323234] py-12 lg:py-16"
     >
       <div className="mx-auto grid max-w-5xl gap-14 px-8 md:grid-cols-3 lg:gap-10 lg:px-16">
         {pillars.map((pillar, i) => (

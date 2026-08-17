@@ -3,8 +3,9 @@ export type Language = "en" | "pl";
 export interface NavItem {
   id: string;
   href: string;
-  kanji: string;
   label: Record<Language, string>;
+  /** @deprecated display only — removed from UI */
+  kanji?: string;
 }
 
 export interface HeroContent {
@@ -36,6 +37,8 @@ export interface SiteContent {
     subtitle: string;
   };
   nav: NavItem[];
+  mobileNavExtra?: NavItem[];
+  headerSections: NavItem[];
   hero: HeroContent;
   specs: { label: Record<Language, string>; value: string }[];
   pillars: BrandPillar[];

@@ -14,8 +14,8 @@ export const aboutHeader = {
   eyebrow: { en: "About & Philosophy", pl: "O nas i filozofia" },
   title: { en: "The quiet path to clay", pl: "Cicha droga do gliny" },
   subtitle: {
-    en: "Four ways to tell one story — switch layouts for your presentation.",
-    pl: "Cztery sposoby na jedną historię — przełącz układy na prezentacji.",
+    en: "Earth, patience, and the quiet discipline of the wheel.",
+    pl: "Ziemia, cierpliwość i cicha dyscyplina koła.",
   },
 };
 

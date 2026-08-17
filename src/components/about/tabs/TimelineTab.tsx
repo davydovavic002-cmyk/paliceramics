@@ -27,17 +27,17 @@ function TimelineItem({
     >
       {!isLast ? (
         <div
-          className="absolute left-[2.15rem] top-10 bottom-0 w-px bg-[#3d3835]/15 sm:left-[2.95rem]"
+          className="absolute left-[2.15rem] top-10 bottom-0 w-px bg-[#EDE8DF]/15 sm:left-[2.95rem]"
           aria-hidden
         />
       ) : null}
 
       <div className="relative z-[1] flex flex-col items-center pt-1">
-        <span className="font-display text-[11px] tracking-[0.2em] text-[#3d3835]/55 sm:text-xs">
+        <span className="font-body text-[11px] tracking-[0.22em] text-[#E5E5E5]/50 sm:text-xs">
           {entry.year}
         </span>
         <motion.span
-          className="mt-3 flex h-9 w-9 items-center justify-center rounded-full border border-[#3d3835]/20 bg-[#F7F3EC] font-display text-sm text-[#3d3835]/80 shadow-[0_8px_24px_rgba(61,56,53,0.08)]"
+          className="mt-3 flex h-10 w-10 items-center justify-center rounded-[2px] border-2 border-[#5a6a82]/45 bg-[#2c3444] font-display text-sm text-[#EDE8DF] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.22)]"
           initial={{ scale: 0.6 }}
           animate={inView ? { scale: 1 } : {}}
           transition={{ duration: 0.5, delay: index * 0.12 + 0.15, type: "spring", stiffness: 220 }}
@@ -46,11 +46,11 @@ function TimelineItem({
         </motion.span>
       </div>
 
-      <article className="pb-12 sm:pb-16">
-        <h3 className="font-display text-xl tracking-[0.04em] text-[#2a2826] sm:text-2xl">
+      <article className="border-l border-[#EDE8DF]/10 pb-12 pl-0 sm:pb-16 sm:pl-2">
+        <h3 className="font-display text-xl tracking-[0.06em] text-[#FAFAFA] sm:text-2xl">
           {t(entry.title, language)}
         </h3>
-        <p className="mt-3 max-w-lg font-sans text-sm leading-relaxed text-[#3d3835]/78 sm:text-[15px]">
+        <p className="mt-3 max-w-lg font-body text-sm leading-relaxed tracking-[0.02em] text-[#E8E8E8]/75 sm:text-[15px]">
           {t(entry.body, language)}
         </p>
       </article>
@@ -62,8 +62,8 @@ export function TimelineTab() {
   const { language } = useLanguage();
 
   return (
-    <div className="mx-auto max-w-3xl px-1">
-      <p className="mb-10 font-sans text-[11px] uppercase tracking-[0.28em] text-[#3d3835]/50">
+    <div className="mx-auto max-w-3xl rounded-[2px] border border-[#EDE8DF]/10 bg-[#323234]/40 p-6 sm:p-10">
+      <p className="mb-10 font-body text-[10px] uppercase tracking-[0.28em] text-[#E5E5E5]/45">
         {language === "en" ? "Interactive diary" : "Interaktywny dziennik"}
       </p>
       <div className="relative">

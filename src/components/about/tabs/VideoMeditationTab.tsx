@@ -7,34 +7,34 @@ import { t, videoMeditation } from "@/lib/aboutContent";
 
 function WheelAmbience() {
   return (
-    <div className="absolute inset-0 overflow-hidden" aria-hidden>
-      <div className="absolute inset-0 bg-[#141416]" />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      <div className="absolute inset-0 bg-[#2a2826]" />
       <div
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-50"
         style={{
           background:
-            "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(80,70,60,0.45) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(90,106,130,0.22) 0%, transparent 65%)",
         }}
       />
       <motion.div
-        className="absolute left-1/2 top-1/2 h-[min(70vw,420px)] w-[min(70vw,420px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#EDE8DF]/08"
+        className="absolute left-1/2 top-1/2 h-[min(70vw,420px)] w-[min(70vw,420px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#EDE8DF]/10"
         animate={{ rotate: 360 }}
         transition={{ duration: 48, repeat: Infinity, ease: "linear" }}
       >
-        <div className="absolute inset-[12%] rounded-full border border-[#EDE8DF]/06" />
+        <div className="absolute inset-[12%] rounded-full border border-[#EDE8DF]/07" />
         <div className="absolute inset-[24%] rounded-full border border-[#EDE8DF]/05" />
-        <div className="absolute inset-[38%] rounded-full bg-[#2a2826]/60 blur-sm" />
+        <div className="absolute inset-[38%] rounded-full bg-[#38383c]/70 blur-sm" />
       </motion.div>
       <motion.div
         className="absolute left-1/2 top-1/2 h-[min(42vw,240px)] w-[min(42vw,240px)] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            "conic-gradient(from 0deg, rgba(180,160,140,0.08), rgba(90,80,70,0.22), rgba(180,160,140,0.08))",
+            "conic-gradient(from 0deg, rgba(180,160,140,0.06), rgba(44,52,68,0.28), rgba(180,160,140,0.06))",
         }}
         animate={{ rotate: -360 }}
         transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(10,10,12,0.55)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(26,26,28,0.65)_100%)]" />
     </div>
   );
 }
@@ -45,13 +45,15 @@ export function VideoMeditationTab() {
   const { language } = useLanguage();
 
   return (
-    <div ref={ref} className="overflow-hidden rounded-sm">
+    <div
+      ref={ref}
+      className="overflow-hidden rounded-[2px] border border-[#EDE8DF]/12"
+    >
       <div className="relative min-h-[420px] sm:min-h-[520px] lg:min-h-[560px]">
         <WheelAmbience />
 
-        {/* Optional loop — falls back to CSS ambience if file missing */}
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-soft-light"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-soft-light"
           autoPlay
           muted
           loop
@@ -61,9 +63,9 @@ export function VideoMeditationTab() {
           <source src="/videos/wheel-loop.mp4" type="video/mp4" />
         </video>
 
-        <div className="relative z-10 flex min-h-[420px] flex-col items-center justify-center px-6 py-16 text-center sm:min-h-[520px] lg:min-h-[560px]">
+        <div className="pointer-events-none relative z-10 flex min-h-[420px] flex-col items-center justify-center px-6 py-16 text-center sm:min-h-[520px] lg:min-h-[560px]">
           <motion.p
-            className="font-sans text-[10px] uppercase tracking-[0.32em] text-[#EDE8DF]/45"
+            className="font-body text-[10px] uppercase tracking-[0.32em] text-[#EDE8DF]/45"
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8 }}
@@ -72,7 +74,7 @@ export function VideoMeditationTab() {
           </motion.p>
 
           <motion.h3
-            className="mt-6 font-display text-3xl tracking-[0.06em] text-[#FAFAFA] sm:text-4xl lg:text-5xl"
+            className="mt-6 font-display text-3xl tracking-[0.08em] text-[#FAFAFA] sm:text-4xl lg:text-5xl"
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
@@ -84,7 +86,7 @@ export function VideoMeditationTab() {
             {videoMeditation.lines.map((line, index) => (
               <motion.p
                 key={index}
-                className="font-sans text-base tracking-[0.12em] text-[#EDE8DF]/88 sm:text-lg"
+                className="font-body text-base tracking-[0.14em] text-[#EDE8DF]/88 sm:text-lg"
                 initial={{ opacity: 0, y: 12 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{
@@ -99,7 +101,7 @@ export function VideoMeditationTab() {
           </div>
 
           <motion.p
-            className="mt-12 font-sans text-[11px] tracking-[0.24em] text-[#EDE8DF]/40"
+            className="mt-12 font-body text-[11px] tracking-[0.24em] text-[#EDE8DF]/38"
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 1.1 }}

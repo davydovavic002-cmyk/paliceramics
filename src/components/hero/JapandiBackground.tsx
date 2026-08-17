@@ -1,11 +1,7 @@
 "use client";
 
-import { siteContent } from "@/lib/content";
-
-/** Paper-grain wash + single large kanji upper-right */
+/** Paper-grain wash + subtle vertical micro marks upper-right */
 export function JapandiBackground() {
-  const { verticalKanji } = siteContent.hero;
-
   return (
     <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
       <div
@@ -18,12 +14,13 @@ export function JapandiBackground() {
         }}
       />
 
-      <p
-        className="font-display absolute right-4 top-[10%] hidden select-none text-[clamp(5rem,12vw,9rem)] leading-none text-[#F3F4F6]/[0.14] lg:right-10 lg:top-[12%] lg:block xl:right-14"
-        style={{ writingMode: "vertical-rl" }}
-      >
-        {verticalKanji}
-      </p>
+      <div className="absolute right-4 top-[10%] hidden flex-col items-center gap-3 opacity-[0.14] lg:right-10 lg:top-[12%] lg:flex xl:right-14">
+        <span className="h-12 w-px bg-[color-mix(in_srgb,var(--theme-text)_70%,transparent)]" />
+        <span className="h-2 w-2 rounded-full border border-[color-mix(in_srgb,var(--theme-text)_80%,transparent)]" />
+        <span className="h-2 w-2 rounded-full bg-[color-mix(in_srgb,var(--theme-text)_55%,transparent)]" />
+        <span className="h-2 w-2 rounded-full border border-[color-mix(in_srgb,var(--theme-text)_80%,transparent)]" />
+        <span className="h-12 w-px bg-[color-mix(in_srgb,var(--theme-text)_70%,transparent)]" />
+      </div>
     </div>
   );
 }

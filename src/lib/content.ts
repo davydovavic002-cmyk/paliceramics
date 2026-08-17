@@ -8,9 +8,21 @@ export const siteContent: SiteContent = {
     subtitle: "手作り陶芸",
   },
   nav: [
-    { id: "collection", href: "#collection", kanji: "集", label: { en: "Collection", pl: "Kolekcja" } },
-    { id: "workshops", href: "#workshops", kanji: "工", label: { en: "Workshops", pl: "Warsztaty" } },
-    { id: "about", href: "#about", kanji: "我", label: { en: "About", pl: "O nas" } },
+    { id: "collection", href: "#collection", label: { en: "Collection", pl: "Kolekcja" } },
+    { id: "shop", href: "/shop", label: { en: "Shop", pl: "Sklep" } },
+    { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
+    { id: "about", href: "#about", label: { en: "About", pl: "O nas" } },
+  ],
+  mobileNavExtra: [
+    { id: "certificates", href: "#certificates", label: { en: "Gift card", pl: "Voucher" } },
+  ],
+  headerSections: [
+    { id: "collection", href: "#collection", label: { en: "Collection", pl: "Kolekcja" } },
+    { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
+    { id: "certificates", href: "#certificates", label: { en: "Gift card", pl: "Voucher" } },
+    { id: "about", href: "#about", label: { en: "About", pl: "O nas" } },
+    { id: "delivery", href: "#delivery", label: { en: "Delivery", pl: "Dostawa" } },
+    { id: "contact", href: "#contact", label: { en: "Contact", pl: "Kontakt" } },
   ],
   hero: {
     triadKanji: ["土", "火", "器"] as const,

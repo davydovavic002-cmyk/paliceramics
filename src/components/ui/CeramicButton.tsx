@@ -3,6 +3,7 @@
 import type { MouseEvent, ReactNode, ButtonHTMLAttributes } from "react";
 import Link from "next/link";
 import { handleSectionClick } from "@/lib/scrollToSection";
+import { JapandiMicroMark, type MicroVariant } from "@/components/ui/JapandiMicroMark";
 
 type Size = "sm" | "md" | "lg";
 type Intent = "primary" | "secondary";
@@ -19,33 +20,35 @@ const labelSize: Record<Size, string> = {
   lg: "text-[9px] tracking-[0.24em]",
 };
 
-const kanjiSize: Record<Size, string> = {
-  sm: "text-base",
-  md: "text-lg",
-  lg: "text-xl",
-};
-
 /** Hanko seal — clay & indigo, no vermillion */
 const intents: Record<Intent, string> = {
   primary: [
-    "bg-[#2c3444]",
-    "text-[#EDE8DF]",
-    "border-2 border-[#5a6a82]/50",
-    "shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-2px_4px_rgba(0,0,0,0.2),0_2px_8px_rgba(0,0,0,0.22)]",
-    "hover:bg-[#343e50] hover:border-[#6a7a92]/55",
+    "bg-[var(--theme-btn-primary)]",
+    "text-[var(--theme-btn-text,var(--theme-text))]",
+    "border-2 border-[color-mix(in_srgb,var(--theme-accent)_50%,transparent)]",
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-2px_4px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.15)]",
+    "hover:bg-[var(--theme-accent-hover)] hover:border-[color-mix(in_srgb,var(--theme-accent)_65%,transparent)]",
   ].join(" "),
   secondary: [
-    "bg-[#38383c]/50",
-    "text-[#EDE8DF]/85",
-    "border-2 border-[#EDE8DF]/30",
-    "shadow-[inset_0_0_0_1px_rgba(237,232,223,0.05)]",
-    "hover:border-[#EDE8DF]/50 hover:bg-[#2e2e32]/70",
+    "bg-[var(--theme-btn-secondary)]",
+    "text-[color-mix(in_srgb,var(--theme-text)_85%,transparent)]",
+    "border-2 border-[color-mix(in_srgb,var(--theme-border)_30%,transparent)]",
+    "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]",
+    "hover:border-[color-mix(in_srgb,var(--theme-border)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--theme-surface-accent)_35%,transparent)]",
   ].join(" "),
+};
+
+const markSize: Record<Size, number> = {
+  sm: 18,
+  md: 20,
+  lg: 22,
 };
 
 interface CeramicButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
+  /** @deprecated use microMark */
   kanji?: string;
+  microMark?: MicroVariant;
   size?: Size;
   intent?: Intent;
   href?: string;
@@ -54,6 +57,7 @@ interface CeramicButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function CeramicButton({
   children,
   kanji,
+  microMark,
   size = "md",
   intent = "secondary",
   href,
@@ -70,10 +74,12 @@ export function CeramicButton({
     className,
   ].join(" ");
 
+  const stamp = microMark ?? (kanji ? "disc" : undefined);
+
   const inner = (
     <>
-      {kanji ? (
-        <span className={`font-display leading-none ${kanjiSize[size]}`}>{kanji}</span>
+      {stamp ? (
+        <JapandiMicroMark variant={stamp} size={markSize[size]} className="opacity-90" />
       ) : null}
       <span className="leading-none opacity-90">{children}</span>
     </>

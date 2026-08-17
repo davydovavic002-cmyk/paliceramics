@@ -95,5 +95,7 @@ export function AmbientLightCanvas() {
     };
   }, []);
 
-  return <div ref={containerRef} className="absolute inset-0" aria-hidden />;
+  return (
+    <div ref={containerRef} className="pointer-events-none absolute inset-0" aria-hidden />
+  );
 }
