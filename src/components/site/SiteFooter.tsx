@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { siteContent } from "@/lib/content";
-import { pickBilingual } from "@/lib/adminTypes";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { handleSectionClick } from "@/lib/scrollToSection";
 
@@ -105,8 +104,6 @@ export function SiteFooter() {
           studioCta: "Śledź na Instagramie",
           mission:
             "Kamionina toczone na kole dla niespiesznych kuchni. Ceny z VAT, bez kosztów wysyłki.",
-          visitNote:
-            "Warsztaty w pracowni STRUM, aleja Wojska Polskiego 29 — wizyty po wcześniejszym kontakcie.",
           menu: "Menu",
           info: "Informacje",
           contact: "Kontakt",
@@ -124,8 +121,6 @@ export function SiteFooter() {
           studioCta: "Follow on Instagram",
           mission:
             "Small-batch wheel stoneware for unhurried kitchens. All prices incl. VAT excl. shipping.",
-          visitNote:
-            "Workshops at STRUM studio, aleja Wojska Polskiego 29 — visit by prior arrangement.",
           menu: "Menu",
           info: "Information",
           contact: "Contact",
@@ -138,9 +133,6 @@ export function SiteFooter() {
         };
 
   const contacts = content?.contacts;
-  const address = contacts
-    ? pickBilingual(contacts.address, contacts.address, language)
-    : null;
 
   const instagramHref = contacts?.instagram
     ? contactHref("instagram", contacts.instagram)
@@ -197,10 +189,13 @@ export function SiteFooter() {
               <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
                 {copy.info}
               </p>
-              <p className="footer-muted mt-4 font-body text-sm leading-relaxed">{copy.visitNote}</p>
-              {address ? (
-                <p className="footer-muted mt-3 font-body text-sm leading-relaxed">{address}</p>
-              ) : null}
+              <ul className="footer-muted mt-4 space-y-2.5 font-body text-sm">
+                {shopLinks.slice(2).map((link) => (
+                  <li key={link.href}>
+                    <FooterLink href={link.href}>{link.label}</FooterLink>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className={footerColClass(2, 5)}>

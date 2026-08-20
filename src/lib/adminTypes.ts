@@ -226,6 +226,8 @@ export type AdminDelivery = {
   pickupBody: Bilingual;
   shippingTitle: Bilingual;
   shippingBody: Bilingual;
+  internationalTitle: Bilingual;
+  internationalBody: Bilingual;
 };
 
 export type AdminAboutBlock = {
@@ -513,9 +515,32 @@ export function seedDelivery(): AdminDelivery {
       pl: "Wysyłka w Polsce",
     },
     shippingBody: {
-      en: "Careful packaging for stoneware — courier rates depend on size. Quote on request via email.",
-      pl: "Bezpieczne pakowanie kamioniny — koszt kuriera zależy od rozmiaru. Wycena na email.",
+      en: "Careful packaging for stoneware — InPost parcel lockers across Poland. Shipping cost paid by the buyer.",
+      pl: "Bezpieczne pakowanie kamioniny — paczkomaty InPost w całej Polsce. Koszt dostawy pokrywa kupujący.",
     },
+    internationalTitle: {
+      en: "International shipping",
+      pl: "Wysyłka za granicę",
+    },
+    internationalBody: {
+      en: "International orders are welcome. Contact us by email — we will agree on the best shipping method and calculate delivery individually.",
+      pl: "Zamówienia zagraniczne są możliwe. Napisz mailowo — ustalimy sposób wysyłki i indywidualnie wyliczymy koszt dostawy.",
+    },
+  };
+}
+
+function normalizeDelivery(delivery: AdminDelivery | undefined): AdminDelivery {
+  const seed = seedDelivery();
+  if (!delivery?.pickupTitle?.en) return seed;
+  return {
+    ...seed,
+    ...delivery,
+    internationalTitle: delivery.internationalTitle?.en
+      ? delivery.internationalTitle
+      : seed.internationalTitle,
+    internationalBody: delivery.internationalBody?.en
+      ? delivery.internationalBody
+      : seed.internationalBody,
   };
 }
 
@@ -602,7 +627,7 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
   const reviews =
     Array.isArray(data.reviews) && data.reviews.length > 0 ? data.reviews : seedReviews();
   const contacts = normalizeContacts(data.contacts);
-  const delivery = data.delivery?.pickupTitle ? data.delivery : seedDelivery();
+  const delivery = normalizeDelivery(data.delivery);
   const aboutBlocks =
     Array.isArray(data.aboutBlocks) && data.aboutBlocks.length > 0
       ? data.aboutBlocks

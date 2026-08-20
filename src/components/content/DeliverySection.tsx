@@ -233,6 +233,20 @@ export function DeliverySection() {
                 num="02"
                 title={pickBilingual(delivery.shippingTitle, delivery.shippingTitle, language)}
                 body={pickBilingual(delivery.shippingBody, delivery.shippingBody, language)}
+                bordered
+              />
+              <DeliveryRow
+                num="03"
+                title={pickBilingual(
+                  delivery.internationalTitle,
+                  delivery.internationalTitle,
+                  language
+                )}
+                body={pickBilingual(
+                  delivery.internationalBody,
+                  delivery.internationalBody,
+                  language
+                )}
               />
             </BeigePanel>
           </div>

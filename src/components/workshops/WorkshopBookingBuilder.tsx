@@ -6,8 +6,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import { pickBilingual } from "@/lib/adminTypes";
 import { useWorkshopData } from "@/hooks/useWorkshopData";
-import { buildBookingMessage } from "@/lib/booking";
-import { ContactChannelPanel } from "@/components/site/ContactChannelPanel";
 import { getWorkshopMkFormat, type WorkshopMkFormatId } from "@/lib/workshopMkCopy";
 import { WorkshopFormatDetailsPanel } from "./WorkshopFormatDetailsPanel";
 import { ConsentField } from "@/components/site/ConsentField";
@@ -36,10 +34,10 @@ export function WorkshopBookingBuilder() {
       ? {
           step1: "Krok 1 — Warsztat",
           step2: "Krok 2 — Termin",
-          step3: "Krok 3 — Kontakt",
+          step3: "Krok 3 — Dane",
           chooseType: "Wybierz format",
           chooseDate: "Wybierz termin",
-          contact: "Potwierdź i napisz",
+          contact: "Wyślij zapytanie",
           continue: "Dalej",
           back: "Wstecz",
           summary: "Twoja rezerwacja",
@@ -47,54 +45,41 @@ export function WorkshopBookingBuilder() {
           emailLabel: "Email",
           consent:
             "Wyrażam zgodę na kontakt w sprawie rezerwacji (RODO — placeholder).",
-          send: "Zapisz rezerwację",
-          sent: "Rezerwacja zapisana. Wybierz sposób kontaktu z Paliną:",
+          send: "Wyślij zapytanie",
+          sent: "Dziękujemy! Zapytanie zostało wysłane. Palina skontaktuje się z Tobą mailowo w ciągu 1–2 dni roboczych.",
           errSlotTaken: "Ten termin właśnie się zapełnił — wybierz inny.",
           errType: "Wybierz warsztat.",
           errSlot: "Wybierz termin.",
           errName: "Podaj imię.",
           errEmail: "Podaj poprawny email.",
           errConsent: "Zaznacz zgodę.",
-          noSlots: "Brak wolnych terminów — napisz do nas bezpośrednio.",
+          noSlots: "Brak wolnych terminów — napisz do nas mailowo.",
           spots: "miejsc",
-          instagram: "Instagram Direct",
-          facebook: "Facebook",
-          emailBtn: "Email",
         }
       : {
           step1: "Step 1 — Workshop",
           step2: "Step 2 — Date",
-          step3: "Step 3 — Contact",
+          step3: "Step 3 — Details",
           chooseType: "Choose your session",
           chooseDate: "Pick a date",
-          contact: "Confirm & reach out",
+          contact: "Send request",
           continue: "Continue",
           back: "Back",
           summary: "Your booking",
           name: "Name",
           emailLabel: "Email",
           consent: "I agree to be contacted about this booking (GDPR placeholder).",
-          send: "Save booking",
-          sent: "Booking saved. Choose how to message Palina:",
+          send: "Send request",
+          sent: "Thank you! Your request is in. Palina will contact you by email within 1–2 business days.",
           errSlotTaken: "This slot just filled up — please pick another one.",
           errType: "Choose a workshop type.",
           errSlot: "Choose a time slot.",
           errName: "Please enter your name.",
           errEmail: "Please enter a valid email.",
           errConsent: "Please accept the consent.",
-          noSlots: "No open slots right now — message us directly.",
+          noSlots: "No open slots right now — email us to arrange a date.",
           spots: "spots",
-          instagram: "Instagram Direct",
-          facebook: "Facebook",
-          emailBtn: "Email",
         };
-
-  const bookingDetails =
-    selectedType && selectedSlot
-      ? `${pickBilingual(selectedType.label, selectedType.label, language)} — ${selectedSlot.day}, ${selectedSlot.date} ${selectedSlot.time}`
-      : "";
-
-  const message = bookingDetails ? buildBookingMessage(bookingDetails, language) : "";
 
   const submitBooking = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -352,17 +337,9 @@ export function WorkshopBookingBuilder() {
             </div>
 
             {sent ? (
-              <div className="mt-6 space-y-4">
-                <p className="rounded-lg border border-theme/20 bg-white px-4 py-3 font-body text-sm text-theme">
-                  {copy.sent}
-                </p>
-                {message ? (
-                  <ContactChannelPanel
-                    message={message}
-                    subject={language === "pl" ? "Rezerwacja warsztatu" : "Workshop booking"}
-                  />
-                ) : null}
-              </div>
+              <p className="mt-6 rounded-lg border border-[color-mix(in_srgb,var(--theme-accent)_25%,transparent)] bg-white px-4 py-4 font-body text-sm leading-relaxed text-theme">
+                {copy.sent}
+              </p>
             ) : (
               <form onSubmit={(e) => void submitBooking(e)} className="mt-6 space-y-4">
                 <input

@@ -27,7 +27,7 @@ interface DemoControlsValue {
 const DemoControlsContext = createContext<DemoControlsValue | null>(null);
 
 function readStored(): { motionLevel: MotionLevel; siteTheme: SiteTheme } {
-  const fallback = { motionLevel: defaultMotionLevel(), siteTheme: "glazed-matte" as SiteTheme };
+  const fallback = { motionLevel: defaultMotionLevel(), siteTheme: "raw-clay" as SiteTheme };
   if (typeof window === "undefined") {
     return fallback;
   }
@@ -53,13 +53,13 @@ function readStored(): { motionLevel: MotionLevel; siteTheme: SiteTheme } {
 
 export function DemoControlsProvider({ children }: { children: ReactNode }) {
   const [motionLevel, setMotionLevelState] = useState<MotionLevel>(defaultMotionLevel());
-  const [siteTheme, setSiteThemeState] = useState<SiteTheme>("glazed-matte");
+  const [siteTheme, setSiteThemeState] = useState<SiteTheme>("raw-clay");
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const stored = readStored();
     setMotionLevelState(stored.motionLevel);
-    setSiteThemeState(stored.siteTheme);
+    setSiteThemeState("raw-clay");
     setHydrated(true);
   }, []);
 
@@ -67,7 +67,7 @@ export function DemoControlsProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     localStorage.setItem(
       DEMO_STORAGE_KEY,
-      JSON.stringify({ motionLevel, siteTheme })
+      JSON.stringify({ motionLevel, siteTheme: "raw-clay" })
     );
   }, [motionLevel, siteTheme, hydrated]);
 
@@ -97,8 +97,8 @@ export function DemoControlsProvider({ children }: { children: ReactNode }) {
     setMotionLevelState(level);
   }, []);
 
-  const setSiteTheme = useCallback((theme: SiteTheme) => {
-    setSiteThemeState(theme);
+  const setSiteTheme = useCallback((_theme: SiteTheme) => {
+    setSiteThemeState("raw-clay");
   }, []);
 
   const value = useMemo(

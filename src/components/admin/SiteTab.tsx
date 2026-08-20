@@ -194,7 +194,7 @@ export function SiteTab() {
         <SectionHeading
           icon={<Package className="h-4 w-4" strokeWidth={1.5} />}
           title="Delivery & pickup"
-          detail="Studio pickup and shipping copy for Poland."
+          detail="Studio pickup, Poland shipping, and international orders."
         />
         <div className="mt-4 space-y-4">
           <BilingualField
@@ -240,6 +240,33 @@ export function SiteTab() {
             }
             onPl={(v) =>
               updateDelivery({ shippingBody: { ...delivery.shippingBody, pl: v } })
+            }
+            multiline
+          />
+          <BilingualField
+            label="International shipping title"
+            en={delivery.internationalTitle.en}
+            pl={delivery.internationalTitle.pl}
+            onEn={(v) =>
+              updateDelivery({
+                internationalTitle: { ...delivery.internationalTitle, en: v },
+              })
+            }
+            onPl={(v) =>
+              updateDelivery({
+                internationalTitle: { ...delivery.internationalTitle, pl: v },
+              })
+            }
+          />
+          <BilingualField
+            label="International shipping body"
+            en={delivery.internationalBody.en}
+            pl={delivery.internationalBody.pl}
+            onEn={(v) =>
+              updateDelivery({ internationalBody: { ...delivery.internationalBody, en: v } })
+            }
+            onPl={(v) =>
+              updateDelivery({ internationalBody: { ...delivery.internationalBody, pl: v } })
             }
             multiline
           />

@@ -9,7 +9,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { siteContent } from "@/lib/content";
 import { handleSectionClick } from "@/lib/scrollToSection";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
-import { SiteThemeToggle } from "@/components/ui/SiteThemeToggle";
 import { HeaderBrandLogo } from "@/components/hero/HeaderBrandLogo";
 import { HeaderSectionsMenu } from "@/components/hero/HeaderSectionsMenu";
 import type { NavItem } from "@/types";
@@ -183,7 +182,6 @@ export function Header() {
 
           <div className="flex shrink-0 items-center justify-end gap-2.5 sm:gap-3 lg:justify-self-end">
             <HeaderSectionsMenu onBar={onBar} />
-            <SiteThemeToggle onBar={onBar} />
             <LanguageToggle onBar={onBar} />
             <button
               type="button"

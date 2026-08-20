@@ -2,23 +2,18 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Mail, Sparkles } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import {
-  certificateFilename,
   certificateNominalNote,
   certificateTypeMeta,
-  downloadBlob,
   formatNominalPln,
-  generateCertificatePng,
   getCertificatePrice,
   type CertificateDraft,
 } from "@/lib/certificate";
 import { CertificatePreview, CertificateTypePicker } from "./CertificatePreview";
 import { ConsentField } from "@/components/site/ConsentField";
-import { ContactChannelPanel } from "@/components/site/ContactChannelPanel";
-import { buildVoucherMessage } from "@/lib/contactChannels";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 
 const inputClass =
@@ -37,9 +32,7 @@ export function CertificateSection() {
   });
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState(false);
-  const [voucherCode, setVoucherCode] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [downloading, setDownloading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const nominalNote = certificateNominalNote(draft, language);
@@ -51,9 +44,9 @@ export function CertificateSection() {
           eyebrow: "Voucher",
           title: "Podaruj warsztat ceramiczny",
           subtitle:
-            "Wybierz format vouchera i wpisz imię odbiorcy — podgląd aktualizuje się na żywo.",
+            "Wybierz format vouchera i wpisz dane — podgląd aktualizuje się na żywo. Po wysłaniu Palina skontaktuje się mailowo.",
           recipient: "Imię odbiorcy",
-          buyerEmail: "Twój email (opcjonalnie)",
+          buyerEmail: "Twój email",
           typeLabel: "Rodzaj vouchera",
           participants: "Liczba osób",
           participantsHint:
@@ -62,47 +55,37 @@ export function CertificateSection() {
           twoPeople: "2 osoby",
           consent:
             "Wyrażam zgodę na kontakt w sprawie vouchera (RODO — placeholder).",
-          submit: "Zapisz zamówienie vouchera",
-          download: "Pobierz podgląd PNG",
+          submit: "Wyślij zapytanie o voucher",
           flowNote:
-            "Po wysłaniu pobierzesz kartę PNG z kodem, potem wybierzesz sposób kontaktu.",
+            "To zapytanie, nie automatyczny zakup. Palina odpisze mailowo z dalszymi krokami i voucherem.",
           success:
-            "Zamówienie zapisane. Pobierz kartę voucher i napisz do Paliny — dołącz PNG do wiadomości.",
+            "Dziękujemy! Zapytanie zostało wysłane. Palina skontaktuje się z Tobą mailowo w ciągu 1–2 dni roboczych.",
           errRecipient: "Podaj imię odbiorcy.",
+          errEmail: "Podaj poprawny email.",
           errConsent: "Zaznacz zgodę, aby kontynuować.",
         }
       : {
           eyebrow: "Gift card",
           title: "Give a pottery workshop",
           subtitle:
-            "Pick a voucher type and enter the recipient — the preview updates live.",
+            "Pick a voucher type and enter details — the preview updates live. After submitting, Palina will contact you by email.",
           recipient: "Recipient name",
-          buyerEmail: "Your email (optional)",
+          buyerEmail: "Your email",
           typeLabel: "Voucher type",
           participants: "Number of people",
           participantsHint: "With 2 people, the card shows the name plus “2 people”.",
           onePerson: "1 person",
           twoPeople: "2 people",
           consent: "I agree to be contacted about this gift card (GDPR placeholder).",
-          submit: "Save voucher request",
-          download: "Download preview PNG",
+          submit: "Send voucher request",
           flowNote:
-            "After submitting you'll get a PNG with a code, then choose how to message Palina.",
+            "This is a request, not an instant purchase. Palina will reply by email with next steps and your voucher.",
           success:
-            "Request saved. Download the voucher card and message Palina — attach the PNG to your message.",
+            "Thank you! Your request is in. Palina will contact you by email within 1–2 business days.",
           errRecipient: "Please enter the recipient name.",
+          errEmail: "Please enter a valid email.",
           errConsent: "Please accept the consent to continue.",
         };
-
-  const downloadPreview = async (code?: string | null) => {
-    setDownloading(true);
-    try {
-      const blob = await generateCertificatePng(draft, language, code ?? voucherCode);
-      downloadBlob(blob, certificateFilename(draft.recipientName, draft.type));
-    } finally {
-      setDownloading(false);
-    }
-  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +97,10 @@ export function CertificateSection() {
 
     if (recipient.length < 2) {
       setError(copy.errRecipient);
+      return;
+    }
+    if (!email.includes("@")) {
+      setError(copy.errEmail);
       return;
     }
     if (!consent) {
@@ -128,49 +115,24 @@ export function CertificateSection() {
         voucherLabel: meta.label[language],
         nominal: `${getCertificatePrice(draft)} PLN`,
         recipient,
-        ...(email.includes("@") ? { buyerEmail: email } : {}),
+        buyerEmail: email,
         participantCount: String(draft.participantCount),
         lang: language,
       });
 
       if (!result.ok) {
-        setError(language === "pl" ? "Nie udało się zapisać zamówienia." : "Could not save the request.");
+        setError(language === "pl" ? "Nie udało się wysłać zapytania." : "Could not send the request.");
         return;
       }
 
-      const code = result.voucherCode ?? null;
-      setVoucherCode(code);
       setSent(true);
       setConsent(false);
-
-      try {
-        const blob = await generateCertificatePng(
-          { ...draft, recipientName: recipient, buyerEmail: email },
-          language,
-          code
-        );
-        downloadBlob(blob, certificateFilename(recipient, draft.type));
-      } catch {
-        /* download optional */
-      }
     } catch {
-      setError(language === "pl" ? "Nie udało się zapisać zamówienia." : "Could not save the request.");
+      setError(language === "pl" ? "Nie udało się wysłać zapytania." : "Could not send the request.");
     } finally {
       setSubmitting(false);
     }
   };
-
-  const contactMessage = sent
-    ? buildVoucherMessage(
-        {
-          voucherLabel: certificateTypeMeta[draft.type].label[language],
-          nominal: `${getCertificatePrice(draft)} PLN`,
-          recipient: draft.recipientName.trim(),
-          voucherCode,
-        },
-        language
-      )
-    : "";
 
   return (
     <section
@@ -210,7 +172,7 @@ export function CertificateSection() {
 
         <MotionReveal className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
           <div className="mx-auto flex w-full max-w-[22rem] flex-col justify-center sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
-            <CertificatePreview draft={draft} voucherCode={sent ? voucherCode : null} />
+            <CertificatePreview draft={draft} voucherCode={null} />
           </div>
 
           <div className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">
@@ -221,40 +183,21 @@ export function CertificateSection() {
 
             {sent ? (
               <div className="space-y-4 rounded-2xl border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] p-5">
-                <div className="flex items-start gap-2">
-                  <Sparkles className="mt-0.5 h-4 w-4 text-theme-muted" strokeWidth={1.5} />
-                  <p className="font-body text-sm leading-relaxed text-theme">{copy.success}</p>
-                </div>
-                {voucherCode ? (
-                  <p className="font-body text-xs uppercase tracking-[0.18em] text-theme-muted">
-                    {language === "pl" ? "Kod vouchera" : "Voucher code"}:{" "}
-                    <span className="text-theme">{voucherCode}</span>
-                  </p>
-                ) : null}
-                <button
-                  type="button"
-                  onClick={() => void downloadPreview()}
-                  disabled={downloading}
-                  className={btnPrimary}
-                >
-                  <Download className="h-3.5 w-3.5" strokeWidth={1.5} />
-                  {copy.download}
-                </button>
-                {contactMessage ? (
-                  <ContactChannelPanel
-                    message={contactMessage}
-                    subject={language === "pl" ? "Zamówienie vouchera" : "Gift voucher request"}
-                  />
-                ) : null}
+                <p className="font-body text-sm leading-relaxed text-theme">{copy.success}</p>
                 <button
                   type="button"
                   onClick={() => {
                     setSent(false);
-                    setVoucherCode(null);
+                    setDraft({
+                      type: "workshop-once",
+                      recipientName: "",
+                      buyerEmail: "",
+                      participantCount: 1,
+                    });
                   }}
                   className="block font-body text-xs text-theme-muted underline underline-offset-4 hover:text-theme"
                 >
-                  {language === "pl" ? "Nowe zamówienie" : "New order"}
+                  {language === "pl" ? "Nowe zapytanie" : "New request"}
                 </button>
               </div>
             ) : (
@@ -342,9 +285,10 @@ export function CertificateSection() {
                     {copy.buyerEmail}
                   </span>
                   <input
-                    type="text"
+                    type="email"
                     inputMode="email"
                     autoComplete="email"
+                    required
                     value={draft.buyerEmail}
                     onChange={(e) =>
                       setDraft((prev) => ({ ...prev, buyerEmail: e.target.value }))
