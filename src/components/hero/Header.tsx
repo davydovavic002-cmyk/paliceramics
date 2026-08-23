@@ -186,7 +186,7 @@ export function Header() {
             <button
               type="button"
               className={[
-                "relative z-[2] inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 lg:hidden",
+                "relative z-[2] inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 lg:hidden",
                 onBar
                   ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
                   : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",

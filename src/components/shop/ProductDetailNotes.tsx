@@ -74,6 +74,7 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
         {actions ? <div className="shrink-0">{actions}</div> : null}
       </div>
 
+      <div className="min-h-[4.25rem]">
       <AnimatePresence mode="wait">
         {open === "details" ? (
           <motion.p
@@ -94,6 +95,7 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
           </motion.p>
         ) : null}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

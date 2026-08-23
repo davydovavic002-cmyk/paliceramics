@@ -9,6 +9,9 @@ import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { statusLabels, t } from "@/lib/galleryContent";
 
+const linkFocus =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2";
+
 interface CatalogProductCardProps {
   product: ShopProduct;
   title: string;
@@ -51,6 +54,7 @@ export function CatalogProductCard({
         href={`/shop/${product.sku}`}
         className={[
           "group flex h-full w-full flex-col bg-transparent p-3 transition-opacity duration-300 hover:opacity-90 sm:p-4",
+          linkFocus,
           className,
         ].join(" ")}
       >
@@ -93,6 +97,7 @@ export function CatalogProductCard({
         href={`/shop/${product.sku}`}
         className={[
           "group flex h-full w-full flex-col text-left",
+          linkFocus,
           className,
         ].join(" ")}
       >
@@ -140,6 +145,7 @@ export function CatalogProductCard({
       href={`/shop/${product.sku}`}
       className={[
         "group flex h-full w-full flex-col overflow-hidden bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[transform,box-shadow] duration-500",
+        linkFocus,
         showHoverTilt ? "hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(0,0,0,0.22)]" : "",
         className,
       ].join(" ")}

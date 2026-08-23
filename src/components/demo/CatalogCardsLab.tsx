@@ -29,7 +29,7 @@ const DETAIL_VARIANTS: { id: ProductDetailVariant; title: { en: string; pl: stri
 
 export function CatalogCardsLab() {
   const { language } = useLanguage();
-  const { products, ready } = useShopCatalog();
+  const { products } = useShopCatalog();
   const product = findShopProductBySku(products, DEMO_SKU) ?? products[0];
 
   const copy =
@@ -50,10 +50,6 @@ export function CatalogCardsLab() {
           back: "Demo",
           empty: "No demo product.",
         };
-
-  if (!ready) {
-    return <p className="font-body text-sm shop-catalog-muted">…</p>;
-  }
 
   if (!product) {
     return <p className="font-body text-sm shop-catalog-muted">{copy.empty}</p>;

@@ -169,8 +169,6 @@ export function DeliverySection() {
   const content = useSiteContent();
   const [activeFaqId, setActiveFaqId] = useState<string | null>(null);
 
-  if (!content) return null;
-
   const { delivery, faq } = content;
   const header = {
     eyebrow: pickBilingual(undefined, headerCopy.eyebrow, language),

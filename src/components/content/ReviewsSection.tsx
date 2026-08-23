@@ -18,8 +18,6 @@ export function ReviewsSection() {
   const { language } = useLanguage();
   const content = useSiteContent();
 
-  if (!content) return null;
-
   const visible = content.reviews.filter((r) => r.visible);
   if (visible.length === 0) return null;
 

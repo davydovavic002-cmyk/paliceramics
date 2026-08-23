@@ -54,8 +54,6 @@ export function ContactsSection() {
   const content = useSiteContent();
   const { mapsAllowed, acceptMaps, hydrated: cookieHydrated } = useCookieConsent();
 
-  if (!content) return null;
-
   const { contacts } = content;
   const header = {
     eyebrow: pickBilingual(undefined, headerCopy.eyebrow, language),

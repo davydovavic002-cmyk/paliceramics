@@ -12,7 +12,7 @@ import { ConsentField } from "@/components/site/ConsentField";
 
 export function WorkshopBookingBuilder() {
   const { language } = useLanguage();
-  const { workshopTypes, slots, ready } = useWorkshopData();
+  const { workshopTypes, slots } = useWorkshopData();
   const [step, setStep] = useState(1);
   const [typeId, setTypeId] = useState<string | null>(null);
   const [slotId, setSlotId] = useState<string | null>(null);
@@ -119,7 +119,7 @@ export function WorkshopBookingBuilder() {
 
   const cardClass = (selected: boolean) =>
     [
-      "relative z-[1] cursor-pointer rounded-xl border p-4 text-left transition-all duration-300 sm:p-[1.125rem]",
+      "relative z-[1] cursor-pointer rounded-xl border p-4 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:p-[1.125rem]",
       selected
         ? "border-[color-mix(in_srgb,var(--theme-accent)_40%,transparent)] bg-white shadow-[0_10px_28px_rgba(1,10,139,0.07)]"
         : "border-[color-mix(in_srgb,var(--theme-border)_12%,transparent)] bg-white hover:border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)]",
@@ -130,10 +130,6 @@ export function WorkshopBookingBuilder() {
 
   const btnSecondary =
     "relative z-[1] cursor-pointer rounded-full border-2 border-theme/25 bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:border-theme/40";
-
-  if (!ready) {
-    return <p className="py-12 text-center font-body text-sm text-theme-muted">…</p>;
-  }
 
   return (
     <div className="mx-auto max-w-2xl">

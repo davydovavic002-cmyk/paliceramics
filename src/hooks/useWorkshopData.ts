@@ -3,23 +3,31 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ADMIN_UPDATE_EVENT,
-  loadAdminData,
+  readAdminDataSync,
   seedAdminData,
   type AdminWorkshopSlot,
   type AdminWorkshopType,
 } from "@/lib/adminTypes";
 
+function readWorkshopData() {
+  const data = typeof window === "undefined" ? seedAdminData() : readAdminDataSync();
+  return {
+    workshopTypes: data.workshopTypes.filter((t) => t.enabled),
+    slots: data.workshops.filter((s) => s.available && s.spots > 0),
+  };
+}
+
 export function useWorkshopData() {
-  const [workshopTypes, setWorkshopTypes] = useState<AdminWorkshopType[]>([]);
-  const [slots, setSlots] = useState<AdminWorkshopSlot[]>([]);
-  const [ready, setReady] = useState(false);
+  const [workshopTypes, setWorkshopTypes] = useState<AdminWorkshopType[]>(
+    () => readWorkshopData().workshopTypes
+  );
+  const [slots, setSlots] = useState<AdminWorkshopSlot[]>(() => readWorkshopData().slots);
 
   useEffect(() => {
     const sync = () => {
-      const data = loadAdminData() ?? seedAdminData();
-      setWorkshopTypes(data.workshopTypes.filter((t) => t.enabled));
-      setSlots(data.workshops.filter((s) => s.available && s.spots > 0));
-      setReady(true);
+      const next = readWorkshopData();
+      setWorkshopTypes(next.workshopTypes);
+      setSlots(next.slots);
     };
     sync();
     window.addEventListener("storage", sync);
@@ -30,5 +38,5 @@ export function useWorkshopData() {
     };
   }, []);
 
-  return useMemo(() => ({ workshopTypes, slots, ready }), [workshopTypes, slots, ready]);
+  return useMemo(() => ({ workshopTypes, slots, ready: true }), [workshopTypes, slots]);
 }

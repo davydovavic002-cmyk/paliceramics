@@ -28,7 +28,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const router = useRouter();
   const { motionLevel } = useDemoControls();
   const { language } = useLanguage();
-  const { products, ready } = useShopCatalog();
+  const { products } = useShopCatalog();
   const product = findShopProductBySku(products, sku);
   const related = product ? getRelatedProducts(products, product) : [];
 
@@ -68,14 +68,6 @@ export function ProductDetailView({ sku }: { sku: string }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeProduct]);
-
-  if (!ready) {
-    return (
-      <div className="shop-catalog-page flex min-h-[calc(100dvh-var(--header-offset,5.5rem))] items-center justify-center pt-[var(--header-offset,5.5rem)]">
-        <p className="font-body text-sm shop-catalog-muted">…</p>
-      </div>
-    );
-  }
 
   if (!product) {
     return (

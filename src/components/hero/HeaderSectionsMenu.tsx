@@ -26,7 +26,7 @@ function SectionLink({
   onNavigate: () => void;
 }) {
   const className =
-    "block rounded-md px-3 py-2 font-body text-[11px] uppercase tracking-[0.16em] text-theme-muted transition-colors hover:bg-[color-mix(in_srgb,var(--theme-border)_10%,transparent)] hover:text-theme";
+    "block rounded-md px-3 py-2 font-body text-[11px] uppercase tracking-[0.16em] text-theme-muted transition-colors hover:bg-[color-mix(in_srgb,var(--theme-border)_10%,transparent)] hover:text-theme focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2";
 
   if (item.href.startsWith("/")) {
     return (
@@ -95,7 +95,7 @@ export function HeaderSectionsMenu({ onBar }: { onBar: boolean }) {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className={[
-          "inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90",
+          "inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
           onBar
             ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
             : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",
@@ -110,7 +110,7 @@ export function HeaderSectionsMenu({ onBar }: { onBar: boolean }) {
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-[80] min-w-[11.5rem] overflow-hidden rounded-xl border border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface)_98%,transparent)] p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-md"
+          className="absolute right-0 top-[calc(100%+0.5rem)] z-[80] min-w-[11.5rem] rounded-xl border border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface)_98%,transparent)] p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-md"
         >
           <p className="px-3 py-2 font-body text-[9px] uppercase tracking-[0.2em] text-theme-muted/80">
             {language === "pl" ? "Sekcje" : "Sections"}

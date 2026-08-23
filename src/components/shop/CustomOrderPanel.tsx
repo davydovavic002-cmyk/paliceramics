@@ -81,7 +81,7 @@ export function CustomOrderPanel() {
   return (
     <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative rounded-[1.35rem]">
       <div className="shop-product-sheet-inner grid rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
-        <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-hidden rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
+        <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
           <ProductGallery
             images={customOrderCatalogCard.galleryImages}
             title={title}
@@ -101,7 +101,7 @@ export function CustomOrderPanel() {
           </h1>
 
           <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <p className="shop-product-price delivery-faq-ink font-display text-[1rem] tabular-nums">
+            <p className="shop-product-price delivery-faq-ink font-display tabular-nums">
               {copy.minBadge}
             </p>
             <p className="delivery-faq-muted font-body text-[11px]">{subtitle}</p>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ADMIN_UPDATE_EVENT,
-  loadAdminData,
+  readAdminDataSync,
   seedAdminData,
   type AdminCollection,
   type AdminPieceType,
@@ -13,19 +13,26 @@ import {
   type ShopProduct,
 } from "@/lib/shopCatalog";
 
+function readCatalog() {
+  const data = typeof window === "undefined" ? seedAdminData() : readAdminDataSync();
+  return {
+    products: buildShopCatalog(data.products, data.collections),
+    collections: data.collections,
+    pieceTypes: data.pieceTypes,
+  };
+}
+
 export function useShopCatalog() {
-  const [products, setProducts] = useState<ShopProduct[]>([]);
-  const [collections, setCollections] = useState<AdminCollection[]>([]);
-  const [pieceTypes, setPieceTypes] = useState<AdminPieceType[]>([]);
-  const [ready, setReady] = useState(false);
+  const [products, setProducts] = useState<ShopProduct[]>(() => readCatalog().products);
+  const [collections, setCollections] = useState<AdminCollection[]>(() => readCatalog().collections);
+  const [pieceTypes, setPieceTypes] = useState<AdminPieceType[]>(() => readCatalog().pieceTypes);
 
   useEffect(() => {
     const sync = () => {
-      const data = loadAdminData() ?? seedAdminData();
-      setProducts(buildShopCatalog(data.products, data.collections));
-      setCollections(data.collections);
-      setPieceTypes(data.pieceTypes);
-      setReady(true);
+      const next = readCatalog();
+      setProducts(next.products);
+      setCollections(next.collections);
+      setPieceTypes(next.pieceTypes);
     };
     sync();
     window.addEventListener("storage", sync);
@@ -37,7 +44,7 @@ export function useShopCatalog() {
   }, []);
 
   return useMemo(
-    () => ({ products, collections, pieceTypes, ready }),
-    [products, collections, pieceTypes, ready]
+    () => ({ products, collections, pieceTypes, ready: true }),
+    [products, collections, pieceTypes]
   );
 }

@@ -730,6 +730,12 @@ export function loadAdminData(): AdminPersistedData | null {
   }
 }
 
+/** SSR-safe admin read — seed on server, localStorage on client first paint. */
+export function readAdminDataSync(): AdminPersistedData {
+  if (typeof window === "undefined") return seedAdminData();
+  return normalizeAdminData(loadAdminData() ?? seedAdminData());
+}
+
 export function addInboxMessage(
   type: InboxMessageType,
   payload: Record<string, string>

@@ -70,7 +70,7 @@ function parsePieceType(value: string | null, validIds: string[]): string | null
 
 function ShopCatalogContent() {
   const { language } = useLanguage();
-  const { products, collections, pieceTypes, ready } = useShopCatalog();
+  const { products, collections, pieceTypes } = useShopCatalog();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -310,7 +310,7 @@ function ShopCatalogContent() {
         <aside
           className={`w-full shrink-0 border-b px-5 py-5 sm:px-8 lg:w-[240px] lg:border-b-0 lg:border-r lg:px-8 lg:py-8 xl:w-[260px] ${line}`}
         >
-          <div className="mb-4 min-h-[1.125rem]">
+          <div className="mb-4 h-5">
             {hasActiveFilters ? (
               <button
                 type="button"
@@ -424,9 +424,7 @@ function ShopCatalogContent() {
               </label>
           </div>
 
-          {!ready ? (
-            <p className="py-20 text-center font-body text-sm shop-catalog-muted">…</p>
-          ) : filtered.length === 0 && !showCustomOrderCard ? (
+          {filtered.length === 0 && !showCustomOrderCard ? (
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
           ) : (
             <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 md:gap-x-6 lg:gap-x-8">
@@ -465,7 +463,7 @@ export function ShopCatalogView() {
   return (
     <Suspense
       fallback={
-        <div className="shop-catalog-page flex min-h-[50vh] items-center justify-center pt-28">
+        <div className="shop-catalog-page flex min-h-[calc(100dvh-var(--header-offset,5.5rem))] items-center justify-center pt-[var(--header-offset,5.5rem)]">
           <p className="font-body text-sm shop-catalog-muted">…</p>
         </div>
       }

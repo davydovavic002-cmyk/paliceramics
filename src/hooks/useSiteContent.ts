@@ -9,7 +9,11 @@ import type {
   AdminPersistedData,
   AdminReview,
 } from "@/lib/adminTypes";
-import { ADMIN_UPDATE_EVENT, loadAdminData, seedAdminData } from "@/lib/adminTypes";
+import {
+  ADMIN_UPDATE_EVENT,
+  readAdminDataSync,
+  seedAdminData,
+} from "@/lib/adminTypes";
 
 export type SiteContentData = {
   faq: AdminFaqItem[];
@@ -19,20 +23,26 @@ export type SiteContentData = {
   aboutBlocks: AdminAboutBlock[];
 };
 
-export function useSiteContent(): SiteContentData | null {
-  const [content, setContent] = useState<SiteContentData | null>(null);
+function buildSiteContent(data: AdminPersistedData): SiteContentData {
+  return {
+    faq: data.faq,
+    reviews: data.reviews,
+    contacts: data.contacts,
+    delivery: data.delivery,
+    aboutBlocks: data.aboutBlocks,
+  };
+}
+
+function readSiteContent(): SiteContentData {
+  const data = typeof window === "undefined" ? seedAdminData() : readAdminDataSync();
+  return buildSiteContent(data);
+}
+
+export function useSiteContent(): SiteContentData {
+  const [content, setContent] = useState<SiteContentData>(() => readSiteContent());
 
   useEffect(() => {
-    const sync = () => {
-      const data = loadAdminData() ?? seedAdminData();
-      setContent({
-        faq: data.faq,
-        reviews: data.reviews,
-        contacts: data.contacts,
-        delivery: data.delivery,
-        aboutBlocks: data.aboutBlocks,
-      });
-    };
+    const sync = () => setContent(readSiteContent());
     sync();
     window.addEventListener("storage", sync);
     window.addEventListener(ADMIN_UPDATE_EVENT, sync);

@@ -492,6 +492,11 @@ body {
       color 0.2s ease;
   }
 
+  .shop-note-pill:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fffef9, 0 0 0 4px #010a8b;
+  }
+
   .shop-note-pill:hover {
     border-color: color-mix(in srgb, #010a8b 28%, transparent);
     color: #010a8b;
