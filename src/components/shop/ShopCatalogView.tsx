@@ -10,7 +10,6 @@ import { t } from "@/lib/galleryContent";
 import {
   collectionToLookbook,
   getCollectionLabelFromList,
-  getPieceTypeLabelFromList,
 } from "@/lib/catalogConfig";
 import { pickBilingual } from "@/lib/adminTypes";
 import { sortProductsByCollectionName } from "@/lib/lookbookCollections";
@@ -277,20 +276,6 @@ function ShopCatalogContent() {
     return getCollectionLabelFromList(collections, activeCollectionId, language);
   }, [activeCollectionId, collections, language]);
 
-  const activeAvailabilityLabel = useMemo(() => {
-    if (activeAvailability === "all") return null;
-    const labels: Record<Exclude<AvailabilityFilter, "all">, string> = {
-      available: copy.available,
-      sold: copy.sold,
-    };
-    return labels[activeAvailability];
-  }, [activeAvailability, copy.available, copy.sold]);
-
-  const activePieceTypeLabel = useMemo(() => {
-    if (!activePieceType) return null;
-    return getPieceTypeLabelFromList(pieceTypes, activePieceType, language);
-  }, [activePieceType, language, pieceTypes]);
-
   const sortLabels: Record<Exclude<SortKey, "collection">, string> = {
     "price-asc": copy.sortPriceAsc,
     "price-desc": copy.sortPriceDesc,
@@ -325,8 +310,8 @@ function ShopCatalogContent() {
         <aside
           className={`w-full shrink-0 border-b px-5 py-5 sm:px-8 lg:w-[240px] lg:border-b-0 lg:border-r lg:px-8 lg:py-8 xl:w-[260px] ${line}`}
         >
-          {hasActiveFilters ? (
-            <div className="mb-5">
+          <div className="mb-4 min-h-[1.125rem]">
+            {hasActiveFilters ? (
               <button
                 type="button"
                 onClick={clearAllFilters}
@@ -334,25 +319,8 @@ function ShopCatalogContent() {
               >
                 {copy.removeAll}
               </button>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {activeCollectionLabel ? (
-                  <span className="lookbook-ink rounded-full border border-[var(--lookbook-line)] px-3 py-1 font-body text-[10px]">
-                    {activeCollectionLabel}
-                  </span>
-                ) : null}
-                {activeAvailabilityLabel ? (
-                  <span className="lookbook-ink rounded-full border border-[var(--lookbook-line)] px-3 py-1 font-body text-[10px]">
-                    {activeAvailabilityLabel}
-                  </span>
-                ) : null}
-                {activePieceTypeLabel ? (
-                  <span className="lookbook-ink rounded-full border border-[var(--lookbook-line)] px-3 py-1 font-body text-[10px]">
-                    {activePieceTypeLabel}
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
 
           <FilterSection
             title={copy.collections}
@@ -524,7 +492,7 @@ function FilterSection({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="lookbook-ink flex w-full items-center justify-between font-body text-[10px] uppercase tracking-[0.2em]"
+        className="lookbook-ink flex w-full items-center justify-between rounded-md px-1 py-1 font-body text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2"
       >
         {title}
         <ChevronDown
@@ -554,7 +522,7 @@ function FilterOption({
       type="button"
       onClick={onClick}
       className={[
-        "flex w-full items-center justify-between rounded-md px-2 py-2 text-left font-body text-sm transition-colors",
+        "flex w-full items-center justify-between rounded-md px-2 py-2 text-left font-body text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2",
         active
           ? "lookbook-ink bg-[color-mix(in_srgb,var(--lookbook-ink)_10%,var(--lookbook-bg))]"
           : "shop-catalog-muted hover:text-[var(--lookbook-ink)]",

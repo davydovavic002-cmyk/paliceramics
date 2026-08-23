@@ -440,8 +440,10 @@ body {
   }
 
   .shop-product-price {
-    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
-    letter-spacing: 0.04em;
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
   }
 
   .shop-product-section-label {
@@ -598,11 +600,11 @@ body {
   .shop-product-thumb {
     background: color-mix(in srgb, #ffffff 88%, #faf7f0);
     border: 1px solid color-mix(in srgb, #010a8b 12%, transparent);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .shop-product-thumb:hover {
-    transform: translateY(-1px);
+    border-color: color-mix(in srgb, #010a8b 28%, transparent);
   }
 
   .shop-product-thumb-active {

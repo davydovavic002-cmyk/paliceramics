@@ -71,7 +71,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
 
   if (!ready) {
     return (
-      <div className="shop-catalog-page flex min-h-[50vh] items-center justify-center pt-28">
+      <div className="shop-catalog-page flex min-h-[calc(100dvh-var(--header-offset,5.5rem))] items-center justify-center pt-[var(--header-offset,5.5rem)]">
         <p className="font-body text-sm shop-catalog-muted">…</p>
       </div>
     );
@@ -135,7 +135,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
             <X className="h-4 w-4" strokeWidth={1.5} />
           </button>
           <div className="shop-product-sheet-inner grid rounded-[1.75rem] lg:grid-cols-2 lg:items-stretch">
-            <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-hidden rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
+            <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>
 
@@ -153,7 +153,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
                 {title}
               </h1>
 
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2">
                 {product.pricePln > 0 ? (
                   <p className="shop-product-price delivery-faq-ink font-display tabular-nums">
                     {product.pricePln} PLN

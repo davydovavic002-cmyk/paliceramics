@@ -47,7 +47,7 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
       {images.length > 1 ? (
         <div
           className={[
-            "flex gap-2.5 overflow-x-auto sm:gap-3",
+            "flex gap-2.5 overflow-x-auto px-0.5 py-1 sm:gap-3",
             compact ? "mt-3 lg:mt-auto lg:pt-3" : "mt-5 lg:mt-auto lg:pt-4",
           ].join(" ")}
         >
@@ -57,20 +57,23 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
               type="button"
               onClick={() => setActive(index)}
               aria-label={`${title} — ${index + 1}`}
+              aria-current={safeActive === index ? "true" : undefined}
               className={[
-                "shop-product-thumb relative shrink-0 overflow-hidden rounded-xl",
+                "shop-product-thumb relative shrink-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2",
                 compact ? "h-16 w-16 sm:h-[4.25rem] sm:w-[4.25rem]" : "h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20",
                 safeActive === index ? "shop-product-thumb-active" : "",
               ].join(" ")}
             >
-              <Image
-                src={src}
-                alt=""
-                fill
-                unoptimized={isDataImageUrl(src)}
-                sizes="80px"
-                className="object-contain p-2"
-              />
+              <span className="relative block h-full w-full overflow-hidden rounded-[10px]">
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  unoptimized={isDataImageUrl(src)}
+                  sizes="80px"
+                  className="object-contain p-2"
+                />
+              </span>
             </button>
           ))}
         </div>
