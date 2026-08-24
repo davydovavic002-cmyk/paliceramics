@@ -38,6 +38,42 @@ export const siteContent: SiteContent = {
       en: "wheel stoneware · small-batch atelier · Warsaw",
       pl: "kamionina · mała pracownia · Warszawa",
     },
+    heroHeadline: {
+      en: "handcrafted limited tableware",
+      pl: "ręcznie tworzona limitowana ceramika stołowa",
+    },
+    heroHeadlineLines: {
+      en: ["handcrafted", "limited", "tableware"],
+      pl: ["ręcznie", "tworzona", "limitowana", "ceramika", "stołowa"],
+    },
+    heroSubline: {
+      en: "carefully shaped in small batches. each piece is one of a kind.",
+      pl: "ostrożnie kształtowane w małych seriach. każdy egzemplarz jest wyjątkowy.",
+    },
+    heroSublineLines: {
+      en: [
+        "carefully",
+        "shaped in",
+        "small",
+        "batches.",
+        "each",
+        "piece is",
+        "one of a",
+        "kind.",
+      ],
+      pl: [
+        "ostrożnie",
+        "kształtowane",
+        "w małych",
+        "seriach.",
+        "każdy",
+        "egzemplarz",
+        "jest",
+        "wyjątkowy.",
+      ],
+    },
+    heroCtaShop: { en: "Shop", pl: "Sklep" },
+    heroCtaWorkshops: { en: "Workshops", pl: "Warsztaty" },
     verticalKanji: "静",
     brandTagline: {
       en: "wheel stoneware · small-batch atelier",

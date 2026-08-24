@@ -11,14 +11,20 @@ const langLabels: Record<Language, string> = {
   en: "English",
 };
 
-export function LanguageToggle({ onBar = false }: { onBar?: boolean }) {
+export function LanguageToggle({
+  onBar = false,
+  heroOverlay = false,
+}: {
+  onBar?: boolean;
+  heroOverlay?: boolean;
+}) {
   const { language, setLanguage, isTransitioning } = useLanguage();
 
   return (
     <div
       className={[
         "flex items-center gap-1.5 font-body text-[11px] font-medium uppercase tracking-[0.2em]",
-        onBar ? "" : "[text-shadow:0_1px_5px_rgba(0,0,0,0.45)]",
+        heroOverlay || !onBar ? "[text-shadow:0_1px_5px_rgba(0,0,0,0.45)]" : "",
       ].join(" ")}
       role="group"
       aria-label="Language"
@@ -28,8 +34,9 @@ export function LanguageToggle({ onBar = false }: { onBar?: boolean }) {
           key={lang}
           type="button"
           onClick={() => setLanguage(lang)}
+          data-active={language === lang || undefined}
           className={[
-            "inline-flex h-8 w-8 items-center justify-center rounded-full border text-[10px] transition-all duration-200",
+            "header-lang-btn inline-flex h-8 w-8 items-center justify-center rounded-full border text-[10px] transition-all duration-200",
             language === lang
               ? "border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] text-[var(--theme-btn-text,var(--theme-text))]"
               : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] text-theme-muted/70 hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] hover:text-theme-muted",

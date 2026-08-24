@@ -9,7 +9,10 @@ import {
   MADE_TO_ORDER_DETAIL_HREF,
 } from "@/lib/customOrderContent";
 
-export function CustomOrderCatalogCard({ openDetail: _openDetail = false }: { openDetail?: boolean }) {
+const linkFocus =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2";
+
+export function CustomOrderCatalogCard() {
   const { language } = useLanguage();
   const title = pickBilingual(customOrderCatalogCard.title, customOrderCatalogCard.title, language);
   const subtitle = pickBilingual(
@@ -19,26 +22,38 @@ export function CustomOrderCatalogCard({ openDetail: _openDetail = false }: { op
   );
   const href = MADE_TO_ORDER_DETAIL_HREF;
   const priceLabel = language === "pl" ? "od 400 zł" : "from 400 PLN";
+  const noLabel = "no";
+  const sizePrefix = "size";
+  const skuLabel = language === "pl" ? "ZAMÓW" : "CUSTOM";
 
   return (
     <Link
       href={href}
       scroll={false}
-      className="group flex h-full w-full flex-col text-left"
+      className={["group flex h-full w-full flex-col text-left", linkFocus].join(" ")}
     >
       <div className="shop-card-image relative aspect-square w-full overflow-hidden">
         <Image
           src={customOrderCatalogCard.image}
           alt=""
           fill
-          sizes="(max-width:768px) 50vw, 33vw"
-          className="object-contain object-center p-6 sm:p-7 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+          sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 20vw"
+          className="object-contain object-center p-5 sm:p-6 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
         />
       </div>
-      <div className="flex min-h-[5.5rem] flex-col pt-3">
-        <p className="lookbook-ink line-clamp-2 font-body text-[13px] leading-snug">{title}</p>
-        <p className="mt-1 font-body text-[12px] leading-snug shop-catalog-muted">{subtitle}</p>
-        <p className="mt-auto pt-2 font-body text-[12px] tabular-nums shop-catalog-muted">{priceLabel}</p>
+      <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-body text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
+        <p className="lookbook-ink">
+          <span className="shop-catalog-muted">{noLabel}</span>{" "}
+          <span className="tabular-nums">{skuLabel}</span>
+        </p>
+        <p className="lookbook-ink">
+          <span className="shop-catalog-muted">{sizePrefix}</span>{" "}
+          <span>{subtitle}</span>
+        </p>
+        <p className="mt-auto pt-1 font-body text-[12px] tabular-nums shop-catalog-muted sm:text-[13px]">
+          {priceLabel}
+        </p>
+        <p className="sr-only">{title}</p>
       </div>
     </Link>
   );

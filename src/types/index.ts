@@ -16,6 +16,12 @@ export interface HeroContent {
   ctaPrimaryKanji: string;
   ctaSecondaryKanji: string;
   heroTag: Record<Language, string>;
+  heroHeadline: Record<Language, string>;
+  heroHeadlineLines: Record<Language, string[]>;
+  heroSubline: Record<Language, string>;
+  heroSublineLines: Record<Language, string[]>;
+  heroCtaShop: Record<Language, string>;
+  heroCtaWorkshops: Record<Language, string>;
   verticalKanji: string;
   brandTagline: Record<Language, string>;
   brandKatakana: string;

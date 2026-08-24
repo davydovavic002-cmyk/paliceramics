@@ -214,6 +214,76 @@ body {
   box-shadow: 0 4px 20px rgba(61, 52, 40, 0.08);
 }
 
+.hero-dark-band {
+  --theme-surface: #2c2a27;
+  --theme-surface-elevated: #353230;
+  --theme-surface-accent: #3a3732;
+  --theme-text: #ede8df;
+  --theme-text-muted: #a89f94;
+  --theme-border: #ede8df;
+  --theme-accent: #4a4844;
+  --theme-accent-hover: #5a5752;
+  --theme-btn-primary: #010a8b;
+  --theme-btn-secondary: rgba(44, 42, 39, 0.55);
+  --theme-btn-text: #ede8df;
+  --theme-selection: rgba(237, 232, 223, 0.2);
+  background-color: #2c2a27;
+  color: #ede8df;
+}
+
+.hero-dark-band .theme-hero-tag {
+  color: color-mix(in srgb, #ede8df 72%, #a89f94);
+}
+
+.hero-dark-band .hero-brand-logo img {
+  filter: brightness(0) invert(1);
+}
+
+.header-hero-overlay .header-bar-solid {
+  border-bottom-color: color-mix(in srgb, #ede8df 12%, transparent);
+  background-color: color-mix(in srgb, #2c2a27 88%, transparent);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+}
+
+.header-hero-overlay .header-nav-link {
+  color: color-mix(in srgb, #ede8df 88%, transparent);
+}
+
+.header-hero-overlay .header-nav-link:hover,
+.header-hero-overlay .header-nav-link[data-active="true"] {
+  color: #ede8df;
+}
+
+.header-hero-overlay .header-nav-link span[aria-hidden] {
+  background-color: color-mix(in srgb, #ede8df 50%, transparent);
+}
+
+.header-hero-overlay .header-icon-btn {
+  border-color: color-mix(in srgb, #ede8df 24%, transparent);
+  color: #ede8df;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+.header-hero-overlay .header-icon-btn:hover {
+  border-color: color-mix(in srgb, #ede8df 42%, transparent);
+}
+
+.header-hero-overlay .header-lang-btn {
+  border-color: color-mix(in srgb, #ede8df 22%, transparent);
+  color: color-mix(in srgb, #ede8df 72%, transparent);
+}
+
+.header-hero-overlay .header-lang-btn:hover {
+  border-color: color-mix(in srgb, #ede8df 40%, transparent);
+  color: color-mix(in srgb, #ede8df 88%, transparent);
+}
+
+.header-hero-overlay .header-lang-btn[data-active="true"] {
+  border-color: color-mix(in srgb, #010a8b 55%, #ede8df);
+  background-color: #010a8b;
+  color: #ede8df;
+}
+
 [data-theme="raw-clay"] {
   --hero-illustr-blue: #010A8B;
   --hero-illustr-clay: #b8a484;

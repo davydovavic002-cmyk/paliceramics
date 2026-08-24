@@ -42,12 +42,12 @@ export const certificateTypeMeta: Record<
   },
   "pottery-course": {
     template: "/images/vouchers/pottery-course.png",
-    titlePl: ["na cykl trzech zajęć", "z toczenia na kole", "garncarskim"],
-    titleEn: ["for a three-session", "pottery wheel", "course"],
-    detailPl: "3 × 2 godz.",
-    detailEn: "3 × 2 hrs",
+    titlePl: ["na indywidualny kurs", "toczenia na kole", "garncarskim"],
+    titleEn: ["for an individual", "pottery wheel", "course"],
+    detailPl: "2 zajęcia (4 godz.)",
+    detailEn: "2 classes (4 hrs)",
     pricePln: 850,
-    label: { pl: "Cykl 3 zajęć", en: "3-session course" },
+    label: { pl: "Kurs indywidualny", en: "Individual course" },
   },
 };
 
@@ -171,7 +171,7 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
 export async function generateCertificatePng(
   draft: CertificateDraft,
   language: "en" | "pl",
-  voucherCode?: string | null
+  purchaseDate?: string | null
 ): Promise<Blob> {
   const meta = certificateTypeMeta[draft.type];
   const width = 1748;
@@ -217,7 +217,7 @@ export async function generateCertificatePng(
 
   const titleLines = language === "pl" ? meta.titlePl : meta.titleEn;
   ctx.font = '400 28px "Segoe UI", Arial, sans-serif';
-  let titleY = 250;
+  let titleY = 200;
   for (const line of titleLines) {
     drawSpacedText(ctx, spacedLine(line), width / 2, titleY, 5);
     titleY += 52;
@@ -225,20 +225,36 @@ export async function generateCertificatePng(
 
   ctx.font = '400 24px "Segoe UI", Arial, sans-serif';
   const detail = language === "pl" ? meta.detailPl : meta.detailEn;
-  drawSpacedText(ctx, spacedLine(detail), width / 2, titleY + 24, 4);
+  drawSpacedText(ctx, spacedLine(detail), width / 2, titleY + 20, 4);
 
   const recipientLine = certificateRecipientLine(draft, language);
 
   ctx.font = '600 30px "Segoe UI", Arial, sans-serif';
-  drawSpacedText(ctx, spacedLine(recipientLine), width / 2, titleY + 110, 5);
+  drawSpacedText(ctx, spacedLine(recipientLine), width / 2, titleY + 86, 5);
+
+  const artTop = titleY + 150;
+  const artW = 300;
 
   try {
     const art = await loadImage("/images/hero/ceramics-collage-cutout.png");
-    const artW = 300;
     const artH = (art.height / art.width) * artW;
-    ctx.drawImage(art, width / 2 - artW / 2, titleY + 150, artW, artH);
+    ctx.drawImage(art, width / 2 - artW / 2, artTop, artW, artH);
+
+    try {
+      const qr = await loadImage("/images/vouchers/instagram-qr.png");
+      const qrSize = 132;
+      const qrY = artTop + artH / 2 - qrSize / 2 - 28;
+      ctx.drawImage(qr, 72, qrY, qrSize, qrSize);
+    } catch {
+      /* qr optional */
+    }
   } catch {
-    /* illustration optional */
+    try {
+      const qr = await loadImage("/images/vouchers/instagram-qr.png");
+      ctx.drawImage(qr, 72, artTop, 132, 132);
+    } catch {
+      /* qr optional */
+    }
   }
 
   const footerTop = height - 250;
@@ -249,25 +265,37 @@ export async function generateCertificatePng(
   ctx.textAlign = "left";
   ctx.fillStyle = VOUCHER_COLORS.ink;
 
-  if (voucherCode?.trim()) {
-    ctx.font = '400 16px "Segoe UI", Arial, sans-serif';
-    ctx.fillText(language === "pl" ? "kod vouchera:" : "voucher code:", leftX, footerTop);
-    ctx.font = '700 28px "Courier New", Consolas, monospace';
-    ctx.fillText(voucherCode.trim().toUpperCase(), leftX, footerTop + 34);
-  }
+  const dateLabel = language === "pl" ? "data zakupu:" : "purchase date:";
+  const dateValue =
+    purchaseDate?.trim() && !Number.isNaN(new Date(purchaseDate).getTime())
+      ? new Intl.DateTimeFormat(language === "pl" ? "pl-PL" : "en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(purchaseDate))
+      : "[ DD / MM / YYYY ]";
+
+  ctx.font = '400 16px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(dateLabel, leftX, footerTop);
+  ctx.font = '400 20px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(dateValue, leftX, footerTop + 30);
 
   ctx.font = '400 15px "Segoe UI", Arial, sans-serif';
   const terms =
     language === "pl"
       ? [
-          "Voucher ważny 3 miesiące.",
-          "Rezerwacja: palipali.ceramic@gmail.com",
-          "lub Instagram @pali.ceramics",
+          "• voucher jest ważny przez 3 miesięcy od daty zakupu.",
+          "• umówienie się na zajęcia przez maila:",
+          "palipali.ceramic@gmail.com",
+          "lub poprzez DM na instagramie",
+          "@pali.ceramics",
         ]
       : [
-          "Voucher valid for 3 months.",
-          "Booking: palipali.ceramic@gmail.com",
-          "or Instagram @pali.ceramics",
+          "• voucher is valid for 3 months from the purchase date.",
+          "• book a session by email:",
+          "palipali.ceramic@gmail.com",
+          "or via Instagram DM",
+          "@pali.ceramics",
         ];
 
   let termsY = footerTop;

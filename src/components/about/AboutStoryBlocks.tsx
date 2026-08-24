@@ -103,7 +103,6 @@ type StoryEditorialPhotoProps = {
   alt: string;
   className?: string;
   priority?: boolean;
-  rotate?: number;
   delay?: number;
   sizes?: string;
   objectPosition?: string;
@@ -114,7 +113,6 @@ export function StoryEditorialPhoto({
   alt,
   className = "",
   priority = false,
-  rotate = 0,
   delay = 0,
   sizes = "40vw",
   objectPosition = "center center",
@@ -125,12 +123,10 @@ export function StoryEditorialPhoto({
     <StoryMotionBlock delay={delay} className={className}>
       <motion.div
         className="relative h-full min-h-[inherit] overflow-hidden rounded-[2px] shadow-[0_16px_40px_rgba(0,0,0,0.16)]"
-        style={{ rotate: `${rotate}deg` }}
         whileHover={
           reduceMotion
             ? undefined
             : {
-                rotate: rotate + (rotate > 0 ? 1.5 : -1.5),
                 scale: 1.02,
                 boxShadow: "0 22px 48px rgba(0,0,0,0.2)",
               }

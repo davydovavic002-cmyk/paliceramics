@@ -85,7 +85,6 @@ export function PalinaStoryGallery() {
               src={imgs.wheel.src}
               alt={imgs.wheel.alt[language]}
               className="aspect-[5/4] min-h-0 flex-[1.2]"
-              rotate={-2}
               delay={0.08}
               objectPosition="50% 15%"
               sizes="28vw"
@@ -100,7 +99,6 @@ export function PalinaStoryGallery() {
                 src={imgs.glaze.src}
                 alt={imgs.glaze.alt[language]}
                 className="min-h-[7.5rem]"
-                rotate={2.5}
                 delay={0.14}
                 objectPosition="50% 40%"
               />
@@ -108,7 +106,6 @@ export function PalinaStoryGallery() {
                 src={imgs.studio.src}
                 alt={imgs.studio.alt[language]}
                 className="min-h-[7.5rem]"
-                rotate={-1.5}
                 delay={0.18}
                 objectPosition="50% 35%"
               />

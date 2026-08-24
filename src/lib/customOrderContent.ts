@@ -4,7 +4,7 @@ import { images } from "@/lib/images";
 
 export const MADE_TO_ORDER_CATEGORY_ID = "made-to-order";
 
-export const MADE_TO_ORDER_SHOP_HREF = "/shop";
+export const MADE_TO_ORDER_SHOP_HREF = `/shop?category=${MADE_TO_ORDER_CATEGORY_ID}`;
 
 export const MADE_TO_ORDER_DETAIL_HREF = "/shop/made-to-order";
 

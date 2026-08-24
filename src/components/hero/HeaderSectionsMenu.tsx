@@ -55,7 +55,13 @@ function SectionLink({
   );
 }
 
-export function HeaderSectionsMenu({ onBar }: { onBar: boolean }) {
+export function HeaderSectionsMenu({
+  onBar,
+  heroOverlay = false,
+}: {
+  onBar: boolean;
+  heroOverlay?: boolean;
+}) {
   const { language } = useLanguage();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -95,10 +101,10 @@ export function HeaderSectionsMenu({ onBar }: { onBar: boolean }) {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className={[
-          "inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
-          onBar
-            ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
-            : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",
+          "header-icon-btn inline-flex h-8 w-8 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
+          heroOverlay || !onBar
+            ? "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]"
+            : "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]",
         ].join(" ")}
         aria-label={language === "pl" ? "Sekcje strony" : "Page sections"}
         aria-expanded={open}

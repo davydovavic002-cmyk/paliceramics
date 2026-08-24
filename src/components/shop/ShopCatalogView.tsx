@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useShopCatalog } from "@/hooks/useShopCatalog";
@@ -12,6 +12,7 @@ import {
   getCollectionLabelFromList,
 } from "@/lib/catalogConfig";
 import { pickBilingual } from "@/lib/adminTypes";
+import { madeToOrderCollection } from "@/lib/lookbookCollections";
 import { sortProductsByCollectionName } from "@/lib/lookbookCollections";
 import { MADE_TO_ORDER_CATEGORY_ID } from "@/lib/customOrderContent";
 import { CatalogProductCard } from "./CatalogProductCard";
@@ -68,54 +69,66 @@ function parsePieceType(value: string | null, validIds: string[]): string | null
   return validIds.includes(value) ? value : null;
 }
 
+function parseSort(value: string | null): SortKey {
+  if (value === "price-asc" || value === "price-desc" || value === "name" || value === "collection") {
+    return value;
+  }
+  return "collection";
+}
+
 function ShopCatalogContent() {
   const { language } = useLanguage();
   const { products, collections, pieceTypes } = useShopCatalog();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const shopCollections = useMemo(
-    () => collections.map((collection) => collectionToLookbook(collection)),
+    () =>
+      collections
+        .filter((collection) => collection.id !== MADE_TO_ORDER_CATEGORY_ID)
+        .map((collection) => collectionToLookbook(collection)),
     [collections]
   );
   const categoryParam = searchParams.get("category");
   const availabilityParam = searchParams.get("availability");
   const pieceParam = searchParams.get("piece");
-  const activeCollectionId =
-    categoryParam && categoryParam !== MADE_TO_ORDER_CATEGORY_ID ? categoryParam : null;
+  const activeCollectionId = categoryParam;
+  const isMadeToOrderFilter = activeCollectionId === MADE_TO_ORDER_CATEGORY_ID;
+  const activeProductCollectionId = isMadeToOrderFilter ? null : activeCollectionId;
   const activeAvailability = parseAvailability(availabilityParam);
   const pieceTypeIds = useMemo(() => pieceTypes.map((type) => type.id), [pieceTypes]);
   const activePieceType = parsePieceType(pieceParam, pieceTypeIds);
-
-  const [sort, setSort] = useState<SortKey>("name");
+  const sort = parseSort(searchParams.get("sort"));
   const [openSections, setOpenSections] = useState<Set<string>>(
     () => new Set(["collections"])
   );
 
   const navigateShop = useCallback(
     (href: string) => {
-      router.replace(href, { scroll: false });
+      const current =
+        searchParams.toString().length > 0 ? `${pathname}?${searchParams.toString()}` : pathname;
+      if (href === current) return;
+      router.push(href, { scroll: false });
     },
-    [router]
+    [pathname, router, searchParams]
   );
 
   useEffect(() => {
-    if (categoryParam === MADE_TO_ORDER_CATEGORY_ID) {
-      router.replace("/shop");
-    }
-  }, [categoryParam, router]);
-
-  useEffect(() => {
-    if (searchParams.get("view") === "detail" && categoryParam === MADE_TO_ORDER_CATEGORY_ID) {
-      router.replace("/shop/made-to-order");
-    }
-  }, [categoryParam, router, searchParams]);
+    if (searchParams.get("view") !== "detail" || !isMadeToOrderFilter) return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("view");
+    params.delete("category");
+    const qs = params.toString();
+    router.replace(qs ? `/shop/made-to-order?${qs}` : "/shop/made-to-order");
+  }, [isMadeToOrderFilter, router, searchParams]);
 
   const buildShopHref = useCallback(
     (patch: {
       category?: string | null;
       availability?: AvailabilityFilter | null;
       piece?: string | null;
+      sort?: SortKey | null;
     }) => {
       const params = new URLSearchParams(searchParams.toString());
 
@@ -139,30 +152,48 @@ function ShopCatalogContent() {
         params.set("piece", patch.piece);
       }
 
+      if (patch.sort === null || patch.sort === "collection") {
+        params.delete("sort");
+      } else if (patch.sort) {
+        params.set("sort", patch.sort);
+      }
+
       const qs = params.toString();
-      return qs ? `/shop?${qs}` : "/shop";
+      return qs ? `${pathname}?${qs}` : pathname;
     },
-    [searchParams]
+    [pathname, searchParams]
   );
 
   const selectCollection = useCallback(
     (id: string | null) => {
-      if (id) navigateShop(buildShopHref({ category: id }));
-      else navigateShop(buildShopHref({ category: null }));
+      const nextId = id !== null && id === activeCollectionId ? null : id;
+      navigateShop(buildShopHref({ category: nextId }));
     },
-    [buildShopHref, navigateShop]
+    [activeCollectionId, buildShopHref, navigateShop]
   );
 
   const selectAvailability = useCallback(
     (filter: AvailabilityFilter) => {
-      navigateShop(buildShopHref({ availability: filter === "all" ? null : filter }));
+      const next =
+        filter === "all" || filter === activeAvailability
+          ? null
+          : filter;
+      navigateShop(buildShopHref({ availability: next }));
     },
-    [buildShopHref, navigateShop]
+    [activeAvailability, buildShopHref, navigateShop]
   );
 
   const selectPieceType = useCallback(
     (pieceType: string | null) => {
-      navigateShop(buildShopHref({ piece: pieceType }));
+      const next = pieceType !== null && pieceType === activePieceType ? null : pieceType;
+      navigateShop(buildShopHref({ piece: next }));
+    },
+    [activePieceType, buildShopHref, navigateShop]
+  );
+
+  const selectSort = useCallback(
+    (nextSort: SortKey) => {
+      navigateShop(buildShopHref({ sort: nextSort }));
     },
     [buildShopHref, navigateShop]
   );
@@ -194,6 +225,7 @@ function ShopCatalogContent() {
           sortPriceAsc: "Cena rosnąco",
           sortPriceDesc: "Cena malejąco",
           sortName: "Nazwa A–Z",
+          sortCollection: "Kolekcja",
           of: "z",
           productsLabel: "produktów",
           empty: "Brak prac w tej kolekcji.",
@@ -214,6 +246,7 @@ function ShopCatalogContent() {
           sortPriceAsc: "Price: low to high",
           sortPriceDesc: "Price: high to low",
           sortName: "Name A–Z",
+          sortCollection: "Collection",
           of: "of",
           productsLabel: "products",
           empty: "No pieces in this collection.",
@@ -248,8 +281,10 @@ function ShopCatalogContent() {
   }, [products]);
 
   const filtered = useMemo(() => {
-    let next = activeCollectionId
-      ? products.filter((product) => product.categoryId === activeCollectionId)
+    if (isMadeToOrderFilter) return [];
+
+    let next = activeProductCollectionId
+      ? products.filter((product) => product.categoryId === activeProductCollectionId)
       : products;
 
     if (activePieceType) {
@@ -260,11 +295,53 @@ function ShopCatalogContent() {
       next = next.filter((product) => matchesAvailability(product, activeAvailability));
     }
 
-    return sortProducts(next, sort, language);
-  }, [products, activeCollectionId, activePieceType, activeAvailability, sort, language]);
+    if (sort === "collection") {
+      return next;
+    }
 
-  const showCustomOrderCard =
-    !activeCollectionId && !activePieceType && activeAvailability === "all";
+    return sortProducts(next, sort, language);
+  }, [
+    products,
+    activeProductCollectionId,
+    isMadeToOrderFilter,
+    activePieceType,
+    activeAvailability,
+    sort,
+    language,
+  ]);
+
+  const productGroups = useMemo(() => {
+    if (isMadeToOrderFilter) return [];
+
+    if (activeProductCollectionId) {
+      return filtered.length
+        ? [{ collectionId: activeProductCollectionId, products: filtered, showHeading: false }]
+        : [];
+    }
+
+    if (sort !== "collection") {
+      return filtered.length
+        ? [{ collectionId: "__sorted__", products: filtered, showHeading: false }]
+        : [];
+    }
+
+    const byCollection = new Map<string, ShopProduct[]>();
+    for (const product of filtered) {
+      const list = byCollection.get(product.categoryId) ?? [];
+      list.push(product);
+      byCollection.set(product.categoryId, list);
+    }
+
+    return shopCollections
+      .map((collection) => ({
+        collectionId: collection.id,
+        products: sortProducts(byCollection.get(collection.id) ?? [], "name", language),
+        showHeading: true,
+      }))
+      .filter((group) => group.products.length > 0);
+  }, [filtered, isMadeToOrderFilter, activeProductCollectionId, shopCollections, sort, language]);
+
+  const showCustomOrderCard = isMadeToOrderFilter;
 
   const hasActiveFilters =
     Boolean(activeCollectionId) ||
@@ -273,19 +350,23 @@ function ShopCatalogContent() {
 
   const activeCollectionLabel = useMemo(() => {
     if (!activeCollectionId) return null;
+    if (isMadeToOrderFilter) {
+      return pickBilingual(madeToOrderCollection.name, madeToOrderCollection.name, language);
+    }
     return getCollectionLabelFromList(collections, activeCollectionId, language);
-  }, [activeCollectionId, collections, language]);
+  }, [activeCollectionId, collections, isMadeToOrderFilter, language]);
 
-  const sortLabels: Record<Exclude<SortKey, "collection">, string> = {
+  const sortLabels: Record<SortKey, string> = {
+    collection: copy.sortCollection,
     "price-asc": copy.sortPriceAsc,
     "price-desc": copy.sortPriceDesc,
     name: copy.sortName,
   };
 
-  const sortOptions: Exclude<SortKey, "collection">[] = ["price-asc", "price-desc", "name"];
+  const sortOptions: SortKey[] = ["collection", "price-asc", "price-desc", "name"];
 
   const clearAllFilters = () => {
-    navigateShop("/shop");
+    navigateShop(pathname);
   };
 
   return (
@@ -331,7 +412,7 @@ function ShopCatalogContent() {
               active={!activeCollectionId}
               onClick={() => selectCollection(null)}
               label={copy.allCollections}
-              count={products.length + (showCustomOrderCard ? 1 : 0)}
+              count={products.length}
             />
             {shopCollections.map((collection) => {
               const label = pickBilingual(collection.name, collection.name, language);
@@ -348,6 +429,16 @@ function ShopCatalogContent() {
                 />
               );
             })}
+            <FilterOption
+              active={isMadeToOrderFilter}
+              onClick={() => selectCollection(MADE_TO_ORDER_CATEGORY_ID)}
+              label={pickBilingual(
+                madeToOrderCollection.name,
+                madeToOrderCollection.name,
+                language
+              )}
+              count={1}
+            />
           </FilterSection>
 
           <FilterSection
@@ -401,16 +492,18 @@ function ShopCatalogContent() {
         <main className="min-w-0 flex-1 px-5 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-body text-sm shop-catalog-muted">
-              {activeCollectionId || activeAvailability !== "all" || activePieceType
-                ? `${filtered.length} ${copy.productsLabel}`
-                : `${filtered.length + (showCustomOrderCard ? 1 : 0)} ${copy.of} ${products.length + 1} ${copy.productsLabel}`}
+              {isMadeToOrderFilter
+                ? `1 ${copy.productsLabel}`
+                : activeCollectionId || activeAvailability !== "all" || activePieceType
+                  ? `${filtered.length} ${copy.productsLabel}`
+                  : `${filtered.length} ${copy.of} ${products.length} ${copy.productsLabel}`}
             </p>
             <label className="flex items-center gap-2 font-body text-sm shop-catalog-muted">
                 <span className="text-[10px] uppercase tracking-[0.16em]">{copy.sortBy}</span>
                 <div className="relative">
                   <select
                     value={sort}
-                    onChange={(e) => setSort(e.target.value as SortKey)}
+                    onChange={(e) => selectSort(e.target.value as SortKey)}
                     className={`lookbook-ink appearance-none rounded-full border bg-[color-mix(in_srgb,var(--lookbook-bg-well)_75%,transparent)] py-2 pl-4 pr-9 font-body text-sm outline-none ${line}`}
                   >
                     {sortOptions.map((key) => (
@@ -424,32 +517,57 @@ function ShopCatalogContent() {
               </label>
           </div>
 
-          {filtered.length === 0 && !showCustomOrderCard ? (
+          {productGroups.length === 0 && !showCustomOrderCard ? (
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
           ) : (
-            <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 md:gap-x-6 lg:gap-x-8">
-              {filtered.map((product, index) => (
-                <MotionReveal key={product.sku} delay={staggerStep(index)} y={14}>
-                  <CatalogProductCard
-                    product={product}
-                    title={t(product.name, language)}
-                    categoryLabel={getCollectionLabelFromList(
-                      collections,
-                      product.categoryId,
-                      language
-                    )}
-                    variant="shop"
-                  />
-                </MotionReveal>
-              ))}
+            <div className="space-y-10 sm:space-y-12">
+              {productGroups.map((group) => {
+                const collectionLabel = getCollectionLabelFromList(
+                  collections,
+                  group.collectionId,
+                  language
+                );
+
+                return (
+                  <section key={group.collectionId}>
+                    {group.showHeading ? (
+                      <header className={`mb-5 border-b pb-3 ${line}`}>
+                        <h2 className="lookbook-ink font-display text-[clamp(1.05rem,2vw,1.35rem)] leading-snug tracking-[0.02em]">
+                          {collectionLabel}
+                        </h2>
+                      </header>
+                    ) : null}
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
+                      {group.products.map((product, index) => (
+                        <MotionReveal key={`${sort}-${product.sku}`} delay={staggerStep(index)} y={14}>
+                          <CatalogProductCard
+                            product={product}
+                            title={t(product.name, language)}
+                            variant="shop"
+                          />
+                        </MotionReveal>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
               {showCustomOrderCard ? (
-                <MotionReveal
-                  key="custom-order"
-                  delay={staggerStep(filtered.length)}
-                  y={14}
-                >
-                  <CustomOrderCatalogCard />
-                </MotionReveal>
+                <section>
+                  <header className={`mb-5 border-b pb-3 ${line}`}>
+                    <h2 className="lookbook-ink font-display text-[clamp(1.05rem,2vw,1.35rem)] leading-snug tracking-[0.02em]">
+                      {pickBilingual(
+                        madeToOrderCollection.name,
+                        madeToOrderCollection.name,
+                        language
+                      )}
+                    </h2>
+                  </header>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
+                    <MotionReveal key="custom-order" delay={0} y={14}>
+                      <CustomOrderCatalogCard />
+                    </MotionReveal>
+                  </div>
+                </section>
               ) : null}
             </div>
           )}

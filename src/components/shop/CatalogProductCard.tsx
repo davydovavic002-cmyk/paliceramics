@@ -92,6 +92,8 @@ export function CatalogProductCard({
   }
 
   if (variant === "shop") {
+    const sizeLabel = t(product.specs.dimensions, language);
+
     return (
       <Link
         href={`/shop/${product.sku}`}
@@ -107,27 +109,27 @@ export function CatalogProductCard({
             alt={title}
             fill
             unoptimized={unoptimizedImage}
-            sizes="(max-width:768px) 50vw, 33vw"
+            sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 20vw"
             className={[
-              "object-contain object-center p-6 sm:p-7",
+              "object-contain object-center p-5 sm:p-6",
               "transition-transform duration-500 ease-out",
               showImageHoverScale ? "group-hover:scale-[1.02]" : "",
             ].join(" ")}
           />
         </div>
 
-        <div className="flex min-h-[5.5rem] flex-col pt-3">
-          <p className="lookbook-ink line-clamp-2 font-body text-[13px] leading-snug">
-            {title}
+        <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-body text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
+          <p className="lookbook-ink">
+            <span className="shop-catalog-muted">no</span>{" "}
+            <span className="tabular-nums">{product.sku}</span>
           </p>
-          {categoryLabel ? (
-            <p className="mt-1 font-body text-[12px] leading-snug shop-catalog-muted">
-              {categoryLabel}
-            </p>
-          ) : null}
-          <div className="mt-auto space-y-0.5 pt-2">
+          <p className="lookbook-ink">
+            <span className="shop-catalog-muted">size</span>{" "}
+            <span>{sizeLabel}</span>
+          </p>
+          <div className="mt-auto space-y-0.5 pt-1">
             {product.pricePln > 0 ? (
-              <p className="font-body text-[12px] tabular-nums shop-catalog-muted">
+              <p className="font-body text-[12px] tabular-nums shop-catalog-muted sm:text-[13px]">
                 {product.pricePln} PLN
               </p>
             ) : null}

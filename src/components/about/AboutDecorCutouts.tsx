@@ -5,28 +5,14 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useRef } from "react";
 import { images } from "@/lib/images";
 
-/** Drawn illustration accents — scattered, not grouped. */
+/** Single bottom illustration accent for the about section. */
 const CUTOUTS = [
   {
     src: images.heroCeramicsCollage,
     alt: "",
-    className: "left-[1%] top-[5%] w-[min(11vw,82px)] lg:w-[min(9vw,92px)]",
-    depth: 16,
-    rotate: -10,
-  },
-  {
-    src: images.heroCeramics,
-    alt: "",
-    className: "right-[2%] top-[18%] w-[min(10vw,76px)] lg:w-[min(8vw,86px)]",
-    depth: 20,
-    rotate: 12,
-  },
-  {
-    src: images.heroCeramicsCollage,
-    alt: "",
-    className: "left-[4%] bottom-[22%] w-[min(9vw,70px)] lg:w-[min(8vw,78px)] hidden md:block",
+    className: "left-[4%] bottom-[22%] w-[min(9vw,70px)] lg:w-[min(8vw,78px)]",
     depth: 12,
-    rotate: 5,
+    rotate: 0,
   },
 ] as const;
 

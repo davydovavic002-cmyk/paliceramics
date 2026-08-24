@@ -58,17 +58,28 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
     }
 
     setSubmitting(true);
-    await submitInboxMessage("waitlist", {
-      sku,
-      product: productTitle,
-      email: trimmed,
-      lang: language,
-    });
-    setSubmitting(false);
-    setSavedEmail(trimmed);
-    setSent(true);
-    setEmail("");
-    setConsent(false);
+    try {
+      const result = await submitInboxMessage("waitlist", {
+        sku,
+        product: productTitle,
+        email: trimmed,
+        lang: language,
+      });
+
+      if (!result.ok) {
+        setError(
+          language === "pl" ? "Nie udało się zapisać na listę." : "Could not join the waitlist."
+        );
+        return;
+      }
+
+      setSavedEmail(trimmed);
+      setSent(true);
+      setEmail("");
+      setConsent(false);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (sent) {

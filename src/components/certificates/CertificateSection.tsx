@@ -172,7 +172,7 @@ export function CertificateSection() {
 
         <MotionReveal className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
           <div className="mx-auto flex w-full max-w-[22rem] flex-col justify-center sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
-            <CertificatePreview draft={draft} voucherCode={null} />
+            <CertificatePreview draft={draft} />
           </div>
 
           <div className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">

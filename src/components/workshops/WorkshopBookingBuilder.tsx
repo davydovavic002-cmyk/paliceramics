@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { submitInboxMessage } from "@/lib/inboxClient";
@@ -21,13 +21,35 @@ export function WorkshopBookingBuilder() {
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const availableSlots = useMemo(() => {
+    if (!typeId) return [];
+    return slots.filter(
+      (slot) =>
+        slot.workshopTypeId === typeId &&
+        slot.available !== false &&
+        !slot.closed &&
+        slot.spots > 0
+    );
+  }, [slots, typeId]);
+
+  useEffect(() => {
+    setSlotId(null);
+  }, [typeId]);
+
+  useEffect(() => {
+    if (slotId && !availableSlots.some((slot) => slot.id === slotId)) {
+      setSlotId(null);
+    }
+  }, [availableSlots, slotId]);
 
   const selectedType = workshopTypes.find((t) => t.id === typeId);
   const selectedMkFormat =
     typeId === "one-time" || typeId === "three-session"
       ? getWorkshopMkFormat(typeId as WorkshopMkFormatId)
       : undefined;
-  const selectedSlot = slots.find((s) => s.id === slotId);
+  const selectedSlot = availableSlots.find((s) => s.id === slotId);
 
   const copy =
     language === "pl"
@@ -84,7 +106,10 @@ export function WorkshopBookingBuilder() {
   const submitBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!selectedType || !selectedSlot) return;
+    if (!selectedType || !selectedSlot || selectedSlot.workshopTypeId !== selectedType.id) {
+      setError(copy.errSlot);
+      return;
+    }
     if (!name.trim()) {
       setError(copy.errName);
       return;
@@ -98,23 +123,28 @@ export function WorkshopBookingBuilder() {
       return;
     }
 
-    const result = await submitInboxMessage("booking", {
-      name: name.trim(),
-      email: email.trim(),
-      workshop: pickBilingual(selectedType.label, selectedType.label, language),
-      workshopId: selectedType.id,
-      slot: `${selectedSlot.day}, ${selectedSlot.date} · ${selectedSlot.time}`,
-      slotId: selectedSlot.id,
-      pricePln: String(selectedType.pricePln),
-      lang: language,
-    });
+    setSubmitting(true);
+    try {
+      const result = await submitInboxMessage("booking", {
+        name: name.trim(),
+        email: email.trim(),
+        workshop: pickBilingual(selectedType.label, selectedType.label, language),
+        workshopId: selectedType.id,
+        slot: `${selectedSlot.day}, ${selectedSlot.date} · ${selectedSlot.time}`,
+        slotId: selectedSlot.id,
+        pricePln: String(selectedType.pricePln),
+        lang: language,
+      });
 
-    if (!result.ok) {
-      setError(result.error === "SLOT_UNAVAILABLE" ? copy.errSlotTaken : copy.errEmail);
-      return;
+      if (!result.ok) {
+        setError(result.error === "SLOT_UNAVAILABLE" ? copy.errSlotTaken : copy.errEmail);
+        return;
+      }
+
+      setSent(true);
+    } finally {
+      setSubmitting(false);
     }
-
-    setSent(true);
   };
 
   const cardClass = (selected: boolean) =>
@@ -246,11 +276,11 @@ export function WorkshopBookingBuilder() {
               {copy.chooseDate}
             </h3>
 
-            {slots.length === 0 ? (
+            {availableSlots.length === 0 ? (
               <p className="mt-6 font-body text-sm text-theme-muted">{copy.noSlots}</p>
             ) : (
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {slots.map((slot) => (
+                {availableSlots.map((slot) => (
                   <button
                     key={slot.id}
                     type="button"
@@ -361,7 +391,7 @@ export function WorkshopBookingBuilder() {
                   >
                     {copy.back}
                   </button>
-                  <button type="submit" className={`flex-[2] ${btnPrimary}`}>
+                  <button type="submit" disabled={submitting} className={`flex-[2] ${btnPrimary}`}>
                     {copy.send}
                   </button>
                 </div>
