@@ -30,6 +30,10 @@ import {
   type AdminContacts,
   type AdminDelivery,
   type AdminAboutBlock,
+  type AdminPalinaStory,
+  type AdminVoucherContent,
+  type AdminWorkshopBookingCopy,
+  type AdminWorkshopFormatCopy,
 } from "@/lib/adminTypes";
 
 interface AdminDataContextValue {
@@ -83,6 +87,14 @@ interface AdminDataContextValue {
   updateDelivery: (patch: Partial<AdminDelivery>) => void;
   aboutBlocks: AdminAboutBlock[];
   setAboutBlocks: React.Dispatch<React.SetStateAction<AdminAboutBlock[]>>;
+  palinaStory: AdminPalinaStory;
+  setPalinaStory: (next: AdminPalinaStory) => void;
+  workshopFormatCopy: AdminWorkshopFormatCopy[];
+  setWorkshopFormatCopy: (next: AdminWorkshopFormatCopy[]) => void;
+  voucherContent: AdminVoucherContent;
+  setVoucherContent: (next: AdminVoucherContent) => void;
+  workshopBookingCopy: AdminWorkshopBookingCopy;
+  setWorkshopBookingCopy: (next: AdminWorkshopBookingCopy) => void;
   resetAll: () => void;
 }
 
@@ -456,6 +468,34 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       [flashSaved]
     );
 
+  const setPalinaStory = useCallback(
+    (next: AdminPalinaStory) => {
+      patchData((prev) => ({ ...prev, palinaStory: next }));
+    },
+    [patchData]
+  );
+
+  const setWorkshopFormatCopy = useCallback(
+    (next: AdminWorkshopFormatCopy[]) => {
+      patchData((prev) => ({ ...prev, workshopFormatCopy: next }));
+    },
+    [patchData]
+  );
+
+  const setVoucherContent = useCallback(
+    (next: AdminVoucherContent) => {
+      patchData((prev) => ({ ...prev, voucherContent: next }));
+    },
+    [patchData]
+  );
+
+  const setWorkshopBookingCopy = useCallback(
+    (next: AdminWorkshopBookingCopy) => {
+      patchData((prev) => ({ ...prev, workshopBookingCopy: next }));
+    },
+    [patchData]
+  );
+
   const value = useMemo(
     () => ({
       data,
@@ -498,6 +538,14 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       updateDelivery,
       aboutBlocks: data.aboutBlocks,
       setAboutBlocks,
+      palinaStory: data.palinaStory,
+      setPalinaStory,
+      workshopFormatCopy: data.workshopFormatCopy,
+      setWorkshopFormatCopy,
+      voucherContent: data.voucherContent,
+      setVoucherContent,
+      workshopBookingCopy: data.workshopBookingCopy,
+      setWorkshopBookingCopy,
       resetAll,
     }),
     [
@@ -529,6 +577,10 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       updateContacts,
       updateDelivery,
       setAboutBlocks,
+      setPalinaStory,
+      setWorkshopFormatCopy,
+      setVoucherContent,
+      setWorkshopBookingCopy,
       resetAll,
     ]
   );

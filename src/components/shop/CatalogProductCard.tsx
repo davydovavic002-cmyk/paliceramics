@@ -118,7 +118,7 @@ export function CatalogProductCard({
           />
         </div>
 
-        <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-body text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
+        <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-product-medium text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
           <p className="lookbook-ink">
             <span className="shop-catalog-muted">no</span>{" "}
             <span className="tabular-nums">{product.sku}</span>

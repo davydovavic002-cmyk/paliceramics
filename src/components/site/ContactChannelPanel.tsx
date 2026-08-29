@@ -38,14 +38,14 @@ export function ContactChannelPanel({
   const copy =
     language === "pl"
       ? {
-          title: "Napisz do Paliny",
+          title: "Napisz do nas",
           hint: emailOnly
             ? "Wyślij wiadomość mailem — zgłoszenie jest już zapisane w panelu studia."
             : "Zgłoszenie zapisane. Wybierz sposób kontaktu i dołącz voucher, jeśli pobrano PNG.",
           messenger: "Messenger",
         }
       : {
-          title: "Message Palina",
+          title: "Contact us",
           hint: emailOnly
             ? "Send an email — your request is already saved in the studio panel."
             : "Request saved. Choose how to reach out and attach the voucher PNG if you downloaded it.",

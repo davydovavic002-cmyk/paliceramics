@@ -2,11 +2,10 @@ import type { Language } from "@/types";
 import { bookingContact } from "./workshopsContent";
 
 export function buildBookingMessage(details: string, language: Language) {
-  const name = bookingContact.hostName;
   if (language === "pl") {
-    return `Cześć ${name}! Chciałbym/chciałabym zarezerwować ${details}. Proszę o potwierdzenie terminu. Dziękuję!`;
+    return `Dzień dobry! Chciałbym/chciałabym zarezerwować ${details}. Proszę o potwierdzenie terminu. Dziękuję!`;
   }
-  return `Hi ${name}! I'd like to book ${details}. Please confirm availability. Thank you!`;
+  return `Hello! I'd like to book ${details}. Please confirm availability. Thank you!`;
 }
 
 export function whatsappUrl(message: string) {
@@ -89,9 +88,9 @@ export function buildProductPurchaseMessage(
     : "";
 
   if (language === "pl") {
-    return `Cześć ${bookingContact.hostName}! Chciałbym/chciałabym kupić „${productTitle}” (${sku}${pricePart}). Dziękuję!${linkPart}`;
+    return `Dzień dobry! Chciałbym/chciałabym kupić „${productTitle}” (${sku}${pricePart}). Dziękuję!${linkPart}`;
   }
-  return `Hi ${bookingContact.hostName}! I'd like to purchase "${productTitle}" (${sku}${pricePart}). Thank you!${linkPart}`;
+  return `Hello! I'd like to purchase "${productTitle}" (${sku}${pricePart}). Thank you!${linkPart}`;
 }
 
 export function productMailtoUrl(subject: string, body: string) {

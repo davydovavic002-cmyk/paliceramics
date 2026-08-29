@@ -22,6 +22,20 @@ import {
 } from "@/lib/catalogConfig";
 import { productCollectionById, productPieceTypeById, LEGACY_CATEGORY_IDS } from "@/lib/lookbookCollections";
 import { syncWorkshopsWithInbox, createWorkshopSlot as buildWorkshopSlot } from "@/lib/workshopCalendar";
+import {
+  normalizePalinaStory,
+  normalizeVoucherContent,
+  normalizeWorkshopBookingCopy,
+  normalizeWorkshopFormatCopy,
+  seedPalinaStory,
+  seedVoucherContent,
+  seedWorkshopBookingCopy,
+  seedWorkshopFormatCopy,
+  type AdminPalinaStory,
+  type AdminVoucherContent,
+  type AdminWorkshopBookingCopy,
+  type AdminWorkshopFormatCopy,
+} from "@/lib/adminContentSeeds";
 
 export type Bilingual = { en: string; pl: string };
 
@@ -236,6 +250,13 @@ export type AdminAboutBlock = {
   body: Bilingual;
 };
 
+export type {
+  AdminPalinaStory,
+  AdminVoucherContent,
+  AdminWorkshopBookingCopy,
+  AdminWorkshopFormatCopy,
+} from "@/lib/adminContentSeeds";
+
 export type AdminPersistedData = {
   /** @deprecated migrated to collections */
   categories?: AdminCategoryItem[];
@@ -251,6 +272,10 @@ export type AdminPersistedData = {
   contacts: AdminContacts;
   delivery: AdminDelivery;
   aboutBlocks: AdminAboutBlock[];
+  palinaStory: AdminPalinaStory;
+  workshopFormatCopy: AdminWorkshopFormatCopy[];
+  voucherContent: AdminVoucherContent;
+  workshopBookingCopy: AdminWorkshopBookingCopy;
 };
 
 export const ADMIN_DEMO_PASSWORD = "pali";
@@ -381,8 +406,8 @@ export function seedFaq(): AdminFaqItem[] {
         pl: "Wysyłka i odbiór zamówień",
       },
       answer: {
-        en: "Free local pickup is available in Warsaw after arranging a time via email, Instagram, or Facebook.\n\nI also offer shipping to InPost parcel lockers — the delivery cost is covered by the buyer.\n\nInternational shipping is available as well. If you would like to place an international order, please contact me via email — we will arrange the most suitable shipping method and calculate the delivery cost individually.",
-        pl: "Dostępny jest darmowy odbiór osobisty w Warszawie po wcześniejszym kontakcie mailowym, przez Instagram lub Facebook.\n\nMożliwa jest również wysyłka do paczkomatu InPost — koszt dostawy pokrywa kupujący.\n\nWysyłka za granicę jest również możliwa. Jeśli chcesz złożyć zamówienie zagraniczne, skontaktuj się ze mną mailowo — wspólnie ustalimy najdogodniejszy sposób wysyłki oraz indywidualnie wyliczymy koszt dostawy.",
+        en: "Free local pickup is available in Warsaw after arranging a time via email, Instagram, or Facebook.\n\nShipping to InPost parcel lockers across Poland — flat rate 18.45 PLN. Free shipping on orders from 500 PLN.\n\nInternational shipping is quoted individually. If your delivery country is not Poland, we'll reply by email with available options — automatic checkout is not available abroad.",
+        pl: "Dostępny jest darmowy odbiór osobisty w Warszawie po wcześniejszym kontakcie mailowym, przez Instagram lub Facebook.\n\nWysyłka do paczkomatów InPost w całej Polsce — stała stawka 18,45 zł. Darmowa dostawa od 500 zł.\n\nWysyłka za granicę wyceniamy indywidualnie. Jeśli kraj dostawy to nie Polska, odpiszemy mailowo z dostępnymi opcjami — automatyczny checkout za granicą nie jest dostępny.",
       },
     },
     {
@@ -507,41 +532,55 @@ export function seedDelivery(): AdminDelivery {
       pl: "Odbiór w pracowni",
     },
     pickupBody: {
-      en: "Collect your fired pieces at the Warsaw atelier — we'll agree a time slot after firing. Free of charge.",
-      pl: "Odbierz wypalone prace w warszawskiej pracowni — ustalimy termin po wypale. Bez opłat.",
+      en: "Collect your fired pieces at the Warsaw atelier — we'll agree a time slot after firing. Free of charge. After ordering, we'll email you about pickup or delivery.",
+      pl: "Odbierz wypalone prace w warszawskiej pracowni — ustalimy termin po wypale. Bez opłat. Po złożeniu zamówienia napiszemy mailowo w sprawie odbioru lub dostawy.",
     },
     shippingTitle: {
       en: "Shipping across Poland",
       pl: "Wysyłka w Polsce",
     },
     shippingBody: {
-      en: "Careful packaging for stoneware — InPost parcel lockers across Poland. Shipping cost paid by the buyer.",
-      pl: "Bezpieczne pakowanie kamioniny — paczkomaty InPost w całej Polsce. Koszt dostawy pokrywa kupujący.",
+      en: "InPost parcel lockers across Poland — flat rate 18.45 PLN. Free shipping on orders from 500 PLN. Careful stoneware packaging.",
+      pl: "Paczkomaty InPost w całej Polsce — stała stawka 18,45 zł. Darmowa dostawa od 500 zł. Bezpieczne pakowanie kamioniny.",
     },
     internationalTitle: {
       en: "International shipping",
       pl: "Wysyłka za granicę",
     },
     internationalBody: {
-      en: "International orders are welcome. Contact us by email — we will agree on the best shipping method and calculate delivery individually.",
-      pl: "Zamówienia zagraniczne są możliwe. Napisz mailowo — ustalimy sposób wysyłki i indywidualnie wyliczymy koszt dostawy.",
+      en: "International delivery is quoted individually — costs vary by country and method. Enter your address at checkout and we'll reply by email with available options. Automatic payment is not available for non-Poland addresses.",
+      pl: "Wysyłka za granicę wyceniamy indywidualnie — koszt zależy od kraju i sposobu wysyłki. Podaj adres w checkout, a odpiszemy mailowo z dostępnymi opcjami. Automatyczna płatność nie jest dostępna dla adresów poza Polską.",
     },
   };
+}
+
+function isLegacyShippingFaq(faq: AdminFaqItem[]): boolean {
+  const item = faq.find((entry) => entry.id === "faq-1");
+  const answer = item?.answer?.pl ?? "";
+  return !answer.includes("18,45") && !answer.includes("18.45");
+}
+
+function isLegacyDeliveryBody(delivery: AdminDelivery): boolean {
+  const shippingPl = delivery.shippingBody?.pl ?? "";
+  const pickupPl = delivery.pickupBody?.pl ?? "";
+  const hasInpostRate = shippingPl.includes("18,45") || shippingPl.includes("18.45");
+  const hasPickupFlow = pickupPl.includes("mailowo") || pickupPl.includes("email");
+  return !hasInpostRate || !hasPickupFlow;
 }
 
 function normalizeDelivery(delivery: AdminDelivery | undefined): AdminDelivery {
   const seed = seedDelivery();
   if (!delivery?.pickupTitle?.en) return seed;
-  return {
-    ...seed,
-    ...delivery,
-    internationalTitle: delivery.internationalTitle?.en
-      ? delivery.internationalTitle
-      : seed.internationalTitle,
-    internationalBody: delivery.internationalBody?.en
-      ? delivery.internationalBody
-      : seed.internationalBody,
-  };
+  if (isLegacyDeliveryBody(delivery)) {
+    return {
+      ...delivery,
+      pickupBody: seed.pickupBody,
+      shippingBody: seed.shippingBody,
+      internationalTitle: seed.internationalTitle,
+      internationalBody: seed.internationalBody,
+    };
+  }
+  return delivery;
 }
 
 export function seedAboutBlocks(): AdminAboutBlock[] {
@@ -598,6 +637,10 @@ export function seedAdminData(): AdminPersistedData {
     contacts: seedContacts(),
     delivery: seedDelivery(),
     aboutBlocks: seedAboutBlocks(),
+    palinaStory: seedPalinaStory(),
+    workshopFormatCopy: seedWorkshopFormatCopy(),
+    voucherContent: seedVoucherContent(),
+    workshopBookingCopy: seedWorkshopBookingCopy(),
   };
 }
 
@@ -620,7 +663,7 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
 
   const faq =
     Array.isArray(data.faq) && data.faq.length > 0
-      ? isLegacyFaq(data.faq)
+      ? isLegacyFaq(data.faq) || isLegacyShippingFaq(data.faq)
         ? seedFaq()
         : data.faq
       : seedFaq();
@@ -716,6 +759,10 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
     delivery,
     aboutBlocks,
     products,
+    palinaStory: normalizePalinaStory(data.palinaStory),
+    workshopFormatCopy: normalizeWorkshopFormatCopy(data.workshopFormatCopy),
+    voucherContent: normalizeVoucherContent(data.voucherContent),
+    workshopBookingCopy: normalizeWorkshopBookingCopy(data.workshopBookingCopy),
   };
 }
 

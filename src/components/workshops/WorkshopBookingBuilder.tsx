@@ -6,19 +6,35 @@ import { useLanguage } from "@/context/LanguageContext";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import { pickBilingual } from "@/lib/adminTypes";
 import { useWorkshopData } from "@/hooks/useWorkshopData";
-import { getWorkshopMkFormat, type WorkshopMkFormatId } from "@/lib/workshopMkCopy";
+import { useAdminContent } from "@/hooks/useAdminContent";
+import {
+  getResolvedWorkshopMkFormat,
+  resolveWorkshopMkFormats,
+  workshopBookingCopyForLanguage,
+} from "@/lib/contentResolve";
 import { WorkshopFormatDetailsPanel } from "./WorkshopFormatDetailsPanel";
 import { ConsentField } from "@/components/site/ConsentField";
 
 export function WorkshopBookingBuilder() {
   const { language } = useLanguage();
   const { workshopTypes, slots } = useWorkshopData();
+  const { workshopFormatCopy, workshopBookingCopy } = useAdminContent();
+  const resolvedFormats = useMemo(
+    () => resolveWorkshopMkFormats(workshopFormatCopy, workshopTypes),
+    [workshopFormatCopy, workshopTypes]
+  );
+  const bookingAdminCopy = useMemo(
+    () => workshopBookingCopyForLanguage(workshopBookingCopy, language),
+    [workshopBookingCopy, language]
+  );
   const [step, setStep] = useState(1);
   const [typeId, setTypeId] = useState<string | null>(null);
   const [slotId, setSlotId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [hasVoucher, setHasVoucher] = useState(false);
+  const [voucherNumber, setVoucherNumber] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -47,7 +63,7 @@ export function WorkshopBookingBuilder() {
   const selectedType = workshopTypes.find((t) => t.id === typeId);
   const selectedMkFormat =
     typeId === "one-time" || typeId === "three-session"
-      ? getWorkshopMkFormat(typeId as WorkshopMkFormatId)
+      ? getResolvedWorkshopMkFormat(typeId, workshopFormatCopy, workshopTypes)
       : undefined;
   const selectedSlot = availableSlots.find((s) => s.id === slotId);
 
@@ -68,7 +84,11 @@ export function WorkshopBookingBuilder() {
           consent:
             "Wyrażam zgodę na kontakt w sprawie rezerwacji (RODO — placeholder).",
           send: "Wyślij zapytanie",
-          sent: "Dziękujemy! Zapytanie zostało wysłane. Palina skontaktuje się z Tobą mailowo w ciągu 1–2 dni roboczych.",
+          sent: bookingAdminCopy.sent,
+          hasVoucher: bookingAdminCopy.hasVoucher,
+          voucherNumber: bookingAdminCopy.voucherNumber,
+          voucherBring: bookingAdminCopy.voucherBring,
+          errVoucherNumber: bookingAdminCopy.errVoucherNumber,
           errSlotTaken: "Ten termin właśnie się zapełnił — wybierz inny.",
           errType: "Wybierz warsztat.",
           errSlot: "Wybierz termin.",
@@ -92,7 +112,11 @@ export function WorkshopBookingBuilder() {
           emailLabel: "Email",
           consent: "I agree to be contacted about this booking (GDPR placeholder).",
           send: "Send request",
-          sent: "Thank you! Your request is in. Palina will contact you by email within 1–2 business days.",
+          sent: bookingAdminCopy.sent,
+          hasVoucher: bookingAdminCopy.hasVoucher,
+          voucherNumber: bookingAdminCopy.voucherNumber,
+          voucherBring: bookingAdminCopy.voucherBring,
+          errVoucherNumber: bookingAdminCopy.errVoucherNumber,
           errSlotTaken: "This slot just filled up — please pick another one.",
           errType: "Choose a workshop type.",
           errSlot: "Choose a time slot.",
@@ -122,6 +146,10 @@ export function WorkshopBookingBuilder() {
       setError(copy.errConsent);
       return;
     }
+    if (hasVoucher && !voucherNumber.trim()) {
+      setError(copy.errVoucherNumber);
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -133,6 +161,8 @@ export function WorkshopBookingBuilder() {
         slot: `${selectedSlot.day}, ${selectedSlot.date} · ${selectedSlot.time}`,
         slotId: selectedSlot.id,
         pricePln: String(selectedType.pricePln),
+        hasVoucher: hasVoucher ? "yes" : "no",
+        voucherNumber: hasVoucher ? voucherNumber.trim() : "",
         lang: language,
       });
 
@@ -199,10 +229,7 @@ export function WorkshopBookingBuilder() {
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {workshopTypes.map((item) => {
-                const mkFormat =
-                  item.id === "one-time" || item.id === "three-session"
-                    ? getWorkshopMkFormat(item.id as WorkshopMkFormatId)
-                    : undefined;
+                const mkFormat = resolvedFormats.find((format) => format.id === item.id);
 
                 return (
                   <button
@@ -381,6 +408,29 @@ export function WorkshopBookingBuilder() {
                   placeholder={copy.emailLabel}
                   className="w-full rounded-[2px] border border-theme/25 bg-white px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
                 />
+                <label className="flex cursor-pointer items-start gap-3 rounded-[2px] border border-theme/15 bg-white/80 px-3 py-3">
+                  <input
+                    type="checkbox"
+                    checked={hasVoucher}
+                    onChange={(e) => {
+                      setHasVoucher(e.target.checked);
+                      if (!e.target.checked) setVoucherNumber("");
+                    }}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--theme-accent)]"
+                  />
+                  <span className="font-body text-sm leading-snug text-theme">{copy.hasVoucher}</span>
+                </label>
+                {hasVoucher ? (
+                  <div className="space-y-2">
+                    <input
+                      value={voucherNumber}
+                      onChange={(e) => setVoucherNumber(e.target.value)}
+                      placeholder={copy.voucherNumber}
+                      className="w-full rounded-[2px] border border-theme/25 bg-white px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
+                    />
+                    <p className="font-body text-xs leading-relaxed text-theme-muted">{copy.voucherBring}</p>
+                  </div>
+                ) : null}
                 <ConsentField checked={consent} onChange={setConsent} purpose="booking" />
                 {error ? <p className="text-xs text-red-400/90">{error}</p> : null}
                 <div className="flex gap-3">

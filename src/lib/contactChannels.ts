@@ -117,16 +117,15 @@ export function buildVoucherMessage(
   },
   language: Language
 ): string {
-  const name = bookingContact.hostName;
   const codeLine = details.voucherCode
     ? language === "pl"
       ? ` Kod: ${details.voucherCode}.`
       : ` Code: ${details.voucherCode}.`
     : "";
   if (language === "pl") {
-    return `Cześć ${name}! Chciałbym/chciałabym zamówić voucher: ${details.voucherLabel} (${details.nominal}) dla ${details.recipient}.${codeLine} Załączam kartę voucher w wiadomości. Dziękuję!`;
+    return `Dzień dobry! Chciałbym/chciałabym zamówić voucher: ${details.voucherLabel} (${details.nominal}) dla ${details.recipient}.${codeLine} Załączam kartę voucher w wiadomości. Dziękuję!`;
   }
-  return `Hi ${name}! I'd like to order a gift voucher: ${details.voucherLabel} (${details.nominal}) for ${details.recipient}.${codeLine} I'm attaching the voucher card. Thank you!`;
+  return `Hello! I'd like to order a gift voucher: ${details.voucherLabel} (${details.nominal}) for ${details.recipient}.${codeLine} I'm attaching the voucher card. Thank you!`;
 }
 
 export function buildWaitlistMessage(
@@ -135,11 +134,10 @@ export function buildWaitlistMessage(
   email: string,
   language: Language
 ): string {
-  const name = bookingContact.hostName;
   if (language === "pl") {
-    return `Cześć ${name}! Proszę o powiadomienie, gdy ${productTitle} (${sku}) wróci do sklepu. Mój email: ${email}. Dziękuję!`;
+    return `Dzień dobry! Proszę o powiadomienie, gdy ${productTitle} (${sku}) wróci do sklepu. Mój email: ${email}. Dziękuję!`;
   }
-  return `Hi ${name}! Please notify me when ${productTitle} (${sku}) is back in stock. My email: ${email}. Thank you!`;
+  return `Hello! Please notify me when ${productTitle} (${sku}) is back in stock. My email: ${email}. Thank you!`;
 }
 
 export async function openContactChannel(

@@ -13,10 +13,11 @@ const config: Config = {
         gosu: { DEFAULT: "#101A26", stroke: "#2A3F5C" },
         indigo: { accent: "#1e3a5f", light: "#2a5080" },
       },
-      fontFamily: {
+        fontFamily: {
         display: ["var(--font-display)", '"Zen Old Mincho"', "Georgia", "serif"],
         body: ["var(--font-body)", "Georgia", "serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        product: ["var(--font-product)", "system-ui", "sans-serif"],
       },
       animation: {
         float: "float 9s ease-in-out infinite",

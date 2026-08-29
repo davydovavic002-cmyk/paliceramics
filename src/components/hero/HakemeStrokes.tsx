@@ -9,6 +9,8 @@ const STROKES = [
   "/images/strokes/stroke-3.png",
 ] as const;
 
+const STROKE_INK = "#010A8B";
+
 type Placement = {
   stroke: 0 | 1 | 2 | 3;
   top?: string;
@@ -27,7 +29,7 @@ type Placement = {
   driftDelay: number;
 };
 
-/** Chaotic hakeme — alternating opacity so layers don't clash */
+/** Chaotic hakeme — PNG assets are already brand blue; no CSS filter tint. */
 const placements: Placement[] = [
   { stroke: 0, top: "5%", left: "2%", width: 318, rotate: -41.5, scaleX: 1.12, scaleY: 0.88, skewX: -4, opacity: 0.4, blur: 0.35, driftSec: 19, driftDelay: 0 },
   { stroke: 2, top: "11%", right: "8%", width: 274, rotate: 47.3, scaleX: 0.94, scaleY: 1.08, skewX: 6, flipX: true, opacity: 0.22, blur: 0.5, driftSec: 24, driftDelay: 1.2 },
@@ -55,7 +57,7 @@ function StrokeImage({ stroke, width }: { stroke: number; width: number }) {
       height={256}
       sizes="(max-width: 768px) 280px, 440px"
       draggable={false}
-      className="h-auto max-w-none select-none hero-stroke-tint"
+      className="h-auto max-w-none select-none"
       style={{ width, height: "auto" }}
     />
   );
@@ -64,7 +66,8 @@ function StrokeImage({ stroke, width }: { stroke: number; width: number }) {
 export function HakemeStrokes() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden max-md:opacity-75 [&>div:nth-child(n+6)]:max-md:hidden"
+      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden [&>div:nth-child(n+6)]:max-md:hidden"
+      style={{ color: STROKE_INK }}
       aria-hidden
     >
       {placements.map((s, i) => (

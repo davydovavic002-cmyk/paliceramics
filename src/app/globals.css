@@ -1,3 +1,4 @@
+@import "@fontsource/work-sans/500.css";
 @import "@fontsource/noto-serif-jp/400.css";
 @import "@fontsource/noto-serif-jp/500.css";
 @import "@fontsource/shippori-mincho/400.css";
@@ -10,6 +11,7 @@
   --font-body: "Noto Serif JP", Georgia, serif;
   --font-display: "Shippori Mincho", Georgia, serif;
   --font-sans: system-ui, sans-serif;
+  --font-product: "Work Sans", system-ui, sans-serif;
   --ink: #1a1a1c;
   --porcelain: #f3f4f6;
   --porcelain-muted: #e5e5e5;
@@ -43,7 +45,7 @@
   --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #3a3732);
   --lookbook-ink: #ede8df;
   --lookbook-muted: #a89f94;
-  --lookbook-line: color-mix(in srgb, var(--lookbook-ink) 26%, transparent);
+  --lookbook-line: rgba(237, 232, 223, 0.22);
   /* Editorial footer band — light strip at page bottom */
   --footer-newsletter-bg: #010a8b;
   --footer-bg: #12162b;
@@ -56,7 +58,7 @@
   --delivery-faq-surface: #faf7f0;
   --delivery-faq-ink: var(--brand-blue);
   --delivery-faq-muted: color-mix(in srgb, var(--brand-blue) 52%, #4a4a55);
-  --delivery-faq-line: color-mix(in srgb, var(--brand-blue) 14%, transparent);
+  --delivery-faq-line: rgba(1, 10, 139, 0.14);
 }
 
 html {
@@ -293,7 +295,7 @@ body {
   --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 55%, #ffffff);
   --lookbook-ink: #010A8B;
   --lookbook-muted: #4a4a55;
-  --lookbook-line: color-mix(in srgb, var(--lookbook-ink) 26%, transparent);
+  --lookbook-line: rgba(1, 10, 139, 0.2);
   --footer-newsletter-bg: #010a8b;
   --footer-bg: #12162b;
   --footer-ink: #ede8df;
@@ -306,7 +308,7 @@ body {
   --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #3a3732);
   --lookbook-ink: #ede8df;
   --lookbook-muted: #a89f94;
-  --lookbook-line: color-mix(in srgb, var(--lookbook-ink) 26%, transparent);
+  --lookbook-line: rgba(237, 232, 223, 0.22);
   --footer-newsletter-bg: #010a8b;
   --footer-bg: #12162b;
   --footer-ink: #ede8df;
@@ -316,8 +318,13 @@ body {
 
 @layer utilities {
   .hero-stroke-tint {
-    filter: brightness(0) saturate(100%) invert(8%) sepia(99%) saturate(6400%)
-      hue-rotate(225deg) brightness(0.52) contrast(1.1);
+    filter: brightness(0) saturate(100%) invert(7%) sepia(98%) saturate(7452%)
+      hue-rotate(221deg) brightness(0.54) contrast(1.05);
+  }
+
+  .font-product-medium {
+    font-family: var(--font-product);
+    font-weight: 500;
   }
 }
 
@@ -851,6 +858,13 @@ body {
 
   .lookbook-grid {
     border: 1px solid var(--lookbook-line);
+  }
+
+  .about-editorial-band {
+    --lookbook-bg: #faf7f0;
+    --lookbook-ink: #010a8b;
+    --lookbook-line: rgba(1, 10, 139, 0.2);
+    background-color: var(--lookbook-bg);
   }
 
   .lookbook-split-r {

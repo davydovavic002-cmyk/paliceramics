@@ -11,7 +11,7 @@ export const aboutTabs: { id: AboutTabId; label: string; kanji: string }[] = [
 ];
 
 export const aboutHeader = {
-  eyebrow: { en: "About & Philosophy", pl: "O nas i filozofia" },
+  eyebrow: { en: "About me & philosophy", pl: "O mnie i filozofia" },
   title: { en: "The quiet path to clay", pl: "Cicha droga do gliny" },
   subtitle: {
     en: "Earth, patience, and the quiet discipline of the wheel.",

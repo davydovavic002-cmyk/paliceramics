@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAdminContent } from "@/hooks/useAdminContent";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import {
+  resolveCertificateTypes,
+  voucherSectionCopyForLanguage,
+} from "@/lib/contentResolve";
+import {
   certificateNominalNote,
-  certificateTypeMeta,
   formatNominalPln,
   getCertificatePrice,
   type CertificateDraft,
@@ -24,6 +28,15 @@ const btnPrimary =
 
 export function CertificateSection() {
   const { language } = useLanguage();
+  const { voucherContent } = useAdminContent();
+  const resolvedTypes = useMemo(
+    () => resolveCertificateTypes(voucherContent),
+    [voucherContent]
+  );
+  const sectionCopy = useMemo(
+    () => voucherSectionCopyForLanguage(voucherContent.section, language),
+    [voucherContent.section, language]
+  );
   const [draft, setDraft] = useState<CertificateDraft>({
     type: "workshop-once",
     recipientName: "",
@@ -35,57 +48,17 @@ export function CertificateSection() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const nominalNote = certificateNominalNote(draft, language);
-  const nominalPrice = getCertificatePrice(draft);
+  const typePricing = resolvedTypes[draft.type];
+  const nominalNote = certificateNominalNote(draft, language, typePricing);
+  const nominalPrice = getCertificatePrice(draft, typePricing);
 
-  const copy =
-    language === "pl"
-      ? {
-          eyebrow: "Voucher",
-          title: "Podaruj warsztat ceramiczny",
-          subtitle:
-            "Wybierz format vouchera i wpisz dane — podgląd aktualizuje się na żywo. Po wysłaniu Palina skontaktuje się mailowo.",
-          recipient: "Imię odbiorcy",
-          buyerEmail: "Twój email",
-          typeLabel: "Rodzaj vouchera",
-          participants: "Liczba osób",
-          participantsHint:
-            "Przy 2 osobach na voucherze pojawi się imię i „2 osoby”.",
-          onePerson: "1 osoba",
-          twoPeople: "2 osoby",
-          consent:
-            "Wyrażam zgodę na kontakt w sprawie vouchera (RODO — placeholder).",
-          submit: "Wyślij zapytanie o voucher",
-          flowNote:
-            "To zapytanie, nie automatyczny zakup. Palina odpisze mailowo z dalszymi krokami i voucherem.",
-          success:
-            "Dziękujemy! Zapytanie zostało wysłane. Palina skontaktuje się z Tobą mailowo w ciągu 1–2 dni roboczych.",
-          errRecipient: "Podaj imię odbiorcy.",
-          errEmail: "Podaj poprawny email.",
-          errConsent: "Zaznacz zgodę, aby kontynuować.",
-        }
-      : {
-          eyebrow: "Gift card",
-          title: "Give a pottery workshop",
-          subtitle:
-            "Pick a voucher type and enter details — the preview updates live. After submitting, Palina will contact you by email.",
-          recipient: "Recipient name",
-          buyerEmail: "Your email",
-          typeLabel: "Voucher type",
-          participants: "Number of people",
-          participantsHint: "With 2 people, the card shows the name plus “2 people”.",
-          onePerson: "1 person",
-          twoPeople: "2 people",
-          consent: "I agree to be contacted about this gift card (GDPR placeholder).",
-          submit: "Send voucher request",
-          flowNote:
-            "This is a request, not an instant purchase. Palina will reply by email with next steps and your voucher.",
-          success:
-            "Thank you! Your request is in. Palina will contact you by email within 1–2 business days.",
-          errRecipient: "Please enter the recipient name.",
-          errEmail: "Please enter a valid email.",
-          errConsent: "Please accept the consent to continue.",
-        };
+  const copy = {
+    ...sectionCopy,
+    consent:
+      language === "pl"
+        ? "Wyrażam zgodę na kontakt w sprawie vouchera (RODO — placeholder)."
+        : "I agree to be contacted about this gift card (GDPR placeholder).",
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +66,7 @@ export function CertificateSection() {
 
     const recipient = draft.recipientName.trim();
     const email = draft.buyerEmail.trim();
-    const meta = certificateTypeMeta[draft.type];
+    const meta = resolvedTypes[draft.type];
 
     if (recipient.length < 2) {
       setError(copy.errRecipient);
@@ -113,7 +86,7 @@ export function CertificateSection() {
       const result = await submitInboxMessage("certificate", {
         type: draft.type,
         voucherLabel: meta.label[language],
-        nominal: `${getCertificatePrice(draft)} PLN`,
+        nominal: `${getCertificatePrice(draft, typePricing)} PLN`,
         recipient,
         buyerEmail: email,
         participantCount: String(draft.participantCount),
@@ -209,63 +182,55 @@ export function CertificateSection() {
                   <CertificateTypePicker
                     value={draft.type}
                     participantCount={draft.participantCount}
-                    onChange={(type) =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        type,
-                        participantCount: type === "workshop-once" ? prev.participantCount : 1,
-                      }))
-                    }
+                    onChange={(type) => setDraft((prev) => ({ ...prev, type }))}
                   />
                 </div>
 
-                {draft.type === "workshop-once" ? (
-                  <div>
-                    <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
-                      {copy.participants}
-                    </span>
-                    <div className="flex gap-2">
-                      {([1, 2] as const).map((count) => (
-                        <button
-                          key={count}
-                          type="button"
-                          onClick={() => setDraft((prev) => ({ ...prev, participantCount: count }))}
-                          className={[
-                            "flex-1 rounded-full border px-3 py-2 font-body text-[10px] uppercase tracking-[0.14em] transition-colors sm:text-[11px]",
-                            draft.participantCount === count
-                              ? "border-[color-mix(in_srgb,var(--theme-accent)_55%,transparent)] bg-[var(--theme-btn-primary)] text-theme-btn"
-                              : "border-theme/20 bg-theme-elevated/40 text-theme-muted hover:border-theme/35 hover:text-theme",
-                          ].join(" ")}
-                        >
-                          {count === 1 ? copy.onePerson : copy.twoPeople}
-                        </button>
-                      ))}
-                    </div>
-                    <p className="mt-1.5 font-body text-[11px] leading-snug text-theme-muted lg:hidden">
-                      {copy.participantsHint}
-                    </p>
-                    <p className="mt-1.5 font-body text-sm text-theme">
-                      {language === "pl" ? "Nominał:" : "Nominal:"}{" "}
-                      <AnimatePresence mode="wait" initial={false}>
-                        <motion.span
-                          key={`${draft.participantCount}-${nominalPrice}`}
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -4 }}
-                          transition={{ duration: 0.18 }}
-                          className="inline-block font-medium"
-                        >
-                          {formatNominalPln(nominalPrice, language)}
-                        </motion.span>
-                      </AnimatePresence>
-                      {nominalNote ? (
-                        <span className="ml-1.5 font-body text-[11px] text-theme-muted">
-                          ({nominalNote})
-                        </span>
-                      ) : null}
-                    </p>
+                <div>
+                  <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                    {copy.participants}
+                  </span>
+                  <div className="flex gap-2">
+                    {([1, 2] as const).map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setDraft((prev) => ({ ...prev, participantCount: count }))}
+                        className={[
+                          "flex-1 rounded-full border px-3 py-2 font-body text-[10px] uppercase tracking-[0.14em] transition-colors sm:text-[11px]",
+                          draft.participantCount === count
+                            ? "border-[color-mix(in_srgb,var(--theme-accent)_55%,transparent)] bg-[var(--theme-btn-primary)] text-theme-btn"
+                            : "border-theme/20 bg-theme-elevated/40 text-theme-muted hover:border-theme/35 hover:text-theme",
+                        ].join(" ")}
+                      >
+                        {count === 1 ? copy.onePerson : copy.twoPeople}
+                      </button>
+                    ))}
                   </div>
-                ) : null}
+                  <p className="mt-1.5 font-body text-[11px] leading-snug text-theme-muted lg:hidden">
+                    {copy.participantsHint}
+                  </p>
+                  <p className="mt-1.5 font-body text-sm text-theme">
+                    {language === "pl" ? "Nominał:" : "Nominal:"}{" "}
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span
+                        key={`${draft.participantCount}-${nominalPrice}`}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.18 }}
+                        className="inline-block font-medium"
+                      >
+                        {formatNominalPln(nominalPrice, language)}
+                      </motion.span>
+                    </AnimatePresence>
+                    {nominalNote ? (
+                      <span className="ml-1.5 font-body text-[11px] text-theme-muted">
+                        ({nominalNote})
+                      </span>
+                    ) : null}
+                  </p>
+                </div>
 
                 <label className="block">
                   <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">

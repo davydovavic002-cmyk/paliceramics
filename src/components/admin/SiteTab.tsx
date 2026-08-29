@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { BilingualField } from "./BilingualField";
+import { PalinaStoryAdminSection } from "./PalinaStoryAdminSection";
+import { VoucherContentAdminSection } from "./VoucherContentAdminSection";
 import type {
   AdminAboutBlock,
   AdminFaqItem,
@@ -34,6 +36,10 @@ export function SiteTab() {
     updateDelivery,
     aboutBlocks,
     setAboutBlocks,
+    palinaStory,
+    setPalinaStory,
+    voucherContent,
+    setVoucherContent,
   } = useAdminData();
 
   const addFaq = () => {
@@ -126,6 +132,20 @@ export function SiteTab() {
           />
         </div>
       </section>
+
+      <GroupHeading
+        title="About story"
+        detail="Editorial grid on #about — texts and photos (PL + EN)."
+      />
+
+      <PalinaStoryAdminSection story={palinaStory} onChange={setPalinaStory} />
+
+      <GroupHeading
+        title="Gift vouchers"
+        detail="Certificate section (#certificates) — form copy and prices. PDF layout stays fixed."
+      />
+
+      <VoucherContentAdminSection content={voucherContent} onChange={setVoucherContent} />
 
       <GroupHeading
         title="Page content"

@@ -4,9 +4,20 @@ import { ToggleLeft, ToggleRight } from "lucide-react";
 import { useAdminData } from "@/context/AdminDataContext";
 import type { AdminWorkshopType } from "@/lib/adminTypes";
 import { WorkshopCalendarAdmin } from "./WorkshopCalendarAdmin";
+import {
+  WorkshopBookingCopyAdminSection,
+  WorkshopFormatsCopyAdminSection,
+} from "./WorkshopContentAdminSection";
 
 export function WorkshopsTab() {
-  const { workshopTypes, setWorkshopTypes } = useAdminData();
+  const {
+    workshopTypes,
+    setWorkshopTypes,
+    workshopFormatCopy,
+    setWorkshopFormatCopy,
+    workshopBookingCopy,
+    setWorkshopBookingCopy,
+  } = useAdminData();
 
   const updateType = (id: string, patch: Partial<AdminWorkshopType>) => {
     setWorkshopTypes((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
@@ -100,6 +111,13 @@ export function WorkshopsTab() {
           ))}
         </ul>
       </section>
+
+      <WorkshopFormatsCopyAdminSection
+        formats={workshopFormatCopy}
+        onChange={setWorkshopFormatCopy}
+      />
+
+      <WorkshopBookingCopyAdminSection copy={workshopBookingCopy} onChange={setWorkshopBookingCopy} />
 
       <WorkshopCalendarAdmin />
     </div>

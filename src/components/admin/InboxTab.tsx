@@ -41,6 +41,8 @@ const FIELD_LABELS: Record<string, string> = {
   slotId: "Slot",
   slotLabel: "Date & time",
   participantCount: "People",
+  hasVoucher: "Has voucher",
+  voucherNumber: "Voucher number",
   lang: "Language",
   status: "Status",
   message: "Message",
@@ -64,7 +66,13 @@ function messagePreview(message: AdminInboxMessage): string {
     case "certificate":
       return [p.recipient, p.nominal, p.voucherCode].filter(Boolean).join(" · ");
     case "booking":
-      return [p.workshop ?? p.workshopId, p.slotLabel ?? p.slotId].filter(Boolean).join(" · ");
+      return [
+        p.workshop ?? p.workshopId,
+        p.slotLabel ?? p.slotId,
+        p.hasVoucher === "yes" ? `voucher ${p.voucherNumber || "—"}` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
     case "waitlist":
       return p.email ?? p.name ?? "Waitlist signup";
     case "contact":

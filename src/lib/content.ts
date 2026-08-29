@@ -11,7 +11,7 @@ export const siteContent: SiteContent = {
     { id: "collection", href: "#collection", label: { en: "Collection", pl: "Kolekcja" } },
     { id: "shop", href: "/shop", label: { en: "Shop", pl: "Sklep" } },
     { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
-    { id: "about", href: "#about", label: { en: "About", pl: "O nas" } },
+    { id: "about", href: "#about", label: { en: "About me", pl: "O mnie" } },
   ],
   mobileNavExtra: [
     { id: "certificates", href: "#certificates", label: { en: "Gift card", pl: "Voucher" } },
@@ -20,7 +20,7 @@ export const siteContent: SiteContent = {
     { id: "collection", href: "#collection", label: { en: "Collection", pl: "Kolekcja" } },
     { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
     { id: "certificates", href: "#certificates", label: { en: "Gift card", pl: "Voucher" } },
-    { id: "about", href: "#about", label: { en: "About", pl: "O nas" } },
+    { id: "about", href: "#about", label: { en: "About me", pl: "O mnie" } },
     { id: "delivery", href: "#delivery", label: { en: "Delivery", pl: "Dostawa" } },
     { id: "contact", href: "#contact", label: { en: "Contact", pl: "Kontakt" } },
   ],

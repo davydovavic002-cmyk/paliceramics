@@ -83,8 +83,8 @@ export function HeroDark() {
     transition: { duration: 0.4 },
   };
 
-  const sublineLines = hero.heroSublineLines[language];
-  const headlineLines = hero.heroHeadlineLines[language];
+  const sublineLines = hero.heroSublineLines.en;
+  const headlineLines = hero.heroHeadlineLines.en;
 
   return (
     <section className="hero-dark-band relative isolate min-h-[100dvh] overflow-hidden transition-colors duration-700">
@@ -151,12 +151,8 @@ export function HeroDark() {
           className="pointer-events-auto absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 flex gap-2 sm:gap-2.5 lg:left-16"
           animate={fade}
         >
-          <HeroSquareLink href="/shop" label={hero.heroCtaShop[language]} variant="filled" />
-          <HeroSquareLink
-            href="#workshops"
-            label={hero.heroCtaWorkshops[language]}
-            variant="outline"
-          />
+          <HeroSquareLink href="#collection" label={hero.ctaPrimary[language]} variant="filled" />
+          <HeroSquareLink href="#contact" label={hero.ctaSecondary[language]} variant="outline" />
         </motion.div>
       </div>
     </section>

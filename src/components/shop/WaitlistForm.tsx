@@ -4,8 +4,6 @@ import { useState } from "react";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import { useLanguage } from "@/context/LanguageContext";
 import { ConsentField } from "@/components/site/ConsentField";
-import { ContactChannelPanel } from "@/components/site/ContactChannelPanel";
-import { buildWaitlistMessage } from "@/lib/contactChannels";
 
 interface WaitlistFormProps {
   sku: string;
@@ -30,7 +28,7 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
           hint: "Powiadomimy Cię, gdy ten egzemplarz wróci do sklepu.",
           email: "Email",
           submit: "Dołącz do listy",
-          success: "Zapisano zgłoszenie. Wyślij wiadomość mailem do Paliny:",
+          success: "Zapisano zgłoszenie. Odpiszemy w ciągu 24–48 godzin.",
           errEmail: "Podaj poprawny email.",
           errConsent: "Zaznacz zgodę, aby kontynuować.",
         }
@@ -39,7 +37,7 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
           hint: "We will notify you when this piece is back in stock.",
           email: "Email",
           submit: "Join waitlist",
-          success: "Request saved. Send Palina an email:",
+          success: "Request saved. We'll reply within 24–48 hours.",
           errEmail: "Please enter a valid email.",
           errConsent: "Please accept the consent to continue.",
         };
@@ -83,7 +81,6 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
   };
 
   if (sent) {
-    const message = buildWaitlistMessage(productTitle, sku, savedEmail, language);
     return (
       <div
         className={
@@ -101,12 +98,6 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
         >
           {copy.success}
         </p>
-        <ContactChannelPanel
-          message={message}
-          subject={`Waitlist — ${sku}`}
-          emailOnly
-          tone={light ? "light" : "theme"}
-        />
       </div>
     );
   }

@@ -41,7 +41,7 @@ export function CustomOrderCatalogCard() {
           className="object-contain object-center p-5 sm:p-6 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
         />
       </div>
-      <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-body text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
+      <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-product-medium text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
         <p className="lookbook-ink">
           <span className="shop-catalog-muted">{noLabel}</span>{" "}
           <span className="tabular-nums">{skuLabel}</span>
