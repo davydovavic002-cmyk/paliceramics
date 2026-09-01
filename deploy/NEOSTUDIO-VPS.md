@@ -31,18 +31,35 @@ Docker **не нужен** для demo-деплоя.
 
 ## 3. Деплой (репо уже на сервере)
 
+**Без Postgres — просто сайт на PM2:**
+
 ```bash
-cd /path/to/paliceramics   # твоя папка с git
+cd ~/pali
 git pull origin main
-npm install
+chmod +x deploy/deploy.sh
+bash deploy/deploy.sh
 ```
 
-`.env.local` (если ещё нет):
+Скрипт сам создаст `.env.local` без базы, соберёт и перезапустит PM2.
+
+**Вручную (то же самое):**
+
+```bash
+cd ~/pali
+git pull origin main
+npm install
+npm run build
+pm2 restart pali || pm2 start npm --name pali -- start
+pm2 save
+```
+
+`.env.local` (если ещё нет) — **без** `DATABASE_URL`:
 
 ```env
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL="https://pali.neostudio.space"
 NEXT_PUBLIC_USE_INBOX_API="false"
+SESSION_SECRET="openssl rand -base64 32"
 ```
 
 ```bash
