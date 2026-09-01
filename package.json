@@ -6,7 +6,7 @@
     "dev": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next dev -p 3556",
     "dev:clean": "npm run dev",
     "dev:fast": "next dev -p 3556",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start -p 3556",
     "lint": "next lint",
     "db:generate": "prisma generate",

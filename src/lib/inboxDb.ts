@@ -1,7 +1,18 @@
-import type { InboxMessage } from "@prisma/client";
 import type { InboxSubmitBody } from "@/lib/inboxServer";
 import { prisma } from "@/lib/db";
 import { generateVoucherCode } from "@/lib/voucherCode";
+
+/** Mirrors prisma/schema.prisma InboxMessage (local type for builds before `prisma generate`). */
+export type DbInboxMessage = {
+  id: string;
+  type: string;
+  payload: unknown;
+  read: boolean;
+  voucherCode: string | null;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export class InboxPersistError extends Error {
   code: string;
@@ -70,19 +81,19 @@ export async function persistInboxMessage(message: InboxSubmitBody) {
   return { id: record.id, voucherCode };
 }
 
-export async function listInboxMessages(): Promise<InboxMessage[]> {
+export async function listInboxMessages(): Promise<DbInboxMessage[]> {
   return prisma.inboxMessage.findMany({
     orderBy: { createdAt: "desc" },
     take: 200,
-  });
+  }) as Promise<DbInboxMessage[]>;
 }
 
 export async function updateInboxMessage(
   id: string,
   data: { read?: boolean; status?: string }
-): Promise<InboxMessage> {
+): Promise<DbInboxMessage> {
   return prisma.inboxMessage.update({
     where: { id },
     data,
-  });
+  }) as Promise<DbInboxMessage>;
 }
