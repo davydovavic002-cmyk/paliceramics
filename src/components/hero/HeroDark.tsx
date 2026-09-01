@@ -88,7 +88,7 @@ export function HeroDark() {
     <section className="hero-dark-band relative isolate min-h-[100dvh] overflow-hidden bg-[#2c2a27]">
       {showWebGL ? <AmbientLightCanvas /> : null}
       <JapandiBackground />
-      <ForegroundBokehCanvas />
+      {showWebGL ? <ForegroundBokehCanvas /> : null}
       {showWebGL && showMicroAnimations ? <DustMotesCanvas /> : null}
       <HakemeStrokes />
 

@@ -15,6 +15,7 @@ import {
   isOutOfStock,
 } from "@/lib/shopCatalog";
 import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
+import { clearShopCatalogReturnState } from "@/lib/shopScrollRestore";
 import { t } from "@/lib/galleryContent";
 import { getCollectionLabel } from "@/lib/lookbookCollections";
 import { getFadeInProps, staggerStep } from "@/lib/motionUtils";
@@ -59,7 +60,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
         };
 
   const closeProduct = useCallback(() => {
-    router.push(backHref);
+    router.push(backHref, { scroll: false });
   }, [router, backHref]);
 
   const sheetTrapRef = useFocusTrap(true);
@@ -92,6 +93,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
         <p className="font-body text-sm shop-catalog-muted">{copy.notFound}</p>
         <Link
           href={backHref}
+          scroll={false}
           className="mt-6 inline-block font-body text-sm lookbook-ink underline-offset-4 hover:underline"
         >
           {copy.backToShop}
@@ -112,11 +114,16 @@ export function ProductDetailView({ sku }: { sku: string }) {
     <div className="shop-catalog-page shop-product-page min-h-0 pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
       <div className="mx-auto max-w-[1080px] px-4 sm:px-8">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
-          <Link href="/" className="transition-opacity hover:text-[var(--lookbook-ink)]">
+          <Link
+            href="/"
+            scroll={false}
+            onClick={() => clearShopCatalogReturnState()}
+            className="transition-opacity hover:text-[var(--lookbook-ink)]"
+          >
             {copy.home}
           </Link>
           <span className="mx-2 opacity-40">/</span>
-          <Link href="/shop" className="transition-opacity hover:text-[var(--lookbook-ink)]">
+          <Link href={backHref} scroll={false} className="transition-opacity hover:text-[var(--lookbook-ink)]">
             {copy.products}
           </Link>
           <span className="mx-2 opacity-40">/</span>

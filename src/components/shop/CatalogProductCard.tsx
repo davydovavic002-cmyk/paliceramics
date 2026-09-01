@@ -9,7 +9,7 @@ import type { ShopProduct } from "@/lib/shopCatalog";
 import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { appendReturnTo } from "@/lib/shopReturnTo";
-import { buildCurrentReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
+import { buildCurrentReturnTo, resolveProductReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
 import { statusLabels, t } from "@/lib/galleryContent";
 
 const linkFocus =
@@ -52,12 +52,16 @@ export function CatalogProductCard({
   const statusLine = cardStatusLine(product, language, out);
   const unoptimizedImage = isDataImageUrl(product.image);
 
-  const returnTo = buildCurrentReturnTo(pathname, searchParams.toString());
+  const returnTo = resolveProductReturnTo(
+    pathname,
+    searchParams.toString(),
+    searchParams.get("returnTo")
+  );
   const productHref = appendReturnTo(`/shop/${product.sku}`, returnTo);
 
   const onOpenProduct = () => {
-    if (pathname === "/shop" || pathname.startsWith("/shop?")) {
-      saveShopScrollPosition();
+    if (pathname === "/shop" || pathname === "/shop/made-to-order") {
+      saveShopScrollPosition(returnTo);
     }
   };
 

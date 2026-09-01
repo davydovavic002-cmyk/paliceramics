@@ -25,7 +25,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{document.documentElement.dataset.theme='raw-clay';if('scrollRestoration'in history)history.scrollRestoration='manual';if(!location.hash)scrollTo(0,0);}catch(e){}})();",
+              "(function(){try{document.documentElement.dataset.theme='raw-clay';if('scrollRestoration'in history)history.scrollRestoration='manual';if(!location.hash&&!sessionStorage.getItem('pali-shop-return'))scrollTo(0,0);}catch(e){}})();",
           }}
         />
         <LanguageProvider>

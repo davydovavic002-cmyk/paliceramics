@@ -20,7 +20,7 @@ import { CustomOrderCatalogCard } from "./CustomOrderCatalogCard";
 import { isOutOfStock, type ShopProduct } from "@/lib/shopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
-import { consumeShopCatalogReturnState } from "@/lib/shopScrollRestore";
+import { useShopCatalogScrollRestore } from "@/hooks/useShopCatalogScrollRestore";
 import { staggerStep } from "@/lib/motionUtils";
 
 type SortKey = "collection" | "price-asc" | "price-desc" | "name";
@@ -95,7 +95,7 @@ function filterSectionIdForMode(
 
 function ShopCatalogContent() {
   const { language } = useLanguage();
-  const { products, collections, pieceTypes, catalogReady } = useShopCatalog();
+  const { products, collections, pieceTypes } = useShopCatalog();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -134,20 +134,13 @@ function ShopCatalogContent() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
+  useShopCatalogScrollRestore();
+
   useEffect(() => {
     const sectionId = filterSectionIdForMode(filterMode);
     if (!sectionId) return;
     setOpenSections(new Set([sectionId]));
   }, [filterMode]);
-
-  useEffect(() => {
-    const restored = consumeShopCatalogReturnState();
-    if (restored) {
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: restored.scrollY, left: 0 });
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowStickyBar(window.scrollY > 120);
@@ -172,7 +165,7 @@ function ShopCatalogContent() {
     params.delete("view");
     params.delete("category");
     const qs = params.toString();
-    router.replace(qs ? `/shop/made-to-order?${qs}` : "/shop/made-to-order");
+    router.replace(qs ? `/shop/made-to-order?${qs}` : "/shop/made-to-order", { scroll: false });
   }, [isMadeToOrderFilter, router, searchParams]);
 
   const buildShopHref = useCallback(
@@ -444,9 +437,6 @@ function ShopCatalogContent() {
   const productGridKey = `${filterMode}-${activeCollectionId ?? ""}-${activePieceType ?? ""}-${activeAvailability}-${sort}`;
 
   const productCountLabel = useMemo(() => {
-    if (!catalogReady) {
-      return language === "pl" ? "…" : "…";
-    }
     if (isMadeToOrderFilter) {
       return language === "pl" ? "1 produkt" : "1 product";
     }
@@ -467,7 +457,6 @@ function ShopCatalogContent() {
     }
     return `${count} ${copy.of} ${total} ${language === "pl" ? "produktów" : "products"}`;
   }, [
-    catalogReady,
     copy.of,
     filtered.length,
     hasActiveFilters,
@@ -587,7 +576,7 @@ function ShopCatalogContent() {
             onToggle={() => toggleSection("pieceType")}
           >
             <FilterOption
-              active={filterMode !== "piece"}
+              active={filterMode === "none"}
               onClick={() => selectPieceType(null)}
               label={copy.allPieceTypes}
               count={products.length}
@@ -609,7 +598,7 @@ function ShopCatalogContent() {
             onToggle={() => toggleSection("availability")}
           >
             <FilterOption
-              active={filterMode !== "availability"}
+              active={filterMode === "none"}
               onClick={() => selectAvailability("all")}
               label={copy.allAvailability}
               count={availabilityCounts.all}
@@ -652,9 +641,7 @@ function ShopCatalogContent() {
               </label>
           </div>
 
-          {!catalogReady ? (
-            <p className="py-16 text-center font-body text-sm shop-catalog-muted">…</p>
-          ) : productGroups.length === 0 && !showCustomOrderCard ? (
+          {productGroups.length === 0 && !showCustomOrderCard ? (
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
           ) : (
             <div className="space-y-10 sm:space-y-12">

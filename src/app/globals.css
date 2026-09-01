@@ -1,8 +1,8 @@
-@import "@fontsource/work-sans/500.css";
-@import "@fontsource/noto-serif-jp/400.css";
-@import "@fontsource/noto-serif-jp/500.css";
-@import "@fontsource/shippori-mincho/400.css";
-@import "@fontsource/shippori-mincho/500.css";
+@import "@fontsource/work-sans/latin-500.css";
+@import "@fontsource/noto-serif-jp/latin-ext-400.css";
+@import "@fontsource/noto-serif-jp/latin-ext-500.css";
+@import "@fontsource/shippori-mincho/latin-ext-400.css";
+@import "@fontsource/shippori-mincho/latin-ext-500.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";

@@ -17,7 +17,6 @@ export function HeaderBrandLogo({ className = "" }: { className?: string }) {
           alt=""
           fill
           priority
-          unoptimized
           sizes="48px"
           className="object-contain"
         />

@@ -36,7 +36,11 @@ export function CustomOrderCatalogCard() {
     <Link
       href={href}
       scroll={false}
-      onClick={() => saveShopScrollPosition()}
+      onClick={() => {
+        if (pathname === "/shop" || pathname === "/shop/made-to-order") {
+          saveShopScrollPosition(returnTo);
+        }
+      }}
       className={["group flex h-full w-full flex-col text-left", linkFocus].join(" ")}
     >
       <div className="shop-card-image relative aspect-square w-full overflow-hidden">
