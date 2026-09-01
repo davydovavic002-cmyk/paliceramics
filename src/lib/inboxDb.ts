@@ -1,3 +1,4 @@
+import type { InboxMessage } from "@prisma/client";
 import type { InboxSubmitBody } from "@/lib/inboxServer";
 import { prisma } from "@/lib/db";
 import { generateVoucherCode } from "@/lib/voucherCode";
@@ -69,7 +70,7 @@ export async function persistInboxMessage(message: InboxSubmitBody) {
   return { id: record.id, voucherCode };
 }
 
-export async function listInboxMessages() {
+export async function listInboxMessages(): Promise<InboxMessage[]> {
   return prisma.inboxMessage.findMany({
     orderBy: { createdAt: "desc" },
     take: 200,
@@ -79,7 +80,7 @@ export async function listInboxMessages() {
 export async function updateInboxMessage(
   id: string,
   data: { read?: boolean; status?: string }
-) {
+): Promise<InboxMessage> {
   return prisma.inboxMessage.update({
     where: { id },
     data,
