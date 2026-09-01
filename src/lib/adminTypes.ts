@@ -1,4 +1,5 @@
 import type { ItemStatus } from "@/lib/galleryContent";
+import { filterProjectImages } from "@/lib/productImages";
 import { galleryItems } from "@/lib/galleryContent";
 import { calendarSlots, workshopFormats } from "@/lib/workshopsContent";
 import { siteContent } from "@/lib/content";
@@ -96,8 +97,12 @@ export function normalizeProductSku(value: string): string {
 }
 
 export function productPhotos(product: Pick<AdminProduct, "imageUrl" | "imageUrls">): string[] {
-  if (product.imageUrls?.length) return product.imageUrls;
-  return product.imageUrl ? [product.imageUrl] : [];
+  const raw = product.imageUrls?.length
+    ? product.imageUrls
+    : product.imageUrl
+      ? [product.imageUrl]
+      : [];
+  return filterProjectImages(raw);
 }
 
 export const defaultProductDescription: Bilingual = {
@@ -621,6 +626,20 @@ export function seedSiteCopy(): AdminSiteCopy {
   };
 }
 
+/** Section headlines always follow code seeds; admin only persists announcement/spotlight/heroTag. */
+function normalizeSiteCopy(stored?: Partial<AdminSiteCopy>): AdminSiteCopy {
+  const seed = seedSiteCopy();
+  if (!stored) return seed;
+  return {
+    announcement: { ...seed.announcement, ...stored.announcement },
+    spotlight: { ...seed.spotlight, ...stored.spotlight },
+    heroTag: { ...seed.heroTag, ...stored.heroTag },
+    gallery: seed.gallery,
+    workshops: seed.workshops,
+    about: seed.about,
+  };
+}
+
 export function seedAdminData(): AdminPersistedData {
   const collections = seedCollections();
   const pieceTypes = seedPieceTypes();
@@ -721,18 +740,28 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
         ? rest.pieceTypeId
         : (productPieceTypeById[rest.id] ?? pieceTypes[0]?.id ?? "bowls");
 
+    const gallery = galleryItemForProduct(rest);
+    const seedUrls = gallery?.images?.length
+      ? gallery.images
+      : gallery?.image
+        ? [gallery.image]
+        : [];
+    const storedUrls = filterProjectImages(
+      rest.imageUrls?.length
+        ? rest.imageUrls
+        : rest.imageUrl
+          ? [rest.imageUrl]
+          : []
+    );
+    const imageUrls = storedUrls.length ? storedUrls : seedUrls;
+
     return normalizeProductDetails({
       ...rest,
       categoryId: migratedCategoryId,
       pieceTypeId,
       status: rest.status === "made-to-order" ? "sold" : rest.status,
-      imageUrls:
-        rest.imageUrls?.length
-          ? rest.imageUrls
-          : rest.imageUrl
-            ? [rest.imageUrl]
-            : undefined,
-      imageUrl: rest.imageUrls?.[0] ?? rest.imageUrl,
+      imageUrls,
+      imageUrl: imageUrls[0],
       stock:
         typeof rest.stock === "number" && Number.isFinite(rest.stock)
           ? Math.max(0, Math.round(rest.stock))
@@ -748,6 +777,7 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
 
   return {
     ...rest,
+    siteCopy: normalizeSiteCopy(data.siteCopy),
     collections,
     pieceTypes,
     inbox,

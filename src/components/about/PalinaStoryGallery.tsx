@@ -5,16 +5,24 @@ import { useAdminContent } from "@/hooks/useAdminContent";
 import { palinaStoryForLanguage } from "@/lib/contentResolve";
 import {
   PhotoCaption,
+  PhotoOverlayCaption,
   StoryEditorialPhoto,
   StoryHeroPhoto,
-  StoryPanelText,
 } from "./AboutStoryBlocks";
 
 function aboutCellClass(index: number) {
   if (index === 0) return "lookbook-split-r lookbook-split-b";
   if (index === 1) return "lookbook-split-b";
-  if (index === 2) return "lookbook-split-r lookbook-split-b";
-  return "lookbook-split-b";
+  return "";
+}
+
+type StoryTileProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+function StoryTile({ className = "", children }: StoryTileProps) {
+  return <div className={`relative overflow-hidden ${className}`}>{children}</div>;
 }
 
 export function PalinaStoryGallery() {
@@ -29,64 +37,61 @@ export function PalinaStoryGallery() {
         {copy.sectionLabel}
       </p>
 
-      <div className="about-editorial-band lookbook-full-bleed relative z-10">
-        <div className="lookbook-grid grid grid-cols-2 gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:grid-rows-2">
-          <div className="col-span-2 min-h-[min(72vw,420px)] lg:col-span-1 lg:row-span-2 lg:min-h-[420px] lookbook-split-r lookbook-split-b lg:lookbook-split-b-0">
+      <div className="about-editorial-band relative z-10">
+        <div className="lookbook-grid grid grid-cols-2 gap-0 lg:grid-cols-4 lg:grid-rows-2 lg:items-stretch">
+          <StoryTile className="col-span-2 aspect-[4/5] lg:col-span-2 lg:row-span-2 lg:aspect-auto lg:h-full lookbook-split-r lookbook-split-b lg:lookbook-split-b-0">
             <StoryHeroPhoto
               src={imgs.japan.src}
               alt={imgs.japan.alt}
               priority
-              sizes="(max-width:1024px) 100vw, 42vw"
-              className="h-full min-h-[inherit]"
+              sizes="(max-width:1024px) 100vw, 50vw"
+              className="absolute inset-0 h-full"
               caption={<PhotoCaption lead={copy.lead} body={copy.origin} />}
             />
-          </div>
+          </StoryTile>
 
-          <div className={`min-h-[200px] lg:min-h-[210px] ${aboutCellClass(0)}`}>
+          <StoryTile className={`aspect-square ${aboutCellClass(0)}`}>
             <StoryEditorialPhoto
               src={imgs.wheel.src}
               alt={imgs.wheel.alt}
-              className="h-full min-h-[inherit]"
-              sizes="(max-width:1024px) 50vw, 28vw"
+              className="absolute inset-0 h-full"
+              sizes="(max-width:1024px) 50vw, 25vw"
               delay={0.05}
-              objectPosition="50% 18%"
+              objectPosition="50% 30%"
             />
-          </div>
+          </StoryTile>
 
-          <div className={`min-h-[200px] lg:min-h-[210px] ${aboutCellClass(1)}`}>
+          <StoryTile className={`aspect-square ${aboutCellClass(1)}`}>
             <StoryEditorialPhoto
               src={imgs.glaze.src}
               alt={imgs.glaze.alt}
-              className="h-full min-h-[inherit]"
-              sizes="(max-width:1024px) 50vw, 28vw"
+              className="absolute inset-0 h-full"
+              sizes="(max-width:1024px) 50vw, 25vw"
               delay={0.1}
+              objectPosition="50% 42%"
+              caption={
+                <PhotoOverlayCaption>
+                  {copy.brand}
+                </PhotoOverlayCaption>
+              }
             />
-          </div>
+          </StoryTile>
 
-          <div
-            className={`flex min-h-[200px] items-center p-4 sm:p-5 lg:min-h-[210px] ${aboutCellClass(2)}`}
-          >
-            <StoryPanelText delay={0.12} className="w-full">
-              {copy.brand} {copy.workshops}
-            </StoryPanelText>
-          </div>
-
-          <div className={`min-h-[200px] lg:min-h-[210px] ${aboutCellClass(3)}`}>
+          <StoryTile className={`col-span-2 aspect-[5/3] sm:aspect-[16/10] lg:aspect-[2/1] ${aboutCellClass(2)}`}>
             <StoryEditorialPhoto
               src={imgs.studio.src}
               alt={imgs.studio.alt}
-              className="h-full min-h-[inherit]"
-              sizes="(max-width:1024px) 50vw, 28vw"
+              className="absolute inset-0 h-full"
+              sizes="(max-width:1024px) 100vw, 50vw"
               delay={0.16}
               objectPosition="50% 35%"
+              caption={
+                <PhotoOverlayCaption>
+                  {copy.workshops} {copy.craft} {copy.closing}
+                </PhotoOverlayCaption>
+              }
             />
-          </div>
-        </div>
-
-        <div className="border-x border-b border-[var(--lookbook-line)] bg-[#faf7f0] px-5 py-5 sm:px-8 sm:py-6 lg:px-10">
-          <StoryPanelText delay={0.2} className="max-w-3xl">
-            {copy.craft} {copy.closing}
-          </StoryPanelText>
+          </StoryTile>
         </div>
       </div>
     </div>

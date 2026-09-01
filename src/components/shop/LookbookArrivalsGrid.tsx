@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAdminSiteCopy } from "@/context/AdminDataContext";
 import { pickSectionCopy } from "@/lib/adminTypes";
 import { galleryHeader } from "@/lib/galleryContent";
 import { collectionToLookbook, getLookbookCollections } from "@/lib/catalogConfig";
@@ -21,13 +20,12 @@ function collectionDividerClass(index: number) {
 
 export function LookbookArrivalsGrid() {
   const { language } = useLanguage();
-  const siteCopy = useAdminSiteCopy();
   const { collections } = useShopCatalog();
   const shopCollections = useMemo(
     () => getLookbookCollections(collections).map((collection) => collectionToLookbook(collection)),
     [collections]
   );
-  const header = pickSectionCopy(siteCopy?.gallery, galleryHeader, language);
+  const header = pickSectionCopy(undefined, galleryHeader, language);
 
   const copy =
     language === "pl"
@@ -47,17 +45,9 @@ export function LookbookArrivalsGrid() {
   return (
     <div className="w-full pb-0">
       <div className="mx-auto max-w-[1800px] px-5 pb-5 sm:px-8 lg:px-10">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="lookbook-ink font-display text-[clamp(1.35rem,3vw,2rem)] uppercase leading-none tracking-[0.08em]">
-            {copy.title}
-          </h2>
-          <Link
-            href="/shop"
-            className="lookbook-ink shrink-0 font-body text-[10px] uppercase tracking-[0.22em] transition-opacity hover:opacity-75"
-          >
-            {copy.seeAll}
-          </Link>
-        </div>
+        <h2 className="lookbook-ink font-display text-[clamp(1.35rem,3vw,2rem)] uppercase leading-none tracking-[0.08em]">
+          {copy.title}
+        </h2>
       </div>
 
       <div className="lookbook-full-bleed">

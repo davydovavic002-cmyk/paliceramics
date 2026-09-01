@@ -1,7 +1,6 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
-import { useAdminSiteCopy } from "@/context/AdminDataContext";
 import { pickSectionCopy } from "@/lib/adminTypes";
 import { aboutHeader } from "@/lib/aboutContent";
 import { MotionReveal } from "@/components/ui/MotionReveal";
@@ -10,8 +9,7 @@ import { PalinaStoryGallery } from "./PalinaStoryGallery";
 
 export function AboutStudioSection() {
   const { language } = useLanguage();
-  const siteCopy = useAdminSiteCopy();
-  const header = pickSectionCopy(siteCopy?.about, aboutHeader, language);
+  const header = pickSectionCopy(undefined, aboutHeader, language);
 
   return (
     <section

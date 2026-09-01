@@ -15,6 +15,7 @@ import { getProductPieceTypeId } from "@/lib/lookbookCollections";
 import { productPhotos } from "@/lib/adminTypes";
 import type { ProductPieceTypeId } from "@/lib/lookbookCollections";
 import { images } from "@/lib/images";
+import { filterProjectImages } from "@/lib/productImages";
 
 export type ShopCatalogFilter = "all" | "in-stock" | string;
 
@@ -58,17 +59,18 @@ export function buildShopCatalog(
     .filter((product) => product.status !== "made-to-order")
     .map((product) => {
       const gallery = galleryBySku.get(product.sku) ?? galleryById.get(product.id);
-      const uploadedPhotos = productPhotos(product);
+      const uploadedPhotos = filterProjectImages(productPhotos(product));
+      const galleryImagesRaw = uploadedPhotos.length
+        ? uploadedPhotos
+        : gallery
+          ? filterProjectImages(getProductImages(gallery))
+          : [];
       const image =
-        uploadedPhotos[0] ??
+        galleryImagesRaw[0] ??
         gallery?.image ??
         imageByFilename[product.imageLabel] ??
         images.accentBowl;
-      const galleryImages = uploadedPhotos.length
-        ? uploadedPhotos
-        : gallery
-          ? getProductImages(gallery)
-          : [image];
+      const galleryImages = galleryImagesRaw.length ? galleryImagesRaw : [image];
       const description = {
         en: pickBilingual(
           product.description,

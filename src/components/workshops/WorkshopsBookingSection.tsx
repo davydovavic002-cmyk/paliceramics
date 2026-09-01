@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAdminSiteCopy } from "@/context/AdminDataContext";
 import { pickSectionCopy } from "@/lib/adminTypes";
 import { handleSectionClick } from "@/lib/scrollToSection";
 import { MotionReveal } from "@/components/ui/MotionReveal";
@@ -13,8 +12,7 @@ import { WorkshopPotteryPattern } from "./WorkshopPotteryPattern";
 
 export function WorkshopsBookingSection() {
   const { language } = useLanguage();
-  const siteCopy = useAdminSiteCopy();
-  const header = pickSectionCopy(siteCopy?.workshops, workshopsHeader, language);
+  const header = pickSectionCopy(undefined, workshopsHeader, language);
 
   const giftLink =
     language === "pl"

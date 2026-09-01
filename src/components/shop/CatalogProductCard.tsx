@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMotionFlags } from "@/context/DemoControlsContext";
 import type { ShopProduct } from "@/lib/shopCatalog";
 import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
+import { appendReturnTo } from "@/lib/shopReturnTo";
+import { buildCurrentReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
 import { statusLabels, t } from "@/lib/galleryContent";
 
 const linkFocus =
@@ -43,15 +46,28 @@ export function CatalogProductCard({
 }: CatalogProductCardProps) {
   const { language } = useLanguage();
   const { showImageHoverScale, showHoverTilt } = useMotionFlags();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const out = isOutOfStock(product);
   const statusLine = cardStatusLine(product, language, out);
   const unoptimizedImage = isDataImageUrl(product.image);
+
+  const returnTo = buildCurrentReturnTo(pathname, searchParams.toString());
+  const productHref = appendReturnTo(`/shop/${product.sku}`, returnTo);
+
+  const onOpenProduct = () => {
+    if (pathname === "/shop" || pathname.startsWith("/shop?")) {
+      saveShopScrollPosition();
+    }
+  };
 
   if (variant === "lookbook-tile" || variant === "lookbook-wide" || variant === "lookbook") {
     const wide = variant === "lookbook-wide";
     return (
       <Link
-        href={`/shop/${product.sku}`}
+        href={productHref}
+        scroll={false}
+        onClick={onOpenProduct}
         className={[
           "group flex h-full w-full flex-col bg-transparent p-3 transition-opacity duration-300 hover:opacity-90 sm:p-4",
           linkFocus,
@@ -96,14 +112,16 @@ export function CatalogProductCard({
 
     return (
       <Link
-        href={`/shop/${product.sku}`}
+        href={productHref}
+        scroll={false}
+        onClick={onOpenProduct}
         className={[
           "group flex h-full w-full flex-col text-left",
           linkFocus,
           className,
         ].join(" ")}
       >
-        <div className="shop-card-image relative aspect-square w-full overflow-hidden">
+        <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden sm:aspect-square">
           <Image
             src={product.image}
             alt={title}
@@ -111,20 +129,20 @@ export function CatalogProductCard({
             unoptimized={unoptimizedImage}
             sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 20vw"
             className={[
-              "object-contain object-center p-5 sm:p-6",
+              "object-contain object-center p-3 sm:p-5",
               "transition-transform duration-500 ease-out",
               showImageHoverScale ? "group-hover:scale-[1.02]" : "",
             ].join(" ")}
           />
         </div>
 
-        <div className="flex min-h-[4.75rem] flex-col gap-1 pt-2.5 font-product-medium text-[11px] leading-snug tracking-[0.06em] sm:text-[12px]">
-          <p className="lookbook-ink">
-            <span className="shop-catalog-muted">no</span>{" "}
+        <div className="flex min-h-[3.5rem] flex-col gap-0.5 pt-2 font-product-medium text-[10px] leading-snug tracking-[0.06em] sm:min-h-[4rem] sm:text-[11px]">
+          <p className="lookbook-ink line-clamp-1">
+            <span className="shop-catalog-muted">{language === "pl" ? "nr" : "no"}</span>{" "}
             <span className="tabular-nums">{product.sku}</span>
           </p>
-          <p className="lookbook-ink">
-            <span className="shop-catalog-muted">size</span>{" "}
+          <p className="lookbook-ink line-clamp-2">
+            <span className="shop-catalog-muted">{language === "pl" ? "rozmiar" : "size"}</span>{" "}
             <span>{sizeLabel}</span>
           </p>
           <div className="mt-auto space-y-0.5 pt-1">
@@ -144,7 +162,9 @@ export function CatalogProductCard({
 
   return (
     <Link
-      href={`/shop/${product.sku}`}
+      href={productHref}
+      scroll={false}
+      onClick={onOpenProduct}
       className={[
         "group flex h-full w-full flex-col overflow-hidden bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[transform,box-shadow] duration-500",
         linkFocus,

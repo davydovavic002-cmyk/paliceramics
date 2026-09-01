@@ -1,11 +1,11 @@
-/** Hero & accent imagery */
+/** Hero & accent imagery — paths must exist under public/images */
 export const images = {
-  heroPlate: "/images/cutout/hero-plate.png",
-  heroVase: "/images/cutout/hero-vase.png",
+  heroPlate: "/images/hero/ceramics-collage-cutout.png",
+  heroVase: "/images/hero/ceramics-cluster.png",
   heroCeramics: "/images/hero/ceramics-cluster.png",
   heroCeramicsCollage: "/images/hero/ceramics-collage-cutout.png",
-  whiteLavaCup: "/images/hero/white-lava-cup.png",
+  whiteLavaCup: "/images/workshops/cups-pair.png",
   brandLogoCircle: "/images/brand/pali-logo-circle.png",
-  accentBowl: "/images/cutout/accent-bowl.png",
-  accentTableware: "/images/cutout/accent-tableware.png",
+  accentBowl: "/images/workshops/bowl-outline.png",
+  accentTableware: "/images/hero/ceramics-collage.png",
 } as const;

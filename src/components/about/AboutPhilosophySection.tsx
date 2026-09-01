@@ -3,7 +3,6 @@
 import { useState, type ComponentType } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAdminSiteCopy } from "@/context/AdminDataContext";
 import { pickSectionCopy } from "@/lib/adminTypes";
 import {
   aboutHeader,
@@ -25,8 +24,7 @@ const tabPanels: Record<AboutTabId, ComponentType> = {
 
 export function AboutPhilosophySection() {
   const { language } = useLanguage();
-  const siteCopy = useAdminSiteCopy();
-  const header = pickSectionCopy(siteCopy?.about, aboutHeader, language);
+  const header = pickSectionCopy(undefined, aboutHeader, language);
   const [activeTab, setActiveTab] = useState<AboutTabId>("timeline");
   const ActivePanel = tabPanels[activeTab];
 

@@ -16,7 +16,6 @@ import type {
   AdminAboutBlock,
   AdminFaqItem,
   AdminReview,
-  AdminSectionCopy,
 } from "@/lib/adminTypes";
 
 const inputCls = "admin-input w-full rounded-lg px-3 py-2 text-sm";
@@ -24,7 +23,6 @@ const inputCls = "admin-input w-full rounded-lg px-3 py-2 text-sm";
 export function SiteTab() {
   const {
     siteCopy,
-    updateSectionCopy,
     updateHeroTag,
     faq,
     setFaq,
@@ -80,56 +78,37 @@ export function SiteTab() {
     <div className="space-y-8">
       <GroupHeading
         title="Headlines"
-        detail="Hero tagline and section titles on the homepage."
+        detail="Hero tagline in admin. Section eyebrows/titles (Gallery, Workshops, About) come from code and stay in sync automatically."
       />
 
       <section className="admin-section p-3 sm:p-4">
         <div className="mb-5 flex items-center gap-2">
           <Type className="h-4 w-4 text-admin-muted" strokeWidth={1.5} />
           <div>
-            <h2 className="text-base font-semibold text-admin-heading">Section headlines</h2>
+            <h2 className="text-base font-semibold text-admin-heading">Hero tagline</h2>
             <p className="text-sm text-admin-muted">
-              Eyebrow, title, and subtitle for homepage sections — EN and PL.
+              Short line under the logo on the homepage — EN and PL.
             </p>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="rounded-lg border border-admin-input bg-admin-card-muted p-4">
-            <h3 className="text-sm font-medium text-admin-label">Hero tagline</h3>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <Field label="English">
-                <input
-                  value={siteCopy.heroTag.en}
-                  onChange={(e) => updateHeroTag("en", e.target.value)}
-                  className={inputCls}
-                />
-              </Field>
-              <Field label="Polski">
-                <input
-                  value={siteCopy.heroTag.pl}
-                  onChange={(e) => updateHeroTag("pl", e.target.value)}
-                  className={inputCls}
-                />
-              </Field>
-            </div>
+        <div className="rounded-lg border border-admin-input bg-admin-card-muted p-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="English">
+              <input
+                value={siteCopy.heroTag.en}
+                onChange={(e) => updateHeroTag("en", e.target.value)}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Polski">
+              <input
+                value={siteCopy.heroTag.pl}
+                onChange={(e) => updateHeroTag("pl", e.target.value)}
+                className={inputCls}
+              />
+            </Field>
           </div>
-
-          <SectionEditor
-            title="Gallery / Collection"
-            copy={siteCopy.gallery}
-            onChange={(field, lang, value) => updateSectionCopy("gallery", field, lang, value)}
-          />
-          <SectionEditor
-            title="Workshops"
-            copy={siteCopy.workshops}
-            onChange={(field, lang, value) => updateSectionCopy("workshops", field, lang, value)}
-          />
-          <SectionEditor
-            title="About"
-            copy={siteCopy.about}
-            onChange={(field, lang, value) => updateSectionCopy("about", field, lang, value)}
-          />
         </div>
       </section>
 
@@ -417,42 +396,6 @@ function SectionHeading({
         <p className="text-sm text-admin-muted">{detail}</p>
       </div>
     </div>
-  );
-}
-
-function SectionEditor({
-  title,
-  copy,
-  onChange,
-}: {
-  title: string;
-  copy: AdminSectionCopy;
-  onChange: (
-    field: keyof AdminSectionCopy,
-    lang: "en" | "pl",
-    value: string
-  ) => void;
-}) {
-  return (
-    <details className="group rounded-lg border border-admin-input bg-admin-card-muted">
-      <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-admin-label marker:content-none [&::-webkit-details-marker]:hidden">
-        {title}
-        <span className="ml-2 text-xs text-admin-dim group-open:hidden">— tap to expand</span>
-      </summary>
-      <div className="space-y-4 border-t border-admin-input px-4 py-4">
-        {(["eyebrow", "title", "subtitle"] as const).map((field) => (
-          <BilingualField
-            key={field}
-            label={field.charAt(0).toUpperCase() + field.slice(1)}
-            en={copy[field].en}
-            pl={copy[field].pl}
-            onEn={(v) => onChange(field, "en", v)}
-            onPl={(v) => onChange(field, "pl", v)}
-            multiline={field === "subtitle"}
-          />
-        ))}
-      </div>
-    </details>
   );
 }
 

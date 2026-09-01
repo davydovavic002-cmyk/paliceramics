@@ -11,7 +11,8 @@ export type CertificateDraft = {
 };
 
 export const VOUCHER_COLORS = {
-  paper: "#FAF7F0",
+  /** Sampled from voucher template PNG background (3496×2480). */
+  paper: "#FDF4E2",
   ink: "#1B2B5A",
   clay: "#C4A882",
 } as const;
@@ -137,6 +138,19 @@ function overlayToPx(rect: VoucherOverlayRect, width: number, height: number) {
   };
 }
 
+/** Wider/taller erase area — template glyphs extend beyond the measured text box. */
+function recipientErasePx(box: ReturnType<typeof overlayToPx>) {
+  const padTop = Math.round(box.h * 0.72);
+  const padBottom = Math.round(box.h * 0.38);
+  const padX = Math.round(box.w * 0.62);
+  return {
+    x: box.x - padX,
+    y: box.y - padTop,
+    w: box.w + padX * 2,
+    h: box.h + padTop + padBottom,
+  };
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
@@ -157,7 +171,11 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 function spacedLine(text: string): string {
-  return text.split("").join(" ");
+  return text
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.split("").join(" "))
+    .join("   ");
 }
 
 function drawSpacedText(
@@ -197,9 +215,10 @@ export async function generateCertificatePng(
 
   const recipientLine = certificateRecipientLine(draft, language);
   const recipientBox = overlayToPx(layout.recipient, width, height);
+  const recipientErase = recipientErasePx(recipientBox);
 
   ctx.fillStyle = VOUCHER_COLORS.paper;
-  ctx.fillRect(recipientBox.x, recipientBox.y, recipientBox.w, recipientBox.h);
+  ctx.fillRect(recipientErase.x, recipientErase.y, recipientErase.w, recipientErase.h);
 
   ctx.fillStyle = VOUCHER_COLORS.ink;
   ctx.textAlign = "center";

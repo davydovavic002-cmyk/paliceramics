@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import { Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdminContent } from "@/hooks/useAdminContent";
@@ -20,11 +19,18 @@ import { CertificatePreview, CertificateTypePicker } from "./CertificatePreview"
 import { ConsentField } from "@/components/site/ConsentField";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 
-const inputClass =
-  "w-full rounded-full border border-theme/20 bg-theme-elevated/50 px-4 py-2 font-body text-sm text-theme outline-none transition-colors focus:border-[var(--theme-accent)]";
+import { brandRectButtonClass } from "@/components/ui/BrandRectButton";
+import { useFormDraft } from "@/hooks/useFormDraft";
 
-const btnPrimary =
-  "inline-flex w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-5 py-3 font-body text-[10px] uppercase tracking-[0.2em] text-theme-btn transition-colors hover:bg-[var(--theme-accent-hover)] disabled:opacity-60";
+const initialCertificateDraft: CertificateDraft = {
+  type: "workshop-once",
+  recipientName: "",
+  buyerEmail: "",
+  participantCount: 1,
+};
+
+const inputClass =
+  "w-full rounded-lg border border-theme/20 bg-theme-elevated/50 px-4 py-2 font-body text-sm text-theme outline-none transition-colors focus:border-[#010a8b]";
 
 export function CertificateSection() {
   const { language } = useLanguage();
@@ -37,16 +43,25 @@ export function CertificateSection() {
     () => voucherSectionCopyForLanguage(voucherContent.section, language),
     [voucherContent.section, language]
   );
-  const [draft, setDraft] = useState<CertificateDraft>({
-    type: "workshop-once",
-    recipientName: "",
-    buyerEmail: "",
-    participantCount: 1,
-  });
+  const { value: draft, setValue: setDraft, clearDraft, hydrated } = useFormDraft(
+    "pali-cert-draft",
+    initialCertificateDraft
+  );
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!hydrated || sent) return;
+    const dirty = Boolean(draft.recipientName.trim() || draft.buyerEmail.trim());
+    if (!dirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [draft.buyerEmail, draft.recipientName, hydrated, sent]);
 
   const typePricing = resolvedTypes[draft.type];
   const nominalNote = certificateNominalNote(draft, language, typePricing);
@@ -100,6 +115,7 @@ export function CertificateSection() {
 
       setSent(true);
       setConsent(false);
+      clearDraft();
     } catch {
       setError(language === "pl" ? "Nie udało się wysłać zapytania." : "Could not send the request.");
     } finally {
@@ -143,8 +159,8 @@ export function CertificateSection() {
           </MotionReveal>
         </header>
 
-        <MotionReveal className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
-          <div className="mx-auto flex w-full max-w-[22rem] flex-col justify-center sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:gap-12">
+          <div className="mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:sticky lg:top-[calc(var(--header-offset,5.5rem)+0.75rem)] lg:mx-0 lg:max-w-[25rem] lg:self-start xl:max-w-[27rem]">
             <CertificatePreview draft={draft} />
           </div>
 
@@ -161,12 +177,8 @@ export function CertificateSection() {
                   type="button"
                   onClick={() => {
                     setSent(false);
-                    setDraft({
-                      type: "workshop-once",
-                      recipientName: "",
-                      buyerEmail: "",
-                      participantCount: 1,
-                    });
+                    setDraft(initialCertificateDraft);
+                    clearDraft();
                   }}
                   className="block font-body text-xs text-theme-muted underline underline-offset-4 hover:text-theme"
                 >
@@ -175,7 +187,7 @@ export function CertificateSection() {
               </div>
             ) : (
               <form noValidate onSubmit={(e) => void submit(e)} className="space-y-3.5 pb-2">
-                <div>
+                <div className="min-h-[6.75rem]">
                   <p className="mb-1.5 font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.typeLabel}
                   </p>
@@ -197,10 +209,10 @@ export function CertificateSection() {
                         type="button"
                         onClick={() => setDraft((prev) => ({ ...prev, participantCount: count }))}
                         className={[
-                          "flex-1 rounded-full border px-3 py-2 font-body text-[10px] uppercase tracking-[0.14em] transition-colors sm:text-[11px]",
+                          "flex-1 min-h-[44px] px-4 py-2.5 font-body text-[10px] tracking-[0.14em] transition-colors sm:text-[11px]",
                           draft.participantCount === count
-                            ? "border-[color-mix(in_srgb,var(--theme-accent)_55%,transparent)] bg-[var(--theme-btn-primary)] text-theme-btn"
-                            : "border-theme/20 bg-theme-elevated/40 text-theme-muted hover:border-theme/35 hover:text-theme",
+                            ? "border border-[#010a8b] bg-[#010a8b] text-[#ede8df]"
+                            : "border border-[color-mix(in_srgb,#010a8b_35%,transparent)] bg-transparent text-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]",
                         ].join(" ")}
                       >
                         {count === 1 ? copy.onePerson : copy.twoPeople}
@@ -212,18 +224,9 @@ export function CertificateSection() {
                   </p>
                   <p className="mt-1.5 font-body text-sm text-theme">
                     {language === "pl" ? "Nominał:" : "Nominal:"}{" "}
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.span
-                        key={`${draft.participantCount}-${nominalPrice}`}
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.18 }}
-                        className="inline-block font-medium"
-                      >
-                        {formatNominalPln(nominalPrice, language)}
-                      </motion.span>
-                    </AnimatePresence>
+                    <span className="font-medium tabular-nums">
+                      {formatNominalPln(nominalPrice, language)}
+                    </span>
                     {nominalNote ? (
                       <span className="ml-1.5 font-body text-[11px] text-theme-muted">
                         ({nominalNote})
@@ -264,16 +267,16 @@ export function CertificateSection() {
 
                 <ConsentField checked={consent} onChange={setConsent} purpose="certificate" />
 
-                <div className="sticky bottom-3 z-10 -mx-1 space-y-2 rounded-2xl border border-[color-mix(in_srgb,var(--theme-border)_12%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface)_92%,transparent)] px-1 py-3 backdrop-blur-md sm:bottom-4">
-                  {error ? <p className="px-2 text-xs text-red-400/90">{error}</p> : null}
-                  <button type="submit" disabled={submitting} className={btnPrimary}>
+                <div className="space-y-2 pt-1">
+                  {error ? <p className="text-xs text-red-400/90">{error}</p> : null}
+                  <button type="submit" disabled={submitting} className={`w-full ${brandRectButtonClass(true)}`}>
                     {copy.submit}
                   </button>
                 </div>
               </form>
             )}
           </div>
-        </MotionReveal>
+        </div>
       </div>
     </section>
   );

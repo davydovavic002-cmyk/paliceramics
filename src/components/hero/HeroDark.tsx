@@ -1,13 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMotionFlags } from "@/context/DemoControlsContext";
 import { siteContent } from "@/lib/content";
-import { images } from "@/lib/images";
 import { JapandiBackground } from "./JapandiBackground";
 import { HakemeStrokes } from "./HakemeStrokes";
 
@@ -79,15 +77,15 @@ export function HeroDark() {
   const { hero } = siteContent;
 
   const fade = {
-    opacity: isTransitioning ? 0 : 1,
-    transition: { duration: 0.4 },
+    opacity: isTransitioning ? 0.88 : 1,
+    transition: { duration: 0.35 },
   };
 
   const sublineLines = hero.heroSublineLines.en;
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band relative isolate min-h-[100dvh] overflow-hidden transition-colors duration-700">
+    <section className="hero-dark-band relative isolate min-h-[100dvh] overflow-hidden bg-[#2c2a27]">
       {showWebGL ? <AmbientLightCanvas /> : null}
       <JapandiBackground />
       <ForegroundBokehCanvas />
@@ -100,17 +98,11 @@ export function HeroDark() {
         <div className="flex flex-1 flex-col items-center justify-center pb-28 pt-[max(5.5rem,env(safe-area-inset-top))] sm:pb-32 lg:min-h-screen lg:pb-36 lg:pt-[10vh]">
           <div className="flex w-full max-w-[min(88vw,360px)] flex-col items-center text-center">
             <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo mb-5 sm:mb-6">
-              <span className="relative block h-14 w-14 sm:h-16 sm:w-16">
-                <Image
-                  src={images.brandLogoCircle}
-                  alt=""
-                  fill
-                  priority
-                  unoptimized
-                  sizes="64px"
-                  className="object-contain brightness-0 invert"
-                />
-              </span>
+              <span
+                className="hero-brand-logo-mark block h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20"
+                role="img"
+                aria-label="Pali ceramics"
+              />
             </motion.div>
 
             <motion.div

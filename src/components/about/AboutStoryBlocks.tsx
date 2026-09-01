@@ -106,6 +106,7 @@ type StoryEditorialPhotoProps = {
   delay?: number;
   sizes?: string;
   objectPosition?: string;
+  caption?: ReactNode;
 };
 
 export function StoryEditorialPhoto({
@@ -116,13 +117,14 @@ export function StoryEditorialPhoto({
   delay = 0,
   sizes = "40vw",
   objectPosition = "center center",
+  caption,
 }: StoryEditorialPhotoProps) {
   const reduceMotion = useReducedMotion();
 
   return (
     <StoryMotionBlock delay={delay} className={className}>
       <motion.div
-        className="relative h-full min-h-[inherit] overflow-hidden rounded-[2px] shadow-[0_16px_40px_rgba(0,0,0,0.16)]"
+        className="group relative h-full min-h-[inherit] overflow-hidden rounded-[2px] shadow-[0_16px_40px_rgba(0,0,0,0.16)]"
         whileHover={
           reduceMotion
             ? undefined
@@ -142,6 +144,15 @@ export function StoryEditorialPhoto({
           className="object-cover"
           style={{ objectPosition }}
         />
+        {caption ? (
+          <>
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-t from-[#121418]/55 to-transparent transition-opacity duration-500 group-hover:from-[#121418]/65 sm:h-[38%]"
+              aria-hidden
+            />
+            {caption}
+          </>
+        ) : null}
       </motion.div>
     </StoryMotionBlock>
   );
@@ -189,5 +200,19 @@ export function PhotoCaption({ lead, body }: { lead: string; body: string }) {
         {body}
       </p>
     </div>
+  );
+}
+
+export function PhotoOverlayCaption({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[#121418]/90 via-[#121418]/45 to-transparent sm:h-[42%]"
+        aria-hidden
+      />
+      <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 sm:px-5 sm:pb-5">
+        <p className="font-body text-[11px] leading-[1.6] text-[#ebe6dc] sm:text-[12px]">{children}</p>
+      </div>
+    </>
   );
 }

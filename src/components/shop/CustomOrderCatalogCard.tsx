@@ -2,25 +2,31 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import {
   customOrderCatalogCard,
   MADE_TO_ORDER_DETAIL_HREF,
 } from "@/lib/customOrderContent";
+import { appendReturnTo } from "@/lib/shopReturnTo";
+import { buildCurrentReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
 
 const linkFocus =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2";
 
 export function CustomOrderCatalogCard() {
   const { language } = useLanguage();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const returnTo = buildCurrentReturnTo(pathname, searchParams.toString());
+  const href = appendReturnTo(MADE_TO_ORDER_DETAIL_HREF, returnTo);
   const title = pickBilingual(customOrderCatalogCard.title, customOrderCatalogCard.title, language);
   const subtitle = pickBilingual(
     customOrderCatalogCard.subtitle,
     customOrderCatalogCard.subtitle,
     language
   );
-  const href = MADE_TO_ORDER_DETAIL_HREF;
   const priceLabel = language === "pl" ? "od 400 zł" : "from 400 PLN";
   const noLabel = "no";
   const sizePrefix = "size";
@@ -30,6 +36,7 @@ export function CustomOrderCatalogCard() {
     <Link
       href={href}
       scroll={false}
+      onClick={() => saveShopScrollPosition()}
       className={["group flex h-full w-full flex-col text-left", linkFocus].join(" ")}
     >
       <div className="shop-card-image relative aspect-square w-full overflow-hidden">

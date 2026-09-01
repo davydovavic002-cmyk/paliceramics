@@ -7,6 +7,7 @@ import { submitInboxMessage } from "@/lib/inboxClient";
 import { pickBilingual } from "@/lib/adminTypes";
 import { useWorkshopData } from "@/hooks/useWorkshopData";
 import { useAdminContent } from "@/hooks/useAdminContent";
+import { useFormDraft } from "@/hooks/useFormDraft";
 import {
   getResolvedWorkshopMkFormat,
   resolveWorkshopMkFormats,
@@ -14,6 +15,26 @@ import {
 } from "@/lib/contentResolve";
 import { WorkshopFormatDetailsPanel } from "./WorkshopFormatDetailsPanel";
 import { ConsentField } from "@/components/site/ConsentField";
+
+type BookingDraft = {
+  step: number;
+  typeId: string | null;
+  slotId: string | null;
+  name: string;
+  email: string;
+  hasVoucher: boolean;
+  voucherNumber: string;
+};
+
+const initialBookingDraft: BookingDraft = {
+  step: 1,
+  typeId: null,
+  slotId: null,
+  name: "",
+  email: "",
+  hasVoucher: false,
+  voucherNumber: "",
+};
 
 export function WorkshopBookingBuilder() {
   const { language } = useLanguage();
@@ -27,17 +48,48 @@ export function WorkshopBookingBuilder() {
     () => workshopBookingCopyForLanguage(workshopBookingCopy, language),
     [workshopBookingCopy, language]
   );
-  const [step, setStep] = useState(1);
-  const [typeId, setTypeId] = useState<string | null>(null);
-  const [slotId, setSlotId] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const { value: bookingDraft, setValue: setBookingDraft, clearDraft, hydrated } =
+    useFormDraft("pali-booking-draft", initialBookingDraft);
+
+  const step = bookingDraft.step;
+  const typeId = bookingDraft.typeId;
+  const slotId = bookingDraft.slotId;
+  const name = bookingDraft.name;
+  const email = bookingDraft.email;
+  const hasVoucher = bookingDraft.hasVoucher;
+  const voucherNumber = bookingDraft.voucherNumber;
+
+  const setStep = (next: number) => setBookingDraft((prev) => ({ ...prev, step: next }));
+  const setTypeId = (id: string | null) =>
+    setBookingDraft((prev) => ({ ...prev, typeId: id }));
+  const setSlotId = (id: string | null) =>
+    setBookingDraft((prev) => ({ ...prev, slotId: id }));
+  const setName = (v: string) => setBookingDraft((prev) => ({ ...prev, name: v }));
+  const setEmail = (v: string) => setBookingDraft((prev) => ({ ...prev, email: v }));
+  const setHasVoucher = (v: boolean) =>
+    setBookingDraft((prev) => ({
+      ...prev,
+      hasVoucher: v,
+      voucherNumber: v ? prev.voucherNumber : "",
+    }));
+  const setVoucherNumber = (v: string) =>
+    setBookingDraft((prev) => ({ ...prev, voucherNumber: v }));
+
   const [consent, setConsent] = useState(false);
-  const [hasVoucher, setHasVoucher] = useState(false);
-  const [voucherNumber, setVoucherNumber] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!hydrated || sent) return;
+    const dirty = Boolean(name.trim() || email.trim() || voucherNumber.trim());
+    if (!dirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [email, hydrated, name, sent, voucherNumber]);
 
   const availableSlots = useMemo(() => {
     if (!typeId) return [];
@@ -172,6 +224,7 @@ export function WorkshopBookingBuilder() {
       }
 
       setSent(true);
+      clearDraft();
     } finally {
       setSubmitting(false);
     }
@@ -196,16 +249,22 @@ export function WorkshopBookingBuilder() {
       <div className="mb-8 flex items-center justify-center gap-2 sm:gap-3">
         {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center gap-2 sm:gap-3">
-            <span
+            <button
+              type="button"
+              disabled={s > step}
+              onClick={() => {
+                if (s < step) setStep(s);
+              }}
               className={[
                 "flex h-8 w-8 items-center justify-center rounded-full border font-body text-[11px] tracking-[0.12em] transition-colors",
                 step >= s
                   ? "border-[color-mix(in_srgb,var(--theme-accent)_50%,transparent)] bg-white text-theme"
                   : "border-theme/15 bg-white/90 text-theme-muted/50",
+                s < step ? "cursor-pointer hover:border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)]" : "",
               ].join(" ")}
             >
               {s}
-            </span>
+            </button>
             {s < 3 ? <span className="h-px w-6 bg-theme/15 sm:w-10" aria-hidden /> : null}
           </div>
         ))}
@@ -412,10 +471,7 @@ export function WorkshopBookingBuilder() {
                   <input
                     type="checkbox"
                     checked={hasVoucher}
-                    onChange={(e) => {
-                      setHasVoucher(e.target.checked);
-                      if (!e.target.checked) setVoucherNumber("");
-                    }}
+                    onChange={(e) => setHasVoucher(e.target.checked)}
                     className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--theme-accent)]"
                   />
                   <span className="font-body text-sm leading-snug text-theme">{copy.hasVoucher}</span>

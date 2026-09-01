@@ -7,6 +7,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+html {
+  background-color: #2c2a27;
+}
+
+body {
+  background-color: var(--lookbook-bg, #faf7f0);
+}
+
 :root {
   --font-body: "Noto Serif JP", Georgia, serif;
   --font-display: "Shippori Mincho", Georgia, serif;
@@ -229,16 +237,35 @@ body {
   --theme-btn-secondary: rgba(44, 42, 39, 0.55);
   --theme-btn-text: #ede8df;
   --theme-selection: rgba(237, 232, 223, 0.2);
-  background-color: #2c2a27;
+  background-color: #2c2a27 !important;
   color: #ede8df;
+  isolation: isolate;
 }
 
 .hero-dark-band .theme-hero-tag {
   color: color-mix(in srgb, #ede8df 72%, #a89f94);
 }
 
-.hero-dark-band .hero-brand-logo img {
-  filter: brightness(0) invert(1);
+.hero-dark-band .hero-brand-logo-mark {
+  background-color: #ede8df;
+  -webkit-mask-image: url("/images/brand/pali-logo-circle.png");
+  mask-image: url("/images/brand/pali-logo-circle.png");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.hero-dark-band .hero-brand-logo img,
+.hero-dark-band .hero-brand-logo-img {
+  mix-blend-mode: normal;
+  filter: none;
+}
+
+.hero-stroke-tint img {
+  opacity: 1;
 }
 
 .header-hero-overlay .header-bar-solid {
@@ -284,6 +311,21 @@ body {
   border-color: color-mix(in srgb, #010a8b 55%, #ede8df);
   background-color: #010a8b;
   color: #ede8df;
+}
+
+.header-menu-panel {
+  animation: header-menu-in 0.22s ease-out;
+}
+
+@keyframes header-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 [data-theme="raw-clay"] {
