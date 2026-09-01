@@ -45,8 +45,7 @@ echo "Installing dependencies..."
 npm install
 
 echo "Database schema + seed..."
-npx prisma generate
-npx prisma db push
+npm run db:push
 npm run db:seed
 
 echo "Building Next.js..."

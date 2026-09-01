@@ -26,8 +26,10 @@ fi
 
 if [[ -f .env.local ]] && grep -q DATABASE_URL .env.local 2>/dev/null; then
   echo "==> Database schema"
-  npx prisma generate
-  npx prisma db push
+  npm run db:push
+else
+  echo "WARNING: .env.local missing or no DATABASE_URL — skipping prisma db push."
+  echo "         Copy deploy/env.example to .env.local and set DATABASE_URL."
 fi
 
 echo "==> Build"

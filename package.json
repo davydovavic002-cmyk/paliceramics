@@ -10,9 +10,9 @@
     "start": "next start -p 3556",
     "lint": "next lint",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "db:seed": "prisma db seed",
+    "db:migrate": "node scripts/run-with-env-local.cjs migrate dev",
+    "db:push": "node scripts/run-with-env-local.cjs db push",
+    "db:seed": "node scripts/run-with-env-local.cjs db seed",
     "db:studio": "prisma studio"
   },
   "prisma": {
