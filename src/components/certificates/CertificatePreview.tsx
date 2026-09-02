@@ -79,7 +79,7 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
       ([entry]) => {
         if (entry?.isIntersecting) setInView(true);
       },
-      { rootMargin: "480px 0px" }
+      { rootMargin: "600px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -101,7 +101,7 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
             setDisplaySrc(null);
           }
         });
-    }, 120);
+    }, 250);
 
     return () => window.clearTimeout(timer);
   }, [draft.type, draft.participantCount, draft.recipientName, inView, language, purchaseDate]);

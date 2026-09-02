@@ -167,7 +167,7 @@ export function CertificateSection() {
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
-          <div className="mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
+          <div className="certificate-preview-lazy mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
             <CertificatePreview draft={draft} />
           </div>
 

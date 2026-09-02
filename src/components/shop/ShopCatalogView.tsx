@@ -461,7 +461,7 @@ function ShopCatalogContent() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const preload = filtered.slice(0, 10);
+    const preload = filtered.slice(0, 6);
     preload.forEach((product) => {
       const img = new window.Image();
       img.decoding = "async";
@@ -490,7 +490,7 @@ function ShopCatalogContent() {
 
       <div className="flex flex-col lg:flex-row">
         <aside
-          className={`w-full shrink-0 border-b px-5 py-0 sm:px-8 lg:w-[240px] lg:border-b-0 lg:border-r lg:px-8 lg:py-8 xl:w-[260px] ${line}`}
+          className={`w-full shrink-0 border-b px-5 py-0 sm:px-8 lg:sticky lg:top-[var(--header-offset)] lg:z-20 lg:max-h-[calc(100svh-var(--header-offset))] lg:w-[240px] lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r lg:px-8 lg:py-8 lg:shop-catalog-aside-scroll xl:w-[260px] ${line}`}
         >
           <div className="shop-catalog-mobile-sticky -mx-5 border-b border-[var(--lookbook-line)] bg-[color-mix(in_srgb,#faf7f0_96%,transparent)] px-5 py-2 backdrop-blur-md lg:static lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
             <button
@@ -656,7 +656,7 @@ function ShopCatalogContent() {
                               product={product}
                               title={t(product.name, language)}
                               variant="shop"
-                              imagePriority={index < 10}
+                              imagePriority={index < 6}
                             />
                           );
                         })}

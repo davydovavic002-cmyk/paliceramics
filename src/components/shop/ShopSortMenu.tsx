@@ -22,14 +22,37 @@ export function ShopSortMenu({
 }: ShopSortMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
+
     const onPointerDown = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+
     document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !rootRef.current) return;
+    const firstOption = rootRef.current.querySelector<HTMLButtonElement>(
+      '[role="listbox"] button'
+    );
+    firstOption?.focus();
   }, [open]);
 
   return (
@@ -38,6 +61,7 @@ export function ShopSortMenu({
         {sortLabel}
       </span>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
@@ -62,6 +86,7 @@ export function ShopSortMenu({
                 onClick={() => {
                   onChange(key);
                   setOpen(false);
+                  triggerRef.current?.focus();
                 }}
                 className={[
                   "shop-filter-touch flex w-full min-h-[44px] items-center px-4 py-2.5 text-left font-body text-sm transition-colors",

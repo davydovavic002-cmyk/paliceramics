@@ -58,7 +58,7 @@ function HeroSquareLink({
     <Link
       href={href}
       className={[
-        "hero-square-cta flex h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5",
+        "hero-square-cta flex h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5 xl:h-[min(16vw,120px)] xl:w-[min(16vw,120px)]",
         "font-display text-[9px] font-normal tracking-[0.04em] text-[#ede8df] transition-opacity duration-300 hover:opacity-90 sm:text-[10px]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede8df] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2c2a27]",
         variant === "filled"

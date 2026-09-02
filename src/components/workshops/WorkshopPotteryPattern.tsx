@@ -3,9 +3,9 @@
 import Image from "next/image";
 
 const ASSETS = [
-  { src: "/images/workshops/bowl-outline.png", width: 72, tint: false },
-  { src: "/images/workshops/cup-silhouette.png", width: 54, tint: false },
-  { src: "/images/workshops/cups-pair.png", width: 88, tint: true },
+  { src: "/images/workshops/bowl-outline.webp", width: 72, tint: false },
+  { src: "/images/workshops/cup-silhouette.webp", width: 54, tint: false },
+  { src: "/images/workshops/cups-pair.webp", width: 88, tint: true },
 ] as const;
 
 /** Edge/corner only — center stays clear for the booking form */

@@ -1,5 +1,6 @@
 import type { ItemStatus } from "@/lib/galleryContent";
 import { filterProjectImages } from "@/lib/productImages";
+import { resolveCatalogImageUrls } from "@/lib/catalogImages";
 import { galleryItems } from "@/lib/galleryContent";
 import { calendarSlots, workshopFormats } from "@/lib/workshopsContent";
 import { siteContent } from "@/lib/content";
@@ -753,7 +754,7 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
           ? [rest.imageUrl]
           : []
     );
-    const imageUrls = storedUrls.length ? storedUrls : seedUrls;
+    const imageUrls = resolveCatalogImageUrls(storedUrls, seedUrls);
 
     return normalizeProductDetails({
       ...rest,

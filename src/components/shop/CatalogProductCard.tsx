@@ -141,15 +141,14 @@ export function CatalogProductCard({
             priority={imagePriority}
             fetchPriority={imagePriority ? "high" : undefined}
             loading={imagePriority ? "eager" : "lazy"}
-            quality={imagePriority ? 76 : 68}
+            quality={imagePriority ? 62 : 52}
             unoptimized={unoptimizedImage}
-            sizes="(max-width:768px) 42vw, (max-width:1280px) 22vw, 180px"
+            sizes="(max-width: 768px) 180px, (max-width: 1280px) 220px, 180px"
             onLoad={() => setImageLoaded(true)}
             onLoadingComplete={() => setImageLoaded(true)}
             className={[
               "object-contain object-center p-3 sm:p-5",
-              "transition-[transform,opacity] duration-500 ease-out",
-              imageLoaded ? "opacity-100" : "opacity-0",
+              "transition-transform duration-500 ease-out",
               showImageHoverScale ? "group-hover:scale-[1.02]" : "",
             ].join(" ")}
           />

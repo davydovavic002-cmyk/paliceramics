@@ -40,19 +40,19 @@ export const palinaStoryCopy: Record<Language, PalinaStoryCopy> = {
 
 export const palinaStoryImages = {
   japan: {
-    src: "/images/about/palina-japan.png",
+    src: "/images/about/palina-japan.webp",
     alt: { pl: "Palina w japońskim ogrodzie", en: "Palina in a Japanese courtyard" },
   },
   wheel: {
-    src: "/images/about/palina-wheel.png",
+    src: "/images/about/palina-wheel.webp",
     alt: { pl: "Palina przy kole garncarskim", en: "Palina at the pottery wheel" },
   },
   glaze: {
-    src: "/images/about/palina-glaze.png",
+    src: "/images/about/palina-glaze.webp",
     alt: { pl: "Szkliwione naczynia", en: "Glazed ceramics" },
   },
   studio: {
-    src: "/images/about/palina-studio.png",
+    src: "/images/about/palina-studio.webp",
     alt: { pl: "Pracownia — koło garncarskie", en: "Studio pottery wheel" },
   },
 } as const;

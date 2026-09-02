@@ -42,7 +42,9 @@ export function LookbookCollectionCover({
       href={href}
       className={[
         "group relative flex flex-col overflow-hidden",
-        "bg-[var(--lookbook-bg-well)] transition-opacity duration-300 hover:opacity-95",
+        "bg-[var(--lookbook-bg-well)] transition-[opacity,box-shadow,transform] duration-300",
+        "hover:opacity-95 hover:shadow-[0_12px_32px_rgba(1,10,139,0.08)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2",
         className,
       ].join(" ")}
     >
@@ -73,7 +75,7 @@ export function LookbookCollectionCover({
       </div>
 
       <div className="relative z-10 px-5 pb-4 pt-1 sm:px-6 sm:pb-5">
-        <h3 className="lookbook-ink font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em]">
+        <h3 className="lookbook-ink font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em] transition-transform duration-300 group-hover:translate-x-0.5">
           {name}
         </h3>
         <p className="lookbook-section-muted mt-1 font-body text-[11px] leading-snug tracking-[0.04em] sm:text-xs">

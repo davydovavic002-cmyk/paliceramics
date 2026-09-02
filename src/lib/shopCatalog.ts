@@ -16,6 +16,7 @@ import { productPhotos } from "@/lib/adminTypes";
 import type { ProductPieceTypeId } from "@/lib/lookbookCollections";
 import { images } from "@/lib/images";
 import { filterProjectImages } from "@/lib/productImages";
+import { preferOptimizedImage, resolveCatalogImageUrls } from "@/lib/catalogImages";
 
 export type ShopCatalogFilter = "all" | "in-stock" | string;
 
@@ -60,14 +61,15 @@ export function buildShopCatalog(
     .map((product) => {
       const gallery = galleryBySku.get(product.sku) ?? galleryById.get(product.id);
       const uploadedPhotos = filterProjectImages(productPhotos(product));
-      const galleryImagesRaw = uploadedPhotos.length
-        ? uploadedPhotos
-        : gallery
+      const galleryImagesRaw = resolveCatalogImageUrls(
+        uploadedPhotos,
+        gallery
           ? filterProjectImages(getProductImages(gallery))
-          : [];
+          : []
+      );
       const image =
         galleryImagesRaw[0] ??
-        gallery?.image ??
+        (gallery?.image ? preferOptimizedImage(gallery.image) : undefined) ??
         imageByFilename[product.imageLabel] ??
         images.accentBowl;
       const galleryImages = galleryImagesRaw.length ? galleryImagesRaw : [image];

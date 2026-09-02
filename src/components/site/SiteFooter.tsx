@@ -154,13 +154,27 @@ export function SiteFooter() {
     <footer id="contact" className="site-footer">
       <div className="lookbook-full-bleed footer-newsletter border-b border-[var(--footer-line)]">
         <div className="mx-auto grid max-w-[1800px] gap-6 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10 lg:px-10 lg:py-10">
-          <div>
+          <div className="space-y-4">
             <p className="footer-ink font-body text-[11px] font-medium uppercase tracking-[0.28em]">
               {copy.studioTitle}
             </p>
-            <p className="footer-ink mt-2 max-w-xl font-display text-[clamp(1.1rem,2.2vw,1.5rem)] italic leading-snug tracking-[0.03em]">
+            <p className="footer-ink max-w-xl font-display text-[clamp(1.1rem,2.2vw,1.5rem)] italic leading-snug tracking-[0.03em]">
               {copy.studioTagline}
             </p>
+            <nav
+              aria-label={language === "pl" ? "Szybkie linki" : "Quick links"}
+              className="flex flex-wrap gap-x-4 gap-y-2 font-body text-[10px] uppercase tracking-[0.16em]"
+            >
+              <Link href="/shop" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+                {language === "pl" ? "Sklep" : "Shop"}
+              </Link>
+              <Link href="/privacy" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+                {copy.privacy}
+              </Link>
+              <Link href="/regulamin" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+                {copy.terms}
+              </Link>
+            </nav>
           </div>
 
           {instagramHref ? (

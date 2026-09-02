@@ -93,7 +93,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
 
   return (
     <div className="shop-catalog-page shop-product-page min-h-0 pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
-      <div className="mx-auto max-w-[1080px] px-4 sm:px-8">
+      <div className="mx-auto max-w-[1080px] px-4 sm:px-8 xl:max-w-[1320px]">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
             href="/"
@@ -126,7 +126,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
           >
             <X className="h-6 w-6" strokeWidth={1.75} />
           </button>
-          <div className="shop-product-sheet-inner grid rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-2 lg:items-stretch">
+          <div className="shop-product-sheet-inner grid rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
             <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>

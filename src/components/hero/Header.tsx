@@ -110,8 +110,13 @@ export function Header() {
   const compactViewport = useCompactViewport();
   const menuCategories = useMenuCategories(language);
 
-  const solidBar = scrolled || compactViewport;
+  const solidBar = compactViewport || scrolled;
   const heroOverlay = pathname === "/" && !solidBar;
+  const barClass = compactViewport
+    ? "header-bar-mobile"
+    : solidBar
+      ? "header-bar-solid"
+      : "border-b border-transparent bg-transparent";
 
   useEffect(() => {
     const sync = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
@@ -157,7 +162,7 @@ export function Header() {
       <div
         className={[
           "site-header-inner pointer-events-auto relative z-[2] transition-[background-color,box-shadow,border-color] duration-200 ease-out",
-          solidBar ? "header-bar-solid" : compactViewport ? "header-bar-mobile" : "border-b border-transparent bg-transparent",
+          barClass,
         ].join(" ")}
       >
         <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-5 py-2.5 md:px-8 md:py-3 lg:px-16 lg:py-3.5">

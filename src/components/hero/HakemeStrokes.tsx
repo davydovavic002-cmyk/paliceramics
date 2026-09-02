@@ -3,10 +3,10 @@
 import Image from "next/image";
 
 const STROKES = [
-  "/images/strokes/stroke-0.png",
-  "/images/strokes/stroke-1.png",
-  "/images/strokes/stroke-2.png",
-  "/images/strokes/stroke-3.png",
+  "/images/strokes/stroke-0.webp",
+  "/images/strokes/stroke-1.webp",
+  "/images/strokes/stroke-2.webp",
+  "/images/strokes/stroke-3.webp",
 ] as const;
 
 const STROKE_INK = "#010A8B";
