@@ -29,8 +29,14 @@ git pull origin main
 echo "==> Dependencies"
 npm install
 
-echo "==> Build"
-npm run build
+if [[ "${SKIP_BUILD:-0}" == "1" ]]; then
+  echo "==> Build skipped (SKIP_BUILD=1). Use deploy/deploy-from-ci.sh for CI artifacts."
+elif [[ -f .next/BUILD_ID ]]; then
+  echo "==> Build skipped — .next/BUILD_ID already present."
+else
+  echo "==> Build"
+  npm run build
+fi
 
 echo "==> PM2"
 if pm2 describe pali >/dev/null 2>&1; then
