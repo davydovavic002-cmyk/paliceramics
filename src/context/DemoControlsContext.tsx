@@ -15,11 +15,13 @@ import {
   type MotionLevel,
   type SiteTheme,
 } from "@/lib/demoPresets";
+import { useIdleReady } from "@/hooks/useIdleReady";
 import { defaultMotionLevel, prefersReducedMotion } from "@/lib/motionDefaults";
 
 interface DemoControlsValue {
   motionLevel: MotionLevel;
   siteTheme: SiteTheme;
+  effectsReady: boolean;
   setMotionLevel: (level: MotionLevel) => void;
   setSiteTheme: (theme: SiteTheme) => void;
 }
@@ -55,6 +57,7 @@ export function DemoControlsProvider({ children }: { children: ReactNode }) {
   const [motionLevel, setMotionLevelState] = useState<MotionLevel>(defaultMotionLevel());
   const [siteTheme, setSiteThemeState] = useState<SiteTheme>("raw-clay");
   const [hydrated, setHydrated] = useState(false);
+  const effectsReady = useIdleReady();
 
   useEffect(() => {
     const stored = readStored();
@@ -102,8 +105,8 @@ export function DemoControlsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ motionLevel, siteTheme, setMotionLevel, setSiteTheme }),
-    [motionLevel, siteTheme, setMotionLevel, setSiteTheme]
+    () => ({ motionLevel, siteTheme, setMotionLevel, setSiteTheme, effectsReady }),
+    [motionLevel, siteTheme, setMotionLevel, setSiteTheme, effectsReady]
   );
 
   return (
@@ -118,14 +121,15 @@ export function useDemoControls() {
 }
 
 export function useMotionFlags() {
-  const { motionLevel } = useDemoControls();
+  const { motionLevel, effectsReady } = useDemoControls();
+  const heavyEffects = motionLevel !== "minimal" && effectsReady;
   return {
     motionLevel,
     isMinimal: motionLevel === "minimal",
     isTactile: motionLevel === "tactile",
     isImmersive: motionLevel === "immersive",
-    showWebGL: motionLevel !== "minimal",
-    showDriftingStrokes: motionLevel !== "minimal",
+    showWebGL: heavyEffects,
+    showDriftingStrokes: heavyEffects,
     showHoverTilt: motionLevel !== "minimal",
     showImageHoverScale: motionLevel !== "minimal",
     showScrollThemeShift: motionLevel === "immersive",

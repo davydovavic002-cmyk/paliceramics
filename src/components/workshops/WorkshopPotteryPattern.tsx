@@ -45,8 +45,8 @@ export function WorkshopPotteryPattern() {
             <Image
               src={asset.src}
               alt=""
-              width={asset.width * 2}
-              height={asset.width * 2}
+              width={asset.width}
+              height={asset.width}
               draggable={false}
               unoptimized
               className={[

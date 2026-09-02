@@ -13,13 +13,6 @@ const blockReveal = {
   },
 };
 
-const hoverLift = {
-  y: -5,
-  rotate: 0,
-  boxShadow: "0 22px 48px rgba(0,0,0,0.18)",
-  transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
-};
-
 type StoryBlockProps = {
   children: ReactNode;
   className?: string;
@@ -31,7 +24,7 @@ export function StoryMotionBlock({
   children,
   className = "",
   delay = 0,
-  idleFloat = true,
+  idleFloat = false,
 }: StoryBlockProps) {
   const reduceMotion = useReducedMotion();
 
@@ -43,7 +36,6 @@ export function StoryMotionBlock({
       whileInView="show"
       viewport={{ once: true, margin: "-60px" }}
       transition={{ delay }}
-      whileHover={reduceMotion ? undefined : hoverLift}
       animate={
         reduceMotion || !idleFloat
           ? undefined
@@ -79,20 +71,14 @@ export function StoryHeroPhoto({
   caption,
   className = "",
 }: StoryHeroPhotoProps) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <StoryMotionBlock
-      className={`group relative overflow-hidden rounded-[2px] shadow-[0_20px_52px_rgba(0,0,0,0.18)] ${className}`}
+      className={`relative overflow-hidden rounded-[2px] shadow-[0_20px_52px_rgba(0,0,0,0.18)] ${className}`}
     >
-      <motion.div
-        className="absolute inset-0"
-        whileHover={reduceMotion ? undefined : { scale: 1.04 }}
-        transition={{ duration: 12, ease: "easeOut" }}
-      >
+      <div className="absolute inset-0">
         <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className="object-cover" />
-      </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#121418]/55 via-transparent to-transparent transition-opacity duration-500 group-hover:from-[#121418]/62" />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-[#121418]/55 via-transparent to-transparent" />
       {caption}
     </StoryMotionBlock>
   );
@@ -119,22 +105,9 @@ export function StoryEditorialPhoto({
   objectPosition = "center center",
   caption,
 }: StoryEditorialPhotoProps) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <StoryMotionBlock delay={delay} className={className}>
-      <motion.div
-        className="group relative h-full min-h-[inherit] overflow-hidden rounded-[2px] shadow-[0_16px_40px_rgba(0,0,0,0.16)]"
-        whileHover={
-          reduceMotion
-            ? undefined
-            : {
-                scale: 1.02,
-                boxShadow: "0 22px 48px rgba(0,0,0,0.2)",
-              }
-        }
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <div className="relative h-full min-h-[inherit] overflow-hidden rounded-[2px] shadow-[0_16px_40px_rgba(0,0,0,0.16)]">
         <Image
           src={src}
           alt={alt}
@@ -147,13 +120,13 @@ export function StoryEditorialPhoto({
         {caption ? (
           <>
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-t from-[#121418]/55 to-transparent transition-opacity duration-500 group-hover:from-[#121418]/65 sm:h-[38%]"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-t from-[#121418]/55 to-transparent sm:h-[38%]"
               aria-hidden
             />
             {caption}
           </>
         ) : null}
-      </motion.div>
+      </div>
     </StoryMotionBlock>
   );
 }
@@ -167,25 +140,11 @@ export function StoryPanelText({
   className?: string;
   delay?: number;
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <StoryMotionBlock delay={delay} idleFloat={false} className={className}>
-      <motion.div
-        className="rounded-[2px] border border-[#d8d0c4] bg-[#faf7f0] px-4 py-3.5 shadow-[0_6px_24px_rgba(0,0,0,0.08)] sm:px-5 sm:py-4"
-        whileHover={
-          reduceMotion
-            ? undefined
-            : {
-                y: -3,
-                borderColor: "#c8bfb0",
-                boxShadow: "0 12px 32px rgba(0,0,0,0.12)",
-              }
-        }
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      >
+    <StoryMotionBlock delay={delay} className={className}>
+      <div className="rounded-[2px] border border-[#d8d0c4] bg-[#faf7f0] px-4 py-3.5 shadow-[0_6px_24px_rgba(0,0,0,0.08)] sm:px-5 sm:py-4">
         <p className="font-body text-[12px] leading-[1.65] text-[#3d3428] sm:text-[13px]">{children}</p>
-      </motion.div>
+      </div>
     </StoryMotionBlock>
   );
 }

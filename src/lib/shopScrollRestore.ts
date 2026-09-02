@@ -59,6 +59,36 @@ export function clearShopCatalogReturnState() {
   sessionStorage.removeItem(SHOP_RETURN_KEY);
 }
 
+function runShopCatalogScrollRestore(state: ShopCatalogReturnState) {
+  const { scrollY } = state;
+  window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+    clearShopCatalogReturnState();
+  });
+}
+
+/** Restore catalog scroll after closing a product — returns true when applied. */
+export function tryRestoreShopCatalogScroll(pathname: string, search: string): boolean {
+  const state = peekShopCatalogReturnState();
+  if (!state || !matchesSavedShopReturn(state.returnTo, pathname, search)) {
+    if (state) clearShopCatalogReturnState();
+    return false;
+  }
+  runShopCatalogScrollRestore(state);
+  return true;
+}
+
+export function isShopCatalogPath(pathname: string): boolean {
+  return pathname === "/shop" || pathname === "/shop/made-to-order";
+}
+
+/** True when sessionStorage holds a pending catalog scroll restore for the current catalog URL. */
+export function shouldDeferInitialScrollToTop(pathname: string): boolean {
+  if (!isShopCatalogPath(pathname)) return false;
+  return peekShopCatalogReturnState() !== null;
+}
+
 export function consumeShopCatalogReturnState(): ShopCatalogReturnState | null {
   const restored = peekShopCatalogReturnState();
   if (restored) clearShopCatalogReturnState();

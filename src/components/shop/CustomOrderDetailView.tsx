@@ -6,6 +6,7 @@ import { useCallback, useEffect } from "react";
 import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
+import { useProductPageScrollTop } from "@/hooks/useProductPageScrollTop";
 import {
   customOrderContent,
   madeToOrderCategoryLabel,
@@ -19,6 +20,8 @@ export function CustomOrderDetailView() {
   const searchParams = useSearchParams();
   const { language } = useLanguage();
   const backHref = resolveBackHref(decodeReturnTo(searchParams.get("returnTo")), MADE_TO_ORDER_SHOP_HREF);
+
+  useProductPageScrollTop("made-to-order");
 
   const copy =
     language === "pl"
@@ -52,7 +55,7 @@ export function CustomOrderDetailView() {
 
   return (
     <div className="shop-catalog-page shop-product-page min-h-0 pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14">
-      <div className="mx-auto max-w-[900px] px-4 sm:px-6">
+      <div className="mx-auto max-w-[960px] px-4 sm:px-6">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link href={backHref} scroll={false} className="transition-opacity hover:text-[var(--lookbook-ink)]">
             {language === "pl" ? "Produkty" : "Products"}

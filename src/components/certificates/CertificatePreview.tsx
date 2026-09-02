@@ -2,16 +2,16 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAdminContent } from "@/hooks/useAdminContent";
-import { resolveCertificateTypes } from "@/lib/contentResolve";
 import {
   formatNominalPln,
   generateCertificatePng,
   getCertificatePrice,
   VOUCHER_COLORS,
   type CertificateDraft,
-  type CertificateType,
 } from "@/lib/certificate";
+import { useAdminContent } from "@/hooks/useAdminContent";
+import { resolveCertificateTypes } from "@/lib/contentResolve";
+import type { CertificateType } from "@/lib/certificate";
 
 interface CertificatePreviewProps {
   draft: CertificateDraft;
@@ -60,7 +60,9 @@ async function ensurePreview(
 
 export function CertificatePreview({ draft, purchaseDate = null }: CertificatePreviewProps) {
   const { language } = useLanguage();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [displaySrc, setDisplaySrc] = useState<string | null>(null);
+  const [inView, setInView] = useState(false);
   const cacheRef = useRef<Map<string, string>>(new Map());
   const requestRef = useRef(0);
   const displaySrcRef = useRef<string | null>(null);
@@ -70,31 +72,22 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
   }, [displaySrc]);
 
   useEffect(() => {
-    let cancelled = false;
+    const el = rootRef.current;
+    if (!el) return;
 
-    void (async () => {
-      const variants: CertificateDraft[] = [
-        { ...draft, type: "workshop-once" },
-        { ...draft, type: "pottery-course" },
-      ];
-      await Promise.all(
-        variants.map((variant) =>
-          ensurePreview(variant, language, purchaseDate, cacheRef.current).catch(() => undefined)
-        )
-      );
-      if (cancelled) return;
-
-      const key = previewCacheKey(draft, language, purchaseDate);
-      const cached = cacheRef.current.get(key);
-      if (cached) setDisplaySrc(cached);
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [draft.participantCount, draft.recipientName, language, purchaseDate]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setInView(true);
+      },
+      { rootMargin: "240px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
+    if (!inView) return;
+
     const requestId = ++requestRef.current;
 
     const timer = window.setTimeout(() => {
@@ -111,7 +104,7 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [draft.type, draft.participantCount, draft.recipientName, language, purchaseDate]);
+  }, [draft.type, draft.participantCount, draft.recipientName, inView, language, purchaseDate]);
 
   useEffect(
     () => () => {
@@ -125,6 +118,7 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
 
   return (
     <div
+      ref={rootRef}
       className="relative aspect-[3496/2480] w-full shrink-0 overflow-hidden shadow-[0_24px_56px_rgba(0,0,0,0.22)]"
       style={{ backgroundColor: VOUCHER_COLORS.paper, contain: "layout paint" }}
     >

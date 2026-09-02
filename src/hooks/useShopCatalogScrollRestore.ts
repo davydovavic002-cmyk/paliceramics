@@ -2,45 +2,7 @@
 
 import { useLayoutEffect, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import {
-  clearShopCatalogReturnState,
-  matchesSavedShopReturn,
-  peekShopCatalogReturnState,
-  type ShopCatalogReturnState,
-} from "@/lib/shopScrollRestore";
-
-function runShopCatalogScrollRestore(state: ShopCatalogReturnState) {
-  const { scrollY } = state;
-
-  const apply = () => {
-    window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
-  };
-
-  apply();
-  requestAnimationFrame(() => {
-    apply();
-    requestAnimationFrame(() => {
-      apply();
-      clearShopCatalogReturnState();
-    });
-  });
-
-  window.setTimeout(apply, 0);
-  window.setTimeout(apply, 50);
-  window.setTimeout(() => {
-    apply();
-    clearShopCatalogReturnState();
-  }, 120);
-}
-
-function tryRestoreShopCatalogScroll(pathname: string, search: string) {
-  const state = peekShopCatalogReturnState();
-  if (!state || !matchesSavedShopReturn(state.returnTo, pathname, search)) {
-    clearShopCatalogReturnState();
-    return;
-  }
-  runShopCatalogScrollRestore(state);
-}
+import { tryRestoreShopCatalogScroll } from "@/lib/shopScrollRestore";
 
 /** Restore catalog scroll when returning from product detail to the same catalog URL. */
 export function useShopCatalogScrollRestore() {

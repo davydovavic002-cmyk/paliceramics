@@ -71,7 +71,7 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
             {copy.care}
           </button>
         </div>
-        {actions ? <div className="shrink-0">{actions}</div> : null}
+        {actions ? <div className="min-w-0 basis-full sm:basis-auto sm:shrink-0">{actions}</div> : null}
       </div>
 
       <div className="min-h-[4.25rem]">

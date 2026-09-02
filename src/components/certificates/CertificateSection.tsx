@@ -159,17 +159,17 @@ export function CertificateSection() {
           </MotionReveal>
         </header>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:gap-12">
-          <div className="mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:sticky lg:top-[calc(var(--header-offset,5.5rem)+0.75rem)] lg:mx-0 lg:max-w-[25rem] lg:self-start xl:max-w-[27rem]">
+        <div className="mx-auto mt-6 flex max-w-3xl gap-2.5 rounded-xl border border-[color-mix(in_srgb,var(--theme-accent)_20%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_35%,transparent)] px-3.5 py-2.5 lg:max-w-none">
+          <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-theme-muted" strokeWidth={1.5} />
+          <p className="font-body text-[11px] leading-snug text-theme-muted">{copy.flowNote}</p>
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
+          <div className="mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
             <CertificatePreview draft={draft} />
           </div>
 
           <div className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">
-            <div className="mb-4 flex gap-2.5 rounded-xl border border-[color-mix(in_srgb,var(--theme-accent)_20%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_35%,transparent)] px-3.5 py-2.5">
-              <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-theme-muted" strokeWidth={1.5} />
-              <p className="font-body text-[11px] leading-snug text-theme-muted">{copy.flowNote}</p>
-            </div>
-
             {sent ? (
               <div className="space-y-4 rounded-2xl border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] p-5">
                 <p className="font-body text-sm leading-relaxed text-theme">{copy.success}</p>

@@ -1,22 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { SHOP_RETURN_KEY } from "@/lib/shopScrollRestore";
 import { scrollToHashFromLocation, scrollToSection } from "@/lib/scrollToSection";
 
-/** Global in-page anchor scrolling — works for nav, CTAs, and direct #hash URLs. */
+/** In-page #anchor clicks and hashchange — scroll restore lives in SiteScrollRestore. */
 export function HashScrollHandler() {
   useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
-    }
-
-    if (window.location.hash) {
-      scrollToHashFromLocation();
-    } else if (!sessionStorage.getItem(SHOP_RETURN_KEY)) {
-      window.scrollTo(0, 0);
-    }
-
     const onClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;

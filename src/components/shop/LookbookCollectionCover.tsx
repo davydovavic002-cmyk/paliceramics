@@ -2,23 +2,37 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
-import { shopCollectionHref, type LookbookCollection } from "@/lib/lookbookCollections";
+import { shopCollectionHref, getCollectionById, type LookbookCollection } from "@/lib/lookbookCollections";
 import { isDataImageUrl } from "@/lib/productImageUpload";
+import { resolvePublicImageUrl } from "@/lib/productImages";
+import { images } from "@/lib/images";
 
 interface LookbookCollectionCoverProps {
   collection: LookbookCollection;
   index: number;
   className?: string;
+  imagePriority?: boolean;
 }
 
 export function LookbookCollectionCover({
   collection,
   index,
   className = "",
+  imagePriority = false,
 }: LookbookCollectionCoverProps) {
   const { language } = useLanguage();
+  const seed = getCollectionById(collection.id);
+  const resolvedSrc =
+    resolvePublicImageUrl(collection.image) ?? seed?.image ?? images.accentBowl;
+  const [imageSrc, setImageSrc] = useState(resolvedSrc);
+
+  useEffect(() => {
+    setImageSrc(resolvedSrc);
+  }, [resolvedSrc]);
+
   const name = pickBilingual(collection.name, collection.name, language);
   const subtitle = pickBilingual(collection.subtitle, collection.subtitle, language);
   const href = collection.href ?? shopCollectionHref(collection.id);
@@ -27,37 +41,42 @@ export function LookbookCollectionCover({
     <Link
       href={href}
       className={[
-        "group relative flex h-full min-h-[200px] flex-col overflow-hidden",
-        "bg-[var(--lookbook-bg-well)] transition-opacity duration-300 hover:opacity-95 lg:min-h-[210px]",
+        "group relative flex flex-col overflow-hidden",
+        "bg-[var(--lookbook-bg-well)] transition-opacity duration-300 hover:opacity-95",
         className,
       ].join(" ")}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 p-5 sm:p-6">
+      <div className="pointer-events-none absolute left-5 top-4 z-10 sm:left-6 sm:top-5">
         <span className="lookbook-section-muted font-body text-[10px] uppercase tracking-[0.28em]">
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
 
-      <div className="relative min-h-[128px] flex-1 sm:min-h-[140px]">
-        <Image
-          src={collection.image}
-          alt=""
-          fill
-          unoptimized={isDataImageUrl(collection.image)}
-          sizes="(max-width: 1024px) 50vw, 25vw"
-          className="object-contain object-center p-6 pb-3 pt-10 transition-transform duration-500 group-hover:scale-[1.03] sm:p-7 sm:pt-11"
-        />
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--lookbook-bg-well)] to-transparent"
-          aria-hidden
-        />
+      <div className="flex justify-center px-4 pb-1 pt-9 sm:px-5 sm:pt-10">
+        <div className="relative h-[88px] w-full max-w-[9.5rem] sm:h-[96px] sm:max-w-[10.5rem] lg:h-[92px] lg:max-w-[9rem]">
+          <Image
+            src={imageSrc}
+            alt=""
+            fill
+            priority={imagePriority}
+            fetchPriority={imagePriority ? "high" : undefined}
+            unoptimized={isDataImageUrl(imageSrc)}
+            sizes="168px"
+            quality={imagePriority ? 78 : 72}
+            onError={() => {
+              const fallback = seed?.image ?? images.accentBowl;
+              if (imageSrc !== fallback) setImageSrc(fallback);
+            }}
+            className="object-contain object-center transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
       </div>
 
-      <div className="relative z-10 shrink-0 px-5 pb-5 sm:px-6 sm:pb-6">
-        <h3 className="lookbook-ink font-display text-[clamp(1.1rem,2.2vw,1.45rem)] uppercase leading-snug tracking-[0.05em]">
+      <div className="relative z-10 px-5 pb-4 pt-1 sm:px-6 sm:pb-5">
+        <h3 className="lookbook-ink font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em]">
           {name}
         </h3>
-        <p className="lookbook-section-muted mt-2 font-body text-xs leading-relaxed tracking-[0.04em] sm:text-[13px]">
+        <p className="lookbook-section-muted mt-1 font-body text-[11px] leading-snug tracking-[0.04em] sm:text-xs">
           {subtitle}
         </p>
       </div>

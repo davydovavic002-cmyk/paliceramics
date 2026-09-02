@@ -6,9 +6,9 @@ import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useDemoControls } from "@/context/DemoControlsContext";
 import { useShopCatalog } from "@/hooks/useShopCatalog";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useProductPageScrollTop } from "@/hooks/useProductPageScrollTop";
 import {
   findShopProductBySku,
   getRelatedProducts,
@@ -18,25 +18,26 @@ import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
 import { clearShopCatalogReturnState } from "@/lib/shopScrollRestore";
 import { t } from "@/lib/galleryContent";
 import { getCollectionLabel } from "@/lib/lookbookCollections";
-import { getFadeInProps, staggerStep } from "@/lib/motionUtils";
+import { staggerStep } from "@/lib/motionUtils";
 import { CatalogProductCard } from "./CatalogProductCard";
 import { ProductDetailNotes } from "./ProductDetailNotes";
 import { ProductGallery } from "./ProductGallery";
 import { ProductPurchaseMenu } from "./ProductPurchaseMenu";
+import { ProductWaitlistMenu } from "./ProductWaitlistMenu";
 import { ShopStatusBadge } from "./ShopStatusBadge";
-import { WaitlistForm } from "./WaitlistForm";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 
 export function ProductDetailView({ sku }: { sku: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { motionLevel } = useDemoControls();
   const { language } = useLanguage();
   const { products } = useShopCatalog();
   const product = findShopProductBySku(products, sku);
   const related = product ? getRelatedProducts(products, product) : [];
 
   const backHref = resolveBackHref(decodeReturnTo(searchParams.get("returnTo")));
+
+  useProductPageScrollTop(sku);
 
   const copy =
     language === "pl"
@@ -106,9 +107,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const collectionLabel = getCollectionLabel(product.categoryId, language);
   const description = t(product.description, language);
   const outOfStock = isOutOfStock(product);
-  const unavailable = outOfStock || product.status === "sold";
   const showPurchase = product.status !== "sold" && !outOfStock;
-  const showWaitlist = unavailable;
 
   return (
     <div className="shop-catalog-page shop-product-page min-h-0 pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
@@ -135,7 +134,6 @@ export function ProductDetailView({ sku }: { sku: string }) {
           className="delivery-faq-panel shop-product-sheet relative mt-4 rounded-2xl sm:mt-6 sm:rounded-[1.75rem]"
           onTouchStart={onSwipeStart}
           onTouchEnd={onSwipeEnd}
-          {...getFadeInProps(motionLevel, 0.04)}
         >
           <button
             type="button"
@@ -177,7 +175,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
                 />
               </div>
 
-              <div className={showWaitlist ? "mt-4" : "mt-5"}>
+              <div className="mt-5">
                 <p className="shop-product-section-label font-body">{copy.about}</p>
                 <p className="delivery-faq-ink mt-2 max-w-prose font-body text-[14px] leading-[1.65] sm:mt-3 sm:text-[15px] sm:leading-[1.75]">
                   {description}
@@ -186,21 +184,18 @@ export function ProductDetailView({ sku }: { sku: string }) {
                   product={product}
                   language={language}
                   actions={
-                    showPurchase ? (
-                      <ProductPurchaseMenu
-                        productTitle={title}
-                        sku={product.sku}
-                        pricePln={product.pricePln}
-                      />
-                    ) : undefined
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                      {showPurchase ? (
+                        <ProductPurchaseMenu
+                          productTitle={title}
+                          sku={product.sku}
+                          pricePln={product.pricePln}
+                        />
+                      ) : null}
+                      <ProductWaitlistMenu sku={product.sku} productTitle={title} />
+                    </div>
                   }
                 />
-
-                {showWaitlist ? (
-                  <div className="shop-product-actions mt-4">
-                    <WaitlistForm sku={product.sku} productTitle={title} variant="product" />
-                  </div>
-                ) : null}
               </div>
             </div>
           </div>

@@ -7,7 +7,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useMotionFlags } from "@/context/DemoControlsContext";
 import { siteContent } from "@/lib/content";
 import { JapandiBackground } from "./JapandiBackground";
-import { HakemeStrokes } from "./HakemeStrokes";
+
+const HakemeStrokes = dynamic(() => import("./HakemeStrokes").then((m) => m.HakemeStrokes), {
+  ssr: false,
+});
 
 const AmbientLightCanvas = dynamic(
   () => import("./AmbientLightCanvas").then((m) => m.AmbientLightCanvas),
@@ -73,7 +76,7 @@ function HeroSquareLink({
 
 export function HeroDark() {
   const { language, isTransitioning } = useLanguage();
-  const { showWebGL, showMicroAnimations } = useMotionFlags();
+  const { showWebGL, showMicroAnimations, showDriftingStrokes } = useMotionFlags();
   const { hero } = siteContent;
 
   const fade = {
@@ -90,7 +93,7 @@ export function HeroDark() {
       <JapandiBackground />
       {showWebGL ? <ForegroundBokehCanvas /> : null}
       {showWebGL && showMicroAnimations ? <DustMotesCanvas /> : null}
-      <HakemeStrokes />
+      {showDriftingStrokes ? <HakemeStrokes /> : null}
 
       <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-[1800px] flex-col px-5 lg:min-h-screen lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>

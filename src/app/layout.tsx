@@ -25,7 +25,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{document.documentElement.dataset.theme='raw-clay';if('scrollRestoration'in history)history.scrollRestoration='manual';if(!location.hash&&!sessionStorage.getItem('pali-shop-return'))scrollTo(0,0);}catch(e){}})();",
+              "(function(){try{document.documentElement.dataset.theme='raw-clay';if('scrollRestoration'in history)history.scrollRestoration='manual';var nav=performance.getEntriesByType('navigation')[0];var isBack=nav&&nav.type==='back_forward';var p=location.pathname;var catalog=p==='/shop'||p==='/shop/made-to-order';var keep=catalog&&sessionStorage.getItem('pali-shop-return');if(!isBack&&!location.hash&&!keep)scrollTo(0,0);}catch(e){}})();",
           }}
         />
         <LanguageProvider>

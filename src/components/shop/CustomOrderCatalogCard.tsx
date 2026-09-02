@@ -35,7 +35,6 @@ export function CustomOrderCatalogCard() {
   return (
     <Link
       href={href}
-      scroll={false}
       onClick={() => {
         if (pathname === "/shop" || pathname === "/shop/made-to-order") {
           saveShopScrollPosition(returnTo);

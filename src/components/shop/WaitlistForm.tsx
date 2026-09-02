@@ -8,10 +8,16 @@ import { ConsentField } from "@/components/site/ConsentField";
 interface WaitlistFormProps {
   sku: string;
   productTitle: string;
-  variant?: "default" | "product";
+  variant?: "default" | "product" | "panel";
+  onSuccess?: () => void;
 }
 
-export function WaitlistForm({ sku, productTitle, variant = "default" }: WaitlistFormProps) {
+export function WaitlistForm({
+  sku,
+  productTitle,
+  variant = "default",
+  onSuccess,
+}: WaitlistFormProps) {
   const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -19,7 +25,7 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
   const [savedEmail, setSavedEmail] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const light = variant === "product";
+  const light = variant === "product" || variant === "panel";
 
   const copy =
     language === "pl"
@@ -75,6 +81,7 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
       setSent(true);
       setEmail("");
       setConsent(false);
+      onSuccess?.();
     } finally {
       setSubmitting(false);
     }
@@ -84,9 +91,11 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
     return (
       <div
         className={
-          light
-            ? "space-y-4 rounded-xl border border-[color-mix(in_srgb,#010a8b_12%,transparent)] bg-[color-mix(in_srgb,#ffffff_55%,transparent)] px-4 py-4"
-            : "space-y-4 rounded-lg border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] px-4 py-4"
+          variant === "panel"
+            ? "px-4 py-4"
+            : light
+              ? "space-y-4 rounded-xl border border-[color-mix(in_srgb,#010a8b_12%,transparent)] bg-[color-mix(in_srgb,#ffffff_55%,transparent)] px-4 py-4"
+              : "space-y-4 rounded-lg border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] px-4 py-4"
         }
       >
         <p
@@ -102,12 +111,14 @@ export function WaitlistForm({ sku, productTitle, variant = "default" }: Waitlis
     );
   }
 
-  if (light) {
+  if (variant === "panel" || variant === "product") {
+    const formClass =
+      variant === "panel"
+        ? "p-4 sm:p-5"
+        : "rounded-xl border border-[color-mix(in_srgb,#010a8b_10%,transparent)] bg-[color-mix(in_srgb,#ffffff_72%,transparent)] p-4 sm:p-5";
+
     return (
-      <form
-        onSubmit={(e) => void submit(e)}
-        className="rounded-xl border border-[color-mix(in_srgb,#010a8b_10%,transparent)] bg-[color-mix(in_srgb,#ffffff_72%,transparent)] p-4 sm:p-5"
-      >
+      <form onSubmit={(e) => void submit(e)} className={formClass}>
         <div>
           <p className="delivery-faq-ink font-body text-[10px] uppercase tracking-[0.2em]">
             {copy.title}

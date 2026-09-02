@@ -146,9 +146,10 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
             src={activeSrc}
             alt={title}
             fill
-            priority
+            priority={safeActive === 0}
+            quality={compact ? 72 : 80}
             unoptimized={unoptimized}
-            sizes="(max-width:1024px) 100vw, 50vw"
+            sizes={compact ? "(max-width:1024px) 88vw, 420px" : "(max-width:1024px) 100vw, 50vw"}
             className={[
               "object-contain select-none",
               compact ? "p-3 sm:p-4" : "p-4 sm:p-6",
@@ -216,8 +217,10 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
                   src={src}
                   alt=""
                   fill
+                  quality={60}
                   unoptimized={isDataImageUrl(src)}
                   sizes="64px"
+                  loading="lazy"
                   className="object-contain p-1.5"
                 />
               </span>

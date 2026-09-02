@@ -14,18 +14,18 @@ export function useFocusTrap(active: boolean) {
     );
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
-    first?.focus();
+    first?.focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab" || focusables.length === 0) return;
       if (event.shiftKey) {
         if (document.activeElement === first) {
           event.preventDefault();
-          last?.focus();
+          last?.focus({ preventScroll: true });
         }
       } else if (document.activeElement === last) {
         event.preventDefault();
-        first?.focus();
+        first?.focus({ preventScroll: true });
       }
     };
 

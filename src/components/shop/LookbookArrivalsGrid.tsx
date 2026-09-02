@@ -14,8 +14,8 @@ import { MadeToOrderStrip } from "./MadeToOrderStrip";
 function collectionDividerClass(index: number) {
   if (index === 0) return "lookbook-split-r lookbook-split-b";
   if (index === 1) return "lookbook-split-b";
-  if (index === 2) return "lookbook-split-r lookbook-split-b";
-  return "lookbook-split-b";
+  if (index === 2) return "lookbook-split-r lookbook-split-b lg:lookbook-split-b-0";
+  return "lookbook-split-b lg:lookbook-split-b-0";
 }
 
 export function LookbookArrivalsGrid() {
@@ -52,30 +52,32 @@ export function LookbookArrivalsGrid() {
 
       <div className="lookbook-full-bleed">
         <MotionReveal>
-          <div className="lookbook-grid grid grid-cols-2 gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:grid-rows-2">
-            <div className="col-span-2 flex min-h-[240px] flex-col justify-between p-6 sm:p-8 lg:col-span-1 lg:row-span-2 lg:min-h-[420px] lookbook-split-r lookbook-split-b lg:lookbook-split-b-0">
+          <div className="lookbook-grid lookbook-collections-grid grid grid-cols-2 gap-0 lg:grid-cols-3 lg:grid-rows-2">
+            <div className="col-span-2 flex min-h-[220px] flex-col justify-start gap-5 p-5 sm:gap-6 sm:p-6 lg:col-span-1 lg:row-span-2 lg:min-h-0 lg:justify-between lg:p-8 lookbook-split-r lookbook-split-b">
               <div>
-                <p className="lookbook-ink font-display text-[clamp(1.25rem,2.5vw,2rem)] uppercase leading-snug tracking-[0.05em]">
+                <p className="lookbook-ink font-display text-[clamp(1.25rem,2.5vw,1.75rem)] uppercase leading-snug tracking-[0.05em]">
                   {copy.headline}
                 </p>
-                <p className="lookbook-section-muted mt-4 max-w-md font-body text-sm leading-relaxed sm:text-[15px]">
+                <p className="lookbook-section-muted mt-3 max-w-md font-body text-sm leading-relaxed sm:mt-4 sm:text-[15px]">
                   {header.subtitle}
                 </p>
               </div>
               <Link
                 href="/shop"
-                className="mt-8 inline-flex w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[10px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90 lg:mt-0"
+                className="inline-flex w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[10px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90"
               >
                 {copy.cta}
               </Link>
             </div>
 
             {shopCollections.map((collection, index) => (
-              <div
-                key={collection.id}
-                className={`min-h-[200px] lg:min-h-[210px] ${collectionDividerClass(index)}`}
-              >
-                <LookbookCollectionCover collection={collection} index={index} className="h-full" />
+              <div key={collection.id} className={`min-h-[168px] lg:min-h-0 ${collectionDividerClass(index)}`}>
+                <LookbookCollectionCover
+                  collection={collection}
+                  index={index}
+                  className="h-full"
+                  imagePriority={index < 2}
+                />
               </div>
             ))}
           </div>

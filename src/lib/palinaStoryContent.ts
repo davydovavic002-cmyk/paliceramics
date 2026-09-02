@@ -58,5 +58,5 @@ export const palinaStoryImages = {
 } as const;
 
 export function palinaStoryLabel(language: Language) {
-  return language === "pl" ? "Historia" : "Story";
+  return language === "pl" ? "O mnie" : "About me";
 }

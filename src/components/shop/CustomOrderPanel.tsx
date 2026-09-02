@@ -1,7 +1,5 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import {
@@ -22,8 +20,6 @@ function contactHref(kind: "email" | "instagram" | "facebook", value: string): s
 
 export function CustomOrderPanel() {
   const { language } = useLanguage();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const copy =
     language === "pl"
@@ -32,8 +28,6 @@ export function CustomOrderPanel() {
           about: "O zamówieniach",
           contact: "Kontakt",
           minBadge: "od 400 zł",
-          cta: "Napisz do nas",
-          choose: "Wybierz sposób kontaktu",
           email: "Email",
           instagram: "Instagram",
           facebook: "Facebook",
@@ -43,8 +37,6 @@ export function CustomOrderPanel() {
           about: "About custom orders",
           contact: "Contact",
           minBadge: "from 400 PLN",
-          cta: "Get in touch",
-          choose: "Choose how to reach us",
           email: "Email",
           instagram: "Instagram",
           facebook: "Facebook",
@@ -59,27 +51,32 @@ export function CustomOrderPanel() {
   const instagramHref = contactHref("instagram", customOrderContent.instagram);
   const facebookHref = contactHref("facebook", customOrderContent.facebook);
 
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    const onClickOutside = (event: MouseEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-
-    const timer = window.setTimeout(() => {
-      document.addEventListener("click", onClickOutside);
-    }, 0);
-
-    return () => {
-      window.clearTimeout(timer);
-      document.removeEventListener("click", onClickOutside);
-    };
-  }, [menuOpen]);
+  const contactLinks = [
+    {
+      key: "email",
+      href: emailHref,
+      label: copy.email,
+      detail: customOrderContent.email,
+      external: false,
+    },
+    {
+      key: "instagram",
+      href: instagramHref,
+      label: copy.instagram,
+      detail: customOrderContent.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "@"),
+      external: true,
+    },
+    {
+      key: "facebook",
+      href: facebookHref,
+      label: copy.facebook,
+      detail: language === "pl" ? "Messenger / Facebook" : "Messenger / Facebook",
+      external: true,
+    },
+  ] as const;
 
   return (
-    <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative rounded-[1.35rem]">
+    <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative overflow-visible rounded-[1.35rem]">
       <div className="shop-product-sheet-inner grid rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
         <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
           <ProductGallery
@@ -121,54 +118,23 @@ export function CustomOrderPanel() {
             </div>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-5 pb-1">
             <p className="shop-product-section-label font-body">{copy.contact}</p>
-            <div ref={menuRef} className="relative z-30 mt-2.5 inline-block w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => setMenuOpen((value) => !value)}
-                className="shop-buy-btn inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.22em] sm:w-auto"
-              >
-                {copy.cta}
-                <ChevronDown
-                  className={["h-3.5 w-3.5 transition-transform", menuOpen ? "rotate-180" : ""].join(" ")}
-                />
-              </button>
-
-              {menuOpen ? (
-                <div className="shop-buy-menu-panel delivery-faq-panel absolute left-0 top-[calc(100%+0.5rem)] z-40 w-full min-w-[15rem] overflow-hidden rounded-xl sm:min-w-[16.5rem]">
-                  <p className="delivery-faq-ink border-b border-[color-mix(in_srgb,#010a8b_12%,transparent)] px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.2em]">
-                    {copy.choose}
-                  </p>
-                  <div className="p-1.5">
-                    <a
-                      href={emailHref}
-                      className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]"
-                    >
-                      <span className="delivery-faq-ink font-body text-sm">{copy.email}</span>
-                      <span className="delivery-faq-muted mt-0.5 block font-body text-[11px] leading-snug">
-                        {customOrderContent.email}
-                      </span>
-                    </a>
-                    <a
-                      href={instagramHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]"
-                    >
-                      <span className="delivery-faq-ink font-body text-sm">{copy.instagram}</span>
-                    </a>
-                    <a
-                      href={facebookHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]"
-                    >
-                      <span className="delivery-faq-ink font-body text-sm">{copy.facebook}</span>
-                    </a>
-                  </div>
-                </div>
-              ) : null}
+            <div className="mt-2.5 flex flex-col gap-2">
+              {contactLinks.map((link) => (
+                <a
+                  key={link.key}
+                  href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                  className="shop-buy-menu-panel block rounded-xl px-3.5 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,transparent)]"
+                >
+                  <span className="delivery-faq-ink block font-body text-sm">{link.label}</span>
+                  <span className="delivery-faq-muted mt-0.5 block break-all font-body text-[11px] leading-snug">
+                    {link.detail}
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
         </div>

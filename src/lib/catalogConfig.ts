@@ -12,6 +12,7 @@ import {
 } from "@/lib/lookbookCollections";
 import type { Language } from "@/types";
 import { images } from "@/lib/images";
+import { resolvePublicImageUrl } from "@/lib/productImages";
 
 const SEED_COLLECTION_IDS = new Set(productCollections.map((collection) => collection.id));
 export const HOMEPAGE_LOOKBOOK_COLLECTION_LIMIT = 4;
@@ -85,7 +86,10 @@ export function normalizeCollection(
       collection.subtitle,
       defaults?.subtitle ?? { en: "", pl: "" }
     ),
-    coverImageUrl: collection.coverImageUrl ?? defaults?.coverImageUrl ?? images.accentBowl,
+    coverImageUrl:
+      resolvePublicImageUrl(collection.coverImageUrl) ??
+      defaults?.coverImageUrl ??
+      images.accentBowl,
     coverImageLabel: collection.coverImageLabel ?? defaults?.coverImageLabel ?? "cover.jpg",
     showInLookbook:
       collection.showInLookbook ??
@@ -228,11 +232,15 @@ export function resolvePieceTypes(data: Partial<AdminPersistedData>): AdminPiece
 }
 
 export function collectionToLookbook(collection: AdminCollection): LookbookCollection {
+  const seed = seedCollections().find((item) => item.id === collection.id);
   return {
     id: collection.id,
     name: collection.name,
     subtitle: collection.subtitle,
-    image: collection.coverImageUrl ?? images.accentBowl,
+    image:
+      resolvePublicImageUrl(collection.coverImageUrl) ??
+      seed?.coverImageUrl ??
+      images.accentBowl,
   };
 }
 

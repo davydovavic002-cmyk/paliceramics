@@ -21,7 +21,6 @@ import { isOutOfStock, type ShopProduct } from "@/lib/shopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
 import { useShopCatalogScrollRestore } from "@/hooks/useShopCatalogScrollRestore";
-import { staggerStep } from "@/lib/motionUtils";
 
 type SortKey = "collection" | "price-asc" | "price-desc" | "name";
 type AvailabilityFilter = "all" | "available" | "sold";
@@ -645,40 +644,42 @@ function ShopCatalogContent() {
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
           ) : (
             <div className="space-y-10 sm:space-y-12">
-              {productGroups.map((group) => {
-                const collectionLabel = getCollectionLabelFromList(
-                  collections,
-                  group.collectionId,
-                  language
-                );
+              {(() => {
+                let cardIndex = 0;
+                return productGroups.map((group) => {
+                  const collectionLabel = getCollectionLabelFromList(
+                    collections,
+                    group.collectionId,
+                    language
+                  );
 
-                return (
-                  <section key={`${productGridKey}-${group.collectionId}`}>
-                    {group.showHeading ? (
-                      <header className={`mb-5 border-b pb-3 ${line}`}>
-                        <h2 className="lookbook-ink font-display text-[clamp(1.05rem,2vw,1.35rem)] leading-snug tracking-[0.02em]">
-                          {collectionLabel}
-                        </h2>
-                      </header>
-                    ) : null}
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
-                      {group.products.map((product, index) => (
-                        <MotionReveal
-                          key={`${productGridKey}-${product.sku}`}
-                          delay={staggerStep(index)}
-                          y={14}
-                        >
-                          <CatalogProductCard
-                            product={product}
-                            title={t(product.name, language)}
-                            variant="shop"
-                          />
-                        </MotionReveal>
-                      ))}
-                    </div>
-                  </section>
-                );
-              })}
+                  return (
+                    <section key={`${productGridKey}-${group.collectionId}`}>
+                      {group.showHeading ? (
+                        <header className={`mb-5 border-b pb-3 ${line}`}>
+                          <h2 className="lookbook-ink font-display text-[clamp(1.05rem,2vw,1.35rem)] leading-snug tracking-[0.02em]">
+                            {collectionLabel}
+                          </h2>
+                        </header>
+                      ) : null}
+                      <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
+                        {group.products.map((product) => {
+                          const index = cardIndex++;
+                          return (
+                            <CatalogProductCard
+                              key={`${productGridKey}-${product.sku}`}
+                              product={product}
+                              title={t(product.name, language)}
+                              variant="shop"
+                              imagePriority={index < 8}
+                            />
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                });
+              })()}
               {showCustomOrderCard ? (
                 <section>
                   <header className={`mb-5 border-b pb-3 ${line}`}>

@@ -21,6 +21,7 @@ interface CatalogProductCardProps {
   categoryLabel?: string;
   variant?: "grid" | "shop" | "lookbook" | "lookbook-tile" | "lookbook-wide";
   className?: string;
+  imagePriority?: boolean;
 }
 
 function cardStatusLine(
@@ -43,6 +44,7 @@ export function CatalogProductCard({
   categoryLabel,
   variant = "grid",
   className = "",
+  imagePriority = false,
 }: CatalogProductCardProps) {
   const { language } = useLanguage();
   const { showImageHoverScale, showHoverTilt } = useMotionFlags();
@@ -70,7 +72,6 @@ export function CatalogProductCard({
     return (
       <Link
         href={productHref}
-        scroll={false}
         onClick={onOpenProduct}
         className={[
           "group flex h-full w-full flex-col bg-transparent p-3 transition-opacity duration-300 hover:opacity-90 sm:p-4",
@@ -117,7 +118,6 @@ export function CatalogProductCard({
     return (
       <Link
         href={productHref}
-        scroll={false}
         onClick={onOpenProduct}
         className={[
           "group flex h-full w-full flex-col text-left",
@@ -130,8 +130,10 @@ export function CatalogProductCard({
             src={product.image}
             alt={title}
             fill
+            priority={imagePriority}
+            quality={imagePriority ? 80 : 72}
             unoptimized={unoptimizedImage}
-            sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 20vw"
+            sizes="(max-width:768px) 45vw, (max-width:1280px) 22vw, 180px"
             className={[
               "object-contain object-center p-3 sm:p-5",
               "transition-transform duration-500 ease-out",
@@ -167,7 +169,6 @@ export function CatalogProductCard({
   return (
     <Link
       href={productHref}
-      scroll={false}
       onClick={onOpenProduct}
       className={[
         "group flex h-full w-full flex-col overflow-hidden bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[transform,box-shadow] duration-500",

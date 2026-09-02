@@ -372,8 +372,17 @@ body {
 
 @layer components {
   .lookbook-section {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    overflow-x: clip;
     background-color: var(--lookbook-bg);
     color: var(--lookbook-ink);
+  }
+
+  .lookbook-grid > * {
+    min-width: 0;
+    overflow: hidden;
   }
 
   .lookbook-section-muted {
@@ -485,14 +494,14 @@ body {
 
   .shop-product-gallery-well-compact {
     width: min(100%, 15.5rem);
-    max-height: min(34vh, 15.5rem);
+    max-height: min(28vh, 14rem);
   }
 
   @media (min-width: 1024px) {
     .shop-product-gallery-well-compact {
       width: 100%;
       max-width: none;
-      max-height: min(32vh, 13.75rem);
+      max-height: min(28vh, 12.5rem);
     }
   }
 
@@ -900,6 +909,16 @@ body {
 
   .lookbook-grid {
     border: 1px solid var(--lookbook-line);
+  }
+
+  .lookbook-collections-grid {
+    grid-auto-rows: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .lookbook-collections-grid {
+      grid-auto-rows: 1fr;
+    }
   }
 
   .about-editorial-band {

@@ -73,7 +73,7 @@ export type AdminVoucherContent = {
 
 export function seedPalinaStory(): AdminPalinaStory {
   return {
-    sectionLabel: { en: "Story", pl: "Historia" },
+    sectionLabel: { en: "About me", pl: "O mnie" },
     lead: { en: palinaStoryCopy.en.lead, pl: palinaStoryCopy.pl.lead },
     origin: { en: palinaStoryCopy.en.origin, pl: palinaStoryCopy.pl.origin },
     brand: { en: palinaStoryCopy.en.brand, pl: palinaStoryCopy.pl.brand },
@@ -178,11 +178,21 @@ function mergeBilingualField(stored: Bilingual | undefined, fallback: Bilingual)
   };
 }
 
+function migratePalinaSectionLabel(
+  stored: AdminPalinaStory["sectionLabel"],
+  seed: AdminPalinaStory["sectionLabel"]
+): AdminPalinaStory["sectionLabel"] {
+  const merged = mergeBilingualField(stored, seed);
+  if (stored.pl?.trim() === "Historia") merged.pl = seed.pl;
+  if (stored.en?.trim() === "Story") merged.en = seed.en;
+  return merged;
+}
+
 export function normalizePalinaStory(stored: AdminPalinaStory | undefined): AdminPalinaStory {
   const seed = seedPalinaStory();
   if (!stored?.lead?.en) return seed;
   return {
-    sectionLabel: mergeBilingualField(stored.sectionLabel, seed.sectionLabel),
+    sectionLabel: migratePalinaSectionLabel(stored.sectionLabel, seed.sectionLabel),
     lead: mergeBilingualField(stored.lead, seed.lead),
     origin: mergeBilingualField(stored.origin, seed.origin),
     brand: mergeBilingualField(stored.brand, seed.brand),

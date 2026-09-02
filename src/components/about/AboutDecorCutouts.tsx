@@ -68,6 +68,9 @@ export function AboutDecorCutouts() {
             alt={item.alt}
             width={180}
             height={180}
+            sizes="80px"
+            loading="lazy"
+            quality={68}
             className="h-auto w-full select-none object-contain"
             draggable={false}
           />
