@@ -27,6 +27,13 @@ export const customOrderCatalogCard = {
     images.whiteLavaCup,
     images.accentTableware,
   ],
+  galleryImageLabels: [
+    { pl: "Wazon", en: "Vase" },
+    { pl: "Talerz", en: "Plate" },
+    { pl: "Miska", en: "Bowl" },
+    { pl: "Kubek", en: "Cup" },
+    { pl: "Zastawa", en: "Tableware set" },
+  ] satisfies Bilingual[],
 };
 
 export const customOrderContent = {

@@ -32,11 +32,7 @@ export function PalinaStoryGallery() {
   const imgs = copy.images;
 
   return (
-    <div className="relative mt-10 sm:mt-12 lg:mt-10">
-      <p className="relative z-10 mb-5 text-center font-body text-[10px] uppercase tracking-[0.28em] text-theme-muted lg:mb-4">
-        {copy.sectionLabel}
-      </p>
-
+    <div className="relative mt-6 sm:mt-10 lg:mt-10">
       <div className="about-editorial-band relative z-10">
         <div className="lookbook-grid grid grid-cols-2 gap-0 lg:grid-cols-4 lg:grid-rows-2 lg:items-stretch">
           <StoryTile className="col-span-2 aspect-[4/5] lg:col-span-2 lg:row-span-2 lg:aspect-auto lg:h-full lookbook-split-r lookbook-split-b lg:lookbook-split-b-0">

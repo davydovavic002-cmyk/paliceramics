@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { handleSectionClick } from "@/lib/scrollToSection";
+import { useCompactViewport } from "@/hooks/useCompactViewport";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { HeaderBrandLogo } from "@/components/hero/HeaderBrandLogo";
 import type { NavItem } from "@/types";
@@ -106,10 +107,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuRootRef = useRef<HTMLDivElement>(null);
+  const compactViewport = useCompactViewport();
   const menuCategories = useMenuCategories(language);
 
-  const onBar = scrolled;
-  const heroOverlay = pathname === "/" && !onBar;
+  const solidBar = scrolled || compactViewport;
+  const heroOverlay = pathname === "/" && !solidBar;
 
   useEffect(() => {
     const sync = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
@@ -148,28 +150,28 @@ export function Header() {
   return (
     <header
       className={[
-        "pointer-events-none fixed inset-x-0 top-0 z-[70]",
+        "site-header-shell pointer-events-none fixed inset-x-0 top-0 z-[70]",
         heroOverlay ? "header-hero-overlay" : "",
       ].join(" ")}
     >
       <div
         className={[
-          "pointer-events-auto relative z-[2] transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300 ease-out",
-          onBar ? "header-bar-solid" : "border-b border-transparent bg-transparent",
+          "site-header-inner pointer-events-auto relative z-[2] transition-[background-color,box-shadow,border-color] duration-200 ease-out",
+          solidBar ? "header-bar-solid" : compactViewport ? "header-bar-mobile" : "border-b border-transparent bg-transparent",
         ].join(" ")}
       >
         <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-5 py-2.5 md:px-8 md:py-3 lg:px-16 lg:py-3.5">
           <HeaderBrandLogo />
 
           <div ref={menuRootRef} className="relative flex shrink-0 items-center gap-2.5 sm:gap-3">
-            <LanguageToggle onBar={onBar} heroOverlay={heroOverlay} />
+            <LanguageToggle onBar={solidBar} heroOverlay={heroOverlay} />
             <button
               type="button"
               className={[
                 "header-icon-btn relative z-[2] inline-flex h-9 w-9 items-center justify-center rounded-full border text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
                 open
                   ? "border-[color-mix(in_srgb,#010a8b_40%,#ede8df)] bg-[#010a8b] text-[#ede8df]"
-                  : onBar
+                  : solidBar
                     ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
                     : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",
               ].join(" ")}

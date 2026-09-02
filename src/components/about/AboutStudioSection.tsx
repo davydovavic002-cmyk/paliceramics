@@ -33,7 +33,7 @@ export function AboutStudioSection() {
         aria-hidden
       />
 
-      <div className="section-inner relative z-10">
+      <div className="section-inner relative z-10 !pb-8 !pt-6 sm:!py-12 lg:!py-16">
         <header className="pointer-events-none mx-auto max-w-2xl text-center">
           <MotionReveal>
             <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">

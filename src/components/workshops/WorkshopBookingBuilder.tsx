@@ -8,6 +8,7 @@ import { pickBilingual } from "@/lib/adminTypes";
 import { useWorkshopData } from "@/hooks/useWorkshopData";
 import { useAdminContent } from "@/hooks/useAdminContent";
 import { useFormDraft } from "@/hooks/useFormDraft";
+import { useFormKeyboardScroll } from "@/hooks/useFormKeyboardScroll";
 import {
   getResolvedWorkshopMkFormat,
   resolveWorkshopMkFormats,
@@ -79,6 +80,7 @@ export function WorkshopBookingBuilder() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const bookingFormRef = useFormKeyboardScroll<HTMLFormElement>();
 
   useEffect(() => {
     if (!hydrated || sent) return;
@@ -453,7 +455,11 @@ export function WorkshopBookingBuilder() {
                 {copy.sent}
               </p>
             ) : (
-              <form onSubmit={(e) => void submitBooking(e)} className="mt-6 space-y-4">
+              <form
+                ref={bookingFormRef}
+                onSubmit={(e) => void submitBooking(e)}
+                className="form-keyboard-safe mt-6 space-y-4"
+              >
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}

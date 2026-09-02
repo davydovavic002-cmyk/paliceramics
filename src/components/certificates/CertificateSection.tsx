@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useFormKeyboardScroll } from "@/hooks/useFormKeyboardScroll";
 import { useAdminContent } from "@/hooks/useAdminContent";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import {
@@ -51,6 +52,7 @@ export function CertificateSection() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const formRef = useFormKeyboardScroll<HTMLFormElement>();
 
   useEffect(() => {
     if (!hydrated || sent) return;
@@ -126,7 +128,7 @@ export function CertificateSection() {
   return (
     <section
       id="certificates"
-      className="relative isolate scroll-mt-[var(--header-offset,5.5rem)] bg-theme-surface pb-8 text-theme transition-colors duration-700 sm:pb-10"
+      className="relative isolate scroll-mt-[var(--header-offset,5.5rem)] bg-theme-surface pb-4 text-theme transition-colors duration-700 sm:pb-8"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--theme-border)]/20 to-transparent"
@@ -186,7 +188,12 @@ export function CertificateSection() {
                 </button>
               </div>
             ) : (
-              <form noValidate onSubmit={(e) => void submit(e)} className="space-y-3.5 pb-2">
+              <form
+                ref={formRef}
+                noValidate
+                onSubmit={(e) => void submit(e)}
+                className="form-keyboard-safe space-y-3.5 pb-2"
+              >
                 <div className="min-h-[6.75rem]">
                   <p className="mb-1.5 font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.typeLabel}

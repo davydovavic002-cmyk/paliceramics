@@ -199,12 +199,12 @@ export function ProductPurchaseMenu({
   const menuMotion = getMenuPanelProps(motionLevel);
 
   return (
-    <div ref={rootRef} className="shop-product-buy relative z-30 shrink-0">
+    <div ref={rootRef} className="shop-product-buy relative z-30 w-full min-w-0 sm:w-auto sm:shrink-0">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="shop-buy-btn relative z-50 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 font-body text-[10px] uppercase tracking-[0.22em]"
+        className="shop-buy-btn relative z-50 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 font-body text-[10px] uppercase tracking-[0.22em] sm:w-auto"
       >
         {copy.buy}
         <ChevronDown
@@ -216,7 +216,7 @@ export function ProductPurchaseMenu({
         {open ? (
           <motion.div
             role="menu"
-            className="shop-buy-menu-panel delivery-faq-panel absolute right-0 top-[calc(100%+0.625rem)] z-40 w-[15.5rem] overflow-hidden rounded-xl"
+            className="shop-action-dropdown-panel shop-buy-menu-panel delivery-faq-panel absolute right-0 top-[calc(100%+0.625rem)] z-40 w-[15.5rem] overflow-hidden rounded-xl sm:absolute"
             {...menuMotion}
           >
             <p className="delivery-faq-ink border-b border-[color-mix(in_srgb,#010a8b_10%,transparent)] px-3.5 py-2 font-body text-[9px] uppercase tracking-[0.18em]">

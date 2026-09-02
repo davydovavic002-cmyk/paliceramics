@@ -88,14 +88,14 @@ export function HeroDark() {
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band relative isolate min-h-[100dvh] overflow-hidden bg-[#2c2a27]">
+    <section className="hero-dark-band hero-viewport-height relative isolate overflow-hidden bg-[#2c2a27]">
       {showWebGL ? <AmbientLightCanvas /> : null}
       <JapandiBackground />
       {showWebGL ? <ForegroundBokehCanvas /> : null}
       {showWebGL && showMicroAnimations ? <DustMotesCanvas /> : null}
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-[1800px] flex-col px-5 lg:min-h-screen lg:px-16">
+      <div className="hero-viewport-height relative z-10 mx-auto flex max-w-[1800px] flex-col px-5 lg:min-h-screen lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>
 
         <div className="flex flex-1 flex-col items-center justify-center pb-28 pt-[max(5.5rem,env(safe-area-inset-top))] sm:pb-32 lg:min-h-screen lg:pb-36 lg:pt-[10vh]">

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";
-import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import { useProductPageScrollTop } from "@/hooks/useProductPageScrollTop";
@@ -14,6 +13,7 @@ import {
 } from "@/lib/customOrderContent";
 import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
 import { CustomOrderPanel } from "./CustomOrderPanel";
+import { ProductMobileBackBar } from "./ProductMobileBackBar";
 
 export function CustomOrderDetailView() {
   const router = useRouter();
@@ -26,11 +26,11 @@ export function CustomOrderDetailView() {
   const copy =
     language === "pl"
       ? {
-          back: "Wróć",
+          back: "Wróć do sklepu",
           close: "Zamknij",
         }
       : {
-          back: "Back",
+          back: "Back to shop",
           close: "Close",
         };
 
@@ -66,16 +66,10 @@ export function CustomOrderDetailView() {
           <span className="lookbook-ink">{title}</span>
         </nav>
 
+        <ProductMobileBackBar label={copy.back} onBack={closePanel} />
+
         <div className="relative mt-4 sm:mt-5">
-          <button
-            type="button"
-            onClick={closePanel}
-            className="shop-product-close absolute right-2 top-2 z-30 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-3 sm:top-3"
-            aria-label={copy.close}
-          >
-            <X className="h-6 w-6" strokeWidth={1.75} />
-          </button>
-          <CustomOrderPanel />
+          <CustomOrderPanel onClose={closePanel} />
         </div>
       </div>
     </div>

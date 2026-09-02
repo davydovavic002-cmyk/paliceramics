@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCookieConsent } from "@/context/CookieConsentContext";
@@ -11,6 +12,22 @@ export function CookieConsentBanner() {
   const { consent, hydrated, acceptMaps, essentialOnly } = useCookieConsent();
 
   const visible = hydrated && !consent;
+
+  useEffect(() => {
+    if (!visible) {
+      document.documentElement.removeAttribute("data-cookie-banner");
+      document.documentElement.style.setProperty("--cookie-banner-offset", "0px");
+      return;
+    }
+
+    document.documentElement.setAttribute("data-cookie-banner", "open");
+    document.documentElement.style.setProperty("--cookie-banner-offset", "8.75rem");
+
+    return () => {
+      document.documentElement.removeAttribute("data-cookie-banner");
+      document.documentElement.style.setProperty("--cookie-banner-offset", "0px");
+    };
+  }, [visible]);
 
   return (
     <AnimatePresence>
@@ -24,7 +41,7 @@ export function CookieConsentBanner() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 16 }}
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-[100] px-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-[90] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
         >
           <div className="pointer-events-auto mx-auto flex max-w-2xl flex-col gap-4 rounded-[2px] border border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface)_98%,#fff)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.28)] backdrop-blur-md sm:flex-row sm:items-end sm:p-5">
             <div className="flex-1">

@@ -15,8 +15,10 @@ import { pickBilingual } from "@/lib/adminTypes";
 import { madeToOrderCollection } from "@/lib/lookbookCollections";
 import { sortProductsByCollectionName } from "@/lib/lookbookCollections";
 import { MADE_TO_ORDER_CATEGORY_ID } from "@/lib/customOrderContent";
+import { CatalogGridSkeleton } from "./CatalogGridSkeleton";
 import { CatalogProductCard } from "./CatalogProductCard";
 import { CustomOrderCatalogCard } from "./CustomOrderCatalogCard";
+import { ShopSortMenu } from "./ShopSortMenu";
 import { isOutOfStock, type ShopProduct } from "@/lib/shopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
@@ -131,7 +133,6 @@ function ShopCatalogContent() {
     return sectionId ? new Set([sectionId]) : new Set();
   });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [showStickyBar, setShowStickyBar] = useState(false);
 
   useShopCatalogScrollRestore();
 
@@ -140,13 +141,6 @@ function ShopCatalogContent() {
     if (!sectionId) return;
     setOpenSections(new Set([sectionId]));
   }, [filterMode]);
-
-  useEffect(() => {
-    const onScroll = () => setShowStickyBar(window.scrollY > 120);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const navigateShop = useCallback(
     (href: string) => {
@@ -433,8 +427,6 @@ function ShopCatalogContent() {
     navigateShop(pathname);
   };
 
-  const productGridKey = `${filterMode}-${activeCollectionId ?? ""}-${activePieceType ?? ""}-${activeAvailability}-${sort}`;
-
   const productCountLabel = useMemo(() => {
     if (isMadeToOrderFilter) {
       return language === "pl" ? "1 produkt" : "1 product";
@@ -465,24 +457,20 @@ function ShopCatalogContent() {
     sort,
   ]);
 
+  const productGridKey = `${filterMode}-${activeCollectionId ?? ""}-${activePieceType ?? ""}-${activeAvailability}-${sort}`;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const preload = filtered.slice(0, 10);
+    preload.forEach((product) => {
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = product.image;
+    });
+  }, [productGridKey, filtered]);
+
   return (
     <div className="shop-catalog-page min-h-[100dvh] pt-[var(--header-offset,5.5rem)] transition-colors duration-700">
-      {showStickyBar ? (
-        <div className="fixed inset-x-0 top-[var(--header-offset,5.5rem)] z-[55] border-b border-[var(--lookbook-line)] bg-[color-mix(in_srgb,#faf7f0_94%,transparent)] px-4 py-2 backdrop-blur-md lg:hidden">
-          <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileFiltersOpen((v) => !v)}
-              className="font-body text-[10px] uppercase tracking-[0.16em] lookbook-ink"
-            >
-              {copy.filters}
-            </button>
-            <p className="truncate font-body text-[11px] shop-catalog-muted">
-              {productCountLabel}
-            </p>
-          </div>
-        </div>
-      ) : null}
       <BackToTopButton threshold={640} />
       <div className={`border-b ${line} px-5 py-3 sm:px-8 lg:px-10`}>
         <nav className="font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted">
@@ -502,30 +490,37 @@ function ShopCatalogContent() {
 
       <div className="flex flex-col lg:flex-row">
         <aside
-          className={`w-full shrink-0 border-b px-5 py-3 sm:px-8 lg:w-[240px] lg:border-b-0 lg:border-r lg:px-8 lg:py-8 xl:w-[260px] ${line}`}
+          className={`w-full shrink-0 border-b px-5 py-0 sm:px-8 lg:w-[240px] lg:border-b-0 lg:border-r lg:px-8 lg:py-8 xl:w-[260px] ${line}`}
         >
-          <button
-            type="button"
-            onClick={() => setMobileFiltersOpen((value) => !value)}
-            className="lookbook-ink mb-1 flex w-full items-center justify-between rounded-md px-1 py-2 font-body text-[10px] uppercase tracking-[0.2em] lg:hidden"
-            aria-expanded={mobileFiltersOpen}
-          >
-            {copy.filters}
-            <ChevronDown
-              className={[
-                "h-4 w-4 shop-catalog-muted transition-transform",
-                mobileFiltersOpen ? "rotate-180" : "",
-              ].join(" ")}
-            />
-          </button>
+          <div className="shop-catalog-mobile-sticky -mx-5 border-b border-[var(--lookbook-line)] bg-[color-mix(in_srgb,#faf7f0_96%,transparent)] px-5 py-2 backdrop-blur-md lg:static lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen((value) => !value)}
+              className="shop-filter-touch lookbook-ink flex w-full min-h-[44px] items-center justify-between rounded-md px-2 py-2.5 font-body text-[11px] uppercase tracking-[0.18em] lg:mb-1"
+              aria-expanded={mobileFiltersOpen}
+            >
+              <span>{copy.filters}</span>
+              <span className="flex items-center gap-2">
+                <span className="font-body text-[11px] normal-case tracking-normal shop-catalog-muted lg:hidden">
+                  {productCountLabel}
+                </span>
+                <ChevronDown
+                  className={[
+                    "h-4 w-4 shop-catalog-muted transition-transform",
+                    mobileFiltersOpen ? "rotate-180" : "",
+                  ].join(" ")}
+                />
+              </span>
+            </button>
+          </div>
 
-          <div className={mobileFiltersOpen ? "block lg:block" : "hidden lg:block"}>
+          <div className={`pb-3 lg:pb-0 ${mobileFiltersOpen ? "block lg:block" : "hidden lg:block"}`}>
           <div className="mb-4 h-5">
             {hasActiveFilters ? (
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="font-body text-[10px] uppercase tracking-[0.16em] shop-catalog-muted underline underline-offset-4 transition-opacity hover:opacity-75"
+                className="shop-filter-touch inline-flex min-h-[44px] items-center font-body text-[11px] uppercase tracking-[0.14em] shop-catalog-muted underline underline-offset-4 transition-opacity hover:opacity-75"
               >
                 {copy.removeAll}
               </button>
@@ -620,24 +615,14 @@ function ShopCatalogContent() {
 
         <main className="min-w-0 flex-1 px-5 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-body text-sm shop-catalog-muted">{productCountLabel}</p>
-            <label className="flex items-center gap-2 font-body text-sm shop-catalog-muted">
-                <span className="text-[10px] uppercase tracking-[0.16em]">{copy.sortBy}</span>
-                <div className="relative">
-                  <select
-                    value={sort}
-                    onChange={(e) => selectSort(e.target.value as SortKey)}
-                    className={`lookbook-ink appearance-none rounded-full border bg-[color-mix(in_srgb,var(--lookbook-bg-well)_75%,transparent)] py-2 pl-4 pr-9 font-body text-sm outline-none ${line}`}
-                  >
-                    {sortOptions.map((key) => (
-                      <option key={key} value={key}>
-                        {sortLabels[key]}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 shop-catalog-muted" />
-                </div>
-              </label>
+            <p className="hidden font-body text-sm shop-catalog-muted lg:block">{productCountLabel}</p>
+            <ShopSortMenu
+              value={sort}
+              labels={sortLabels}
+              options={sortOptions}
+              sortLabel={copy.sortBy}
+              onChange={selectSort}
+            />
           </div>
 
           {productGroups.length === 0 && !showCustomOrderCard ? (
@@ -671,7 +656,7 @@ function ShopCatalogContent() {
                               product={product}
                               title={t(product.name, language)}
                               variant="shop"
-                              imagePriority={index < 8}
+                              imagePriority={index < 10}
                             />
                           );
                         })}
@@ -710,8 +695,13 @@ export function ShopCatalogView() {
   return (
     <Suspense
       fallback={
-        <div className="shop-catalog-page flex min-h-[calc(100dvh-var(--header-offset,5.5rem))] items-center justify-center pt-[var(--header-offset,5.5rem)]">
-          <p className="font-body text-sm shop-catalog-muted">…</p>
+        <div className="shop-catalog-page min-h-[calc(100svh-var(--header-offset,5.5rem))] pt-[var(--header-offset,5.5rem)]">
+          <div className="border-b border-[var(--lookbook-line)] px-5 py-3 sm:px-8 lg:px-10">
+            <div className="h-3 w-40 animate-pulse rounded-full bg-[color-mix(in_srgb,var(--lookbook-ink)_10%,var(--lookbook-bg))]" />
+          </div>
+          <div className="px-5 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
+            <CatalogGridSkeleton count={10} />
+          </div>
         </div>
       }
     >
@@ -737,7 +727,7 @@ function FilterSection({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="lookbook-ink flex w-full items-center justify-between rounded-md px-1 py-1 font-body text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2"
+        className="shop-filter-touch lookbook-ink flex w-full min-h-[44px] items-center justify-between rounded-md px-2 py-2 font-body text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2"
       >
         {title}
         <ChevronDown
@@ -767,7 +757,7 @@ function FilterOption({
       type="button"
       onClick={onClick}
       className={[
-        "flex w-full items-center justify-between rounded-md px-2 py-2 text-left font-body text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2",
+        "shop-filter-touch flex w-full min-h-[44px] items-center justify-between rounded-md px-3 py-2.5 text-left font-body text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2",
         active
           ? "lookbook-ink bg-[color-mix(in_srgb,var(--lookbook-ink)_10%,var(--lookbook-bg))]"
           : "shop-catalog-muted hover:text-[var(--lookbook-ink)]",

@@ -50,7 +50,7 @@ export function ProductWaitlistMenu({ sku, productTitle }: ProductWaitlistMenuPr
       <AnimatePresence>
         {open ? (
           <motion.div
-            className="shop-waitlist-panel delivery-faq-panel absolute left-0 top-[calc(100%+0.625rem)] z-40 w-[min(100%,22rem)] overflow-hidden rounded-xl shadow-[0_20px_48px_rgba(1,10,139,0.14)] sm:left-auto sm:right-0"
+            className="shop-action-dropdown-panel shop-waitlist-panel delivery-faq-panel absolute left-0 top-[calc(100%+0.625rem)] z-40 w-[min(100%,22rem)] overflow-hidden rounded-xl shadow-[0_20px_48px_rgba(1,10,139,0.14)] sm:left-auto sm:right-0"
             {...menuMotion}
           >
             <WaitlistForm

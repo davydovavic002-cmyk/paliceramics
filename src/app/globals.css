@@ -61,12 +61,20 @@ body {
   --footer-muted: #97a3c4;
   --footer-line: color-mix(in srgb, var(--footer-ink) 32%, transparent);
 
-  --header-offset: 5.5rem;
+  --header-offset: calc(3.35rem + env(safe-area-inset-top, 0px));
+  --cookie-banner-offset: 0px;
+  --keyboard-inset: 0px;
 
   --delivery-faq-surface: #faf7f0;
   --delivery-faq-ink: var(--brand-blue);
   --delivery-faq-muted: color-mix(in srgb, var(--brand-blue) 52%, #4a4a55);
   --delivery-faq-line: rgba(1, 10, 139, 0.14);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-offset: calc(5.5rem + env(safe-area-inset-top, 0px));
+  }
 }
 
 html {
@@ -77,6 +85,15 @@ body {
   background: var(--theme-surface);
   color: var(--theme-text);
   overflow-x: hidden;
+}
+
+html[data-cookie-banner="open"] main {
+  padding-bottom: calc(var(--cookie-banner-offset) + env(safe-area-inset-bottom, 0px));
+}
+
+.form-keyboard-safe {
+  scroll-margin-bottom: calc(var(--keyboard-inset) + var(--cookie-banner-offset) + 1rem);
+  padding-bottom: calc(var(--keyboard-inset) + 0.25rem);
 }
 
 ::selection {
@@ -218,6 +235,38 @@ body {
   background-color: color-mix(in srgb, var(--theme-surface) 98%, transparent);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.site-header-shell {
+  padding-top: env(safe-area-inset-top, 0px);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@media (max-width: 1023px) {
+  .site-header-inner {
+    min-height: 3.35rem;
+  }
+
+  .site-header-inner.header-bar-solid,
+  .site-header-inner.header-bar-mobile {
+    border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 12%, transparent);
+    background-color: color-mix(in srgb, var(--theme-surface) 98%, transparent);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  [data-theme="raw-clay"] .site-header-inner.header-bar-mobile {
+    box-shadow: 0 4px 20px rgba(61, 52, 40, 0.08);
+  }
+
+  .header-hero-overlay .site-header-inner.header-bar-mobile {
+    border-bottom-color: color-mix(in srgb, #ede8df 12%, transparent);
+    background-color: color-mix(in srgb, #2c2a27 92%, transparent);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+  }
 }
 
 [data-theme="raw-clay"] .header-bar-solid {
@@ -411,7 +460,39 @@ body {
   }
 
   .shop-catalog-muted {
-    color: color-mix(in srgb, var(--lookbook-ink) 58%, var(--lookbook-muted));
+    color: color-mix(in srgb, var(--lookbook-ink) 68%, var(--lookbook-muted));
+  }
+
+  .hero-viewport-height {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .skip-to-content {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 300;
+    transform: translateY(calc(-100% - 1rem));
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--lookbook-ink) 18%, transparent);
+    background: #fffef9;
+    color: var(--lookbook-ink);
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: transform 0.18s ease;
+  }
+
+  .skip-to-content:focus {
+    transform: translateY(0);
+    outline: 2px solid var(--lookbook-ink);
+    outline-offset: 2px;
+  }
+
+  #main-content:focus {
+    outline: none;
   }
 
   .shop-product-well,
@@ -781,6 +862,43 @@ body {
     box-shadow: 0 18px 50px color-mix(in srgb, #010a8b 14%, transparent);
   }
 
+  @media (max-width: 639px) {
+    .shop-action-dropdown-panel {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      margin-top: 0.5rem;
+      z-index: 1;
+    }
+
+    .shop-product-notes-actions {
+      position: relative;
+      z-index: 25;
+      isolation: isolate;
+      width: 100%;
+    }
+
+    .shop-product-notes-actions .shop-product-buy,
+    .shop-product-notes-actions .shop-product-waitlist {
+      width: 100%;
+    }
+
+    .shop-product-notes-actions .shop-buy-btn,
+    .shop-product-notes-actions .shop-waitlist-trigger {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .shop-catalog-mobile-sticky {
+      position: sticky;
+      top: var(--header-offset);
+      z-index: 45;
+    }
+  }
+
   .shop-related-heading {
     display: flex;
     align-items: center;
@@ -903,8 +1021,9 @@ body {
     position: relative;
     left: 50%;
     width: 100vw;
-    max-width: 100vw;
+    max-width: 100%;
     transform: translateX(-50%);
+    overflow-x: clip;
   }
 
   .lookbook-grid {

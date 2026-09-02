@@ -46,7 +46,7 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
 
   return (
     <div className="shop-product-notes mt-8">
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-3 sm:gap-y-2">
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -71,7 +71,11 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
             {copy.care}
           </button>
         </div>
-        {actions ? <div className="min-w-0 basis-full sm:basis-auto sm:shrink-0">{actions}</div> : null}
+        {actions ? (
+          <div className="shop-product-notes-actions flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+            {actions}
+          </div>
+        ) : null}
       </div>
 
       <div className="min-h-[4.25rem]">

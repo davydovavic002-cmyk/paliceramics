@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useShopCatalog } from "@/hooks/useShopCatalog";
-import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useProductPageScrollTop } from "@/hooks/useProductPageScrollTop";
 import {
   findShopProductBySku,
@@ -18,14 +17,13 @@ import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
 import { clearShopCatalogReturnState } from "@/lib/shopScrollRestore";
 import { t } from "@/lib/galleryContent";
 import { getCollectionLabel } from "@/lib/lookbookCollections";
-import { staggerStep } from "@/lib/motionUtils";
 import { CatalogProductCard } from "./CatalogProductCard";
 import { ProductDetailNotes } from "./ProductDetailNotes";
 import { ProductGallery } from "./ProductGallery";
 import { ProductPurchaseMenu } from "./ProductPurchaseMenu";
 import { ProductWaitlistMenu } from "./ProductWaitlistMenu";
+import { ProductMobileBackBar } from "./ProductMobileBackBar";
 import { ShopStatusBadge } from "./ShopStatusBadge";
-import { MotionReveal } from "@/components/ui/MotionReveal";
 
 export function ProductDetailView({ sku }: { sku: string }) {
   const router = useRouter();
@@ -64,22 +62,6 @@ export function ProductDetailView({ sku }: { sku: string }) {
     router.push(backHref, { scroll: false });
   }, [router, backHref]);
 
-  const sheetTrapRef = useFocusTrap(true);
-
-  const swipeStartY = useRef<number | null>(null);
-
-  const onSwipeStart = (event: React.TouchEvent) => {
-    swipeStartY.current = event.touches[0]?.clientY ?? null;
-  };
-
-  const onSwipeEnd = (event: React.TouchEvent) => {
-    if (swipeStartY.current === null) return;
-    const endY = event.changedTouches[0]?.clientY;
-    if (endY === undefined) return;
-    if (endY - swipeStartY.current > 72) closeProduct();
-    swipeStartY.current = null;
-  };
-
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeProduct();
@@ -110,7 +92,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const showPurchase = product.status !== "sold" && !outOfStock;
 
   return (
-    <div className="shop-catalog-page shop-product-page min-h-0 pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
+    <div className="shop-catalog-page shop-product-page min-h-0 pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
       <div className="mx-auto max-w-[1080px] px-4 sm:px-8">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
@@ -129,16 +111,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
           <span className="lookbook-ink">{title}</span>
         </nav>
 
+        <ProductMobileBackBar label={copy.backToShop} onBack={closeProduct} />
+
         <motion.div
-          ref={sheetTrapRef as React.RefObject<HTMLDivElement>}
+          role="region"
+          aria-labelledby="product-detail-title"
           className="delivery-faq-panel shop-product-sheet relative mt-4 rounded-2xl sm:mt-6 sm:rounded-[1.75rem]"
-          onTouchStart={onSwipeStart}
-          onTouchEnd={onSwipeEnd}
         >
           <button
             type="button"
             onClick={closeProduct}
-            className="shop-product-close absolute right-3 top-3 z-30 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4"
+            className="shop-product-close absolute right-3 top-3 z-30 hidden p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 lg:inline-flex"
             aria-label={copy.close}
           >
             <X className="h-6 w-6" strokeWidth={1.75} />
@@ -149,7 +132,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
             </div>
 
             <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
-              <div className="flex flex-wrap items-start justify-between gap-3 pr-12">
+              <div className="flex items-start justify-end lg:hidden">
+                <button
+                  type="button"
+                  onClick={closeProduct}
+                  className="shop-product-close -mr-1 -mt-1 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
+                  aria-label={copy.close}
+                >
+                  <X className="h-6 w-6" strokeWidth={1.75} />
+                </button>
+              </div>
+              <div className="flex flex-wrap items-start justify-between gap-3 pr-0 lg:pr-12">
                 <p className="shop-product-collection-tag delivery-faq-muted font-body text-[10px] uppercase">
                   {collectionLabel}
                 </p>
@@ -158,7 +151,10 @@ export function ProductDetailView({ sku }: { sku: string }) {
                 </p>
               </div>
 
-              <h1 className="delivery-faq-ink mt-2 font-display text-[clamp(1.2rem,4vw,2rem)] leading-[1.15] tracking-[0.02em] sm:mt-3">
+              <h1
+                id="product-detail-title"
+                className="delivery-faq-ink mt-2 font-display text-[clamp(1.2rem,4vw,2rem)] leading-[1.15] tracking-[0.02em] sm:mt-3"
+              >
                 {title}
               </h1>
 
@@ -184,16 +180,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
                   product={product}
                   language={language}
                   actions={
-                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                    <>
                       {showPurchase ? (
                         <ProductPurchaseMenu
                           productTitle={title}
                           sku={product.sku}
                           pricePln={product.pricePln}
                         />
-                      ) : null}
-                      <ProductWaitlistMenu sku={product.sku} productTitle={title} />
-                    </div>
+                      ) : (
+                        <ProductWaitlistMenu sku={product.sku} productTitle={title} />
+                      )}
+                    </>
                   }
                 />
               </div>
@@ -202,25 +199,25 @@ export function ProductDetailView({ sku }: { sku: string }) {
         </motion.div>
 
         {related.length > 0 ? (
-          <MotionReveal className="mt-10 sm:mt-14" y={20}>
-            <section>
-              <h2 className="shop-related-heading font-body text-[10px] uppercase tracking-[0.2em] shop-catalog-muted">
-                {copy.related}
-              </h2>
-              <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 sm:mt-5 sm:gap-x-5 sm:gap-y-8 md:grid-cols-3">
-                {related.map((item, index) => (
-                  <MotionReveal key={item.sku} delay={staggerStep(index, 0.06)} y={12}>
-                    <CatalogProductCard
-                      product={item}
-                      title={t(item.name, language)}
-                      categoryLabel={getCollectionLabel(item.categoryId, language)}
-                      variant="shop"
-                    />
-                  </MotionReveal>
-                ))}
-              </div>
-            </section>
-          </MotionReveal>
+          <section className="relative z-0 mt-12 sm:mt-14" aria-labelledby="related-products-heading">
+            <h2
+              id="related-products-heading"
+              className="shop-related-heading font-body text-[11px] uppercase tracking-[0.18em] shop-catalog-muted"
+            >
+              {copy.related}
+            </h2>
+            <div className="mt-4 grid grid-cols-1 gap-x-4 gap-y-8 min-[421px]:grid-cols-2 sm:mt-5 sm:gap-x-5 md:grid-cols-3">
+              {related.map((item) => (
+                <CatalogProductCard
+                  key={item.sku}
+                  product={item}
+                  title={t(item.name, language)}
+                  categoryLabel={getCollectionLabel(item.categoryId, language)}
+                  variant="shop"
+                />
+              ))}
+            </div>
+          </section>
         ) : null}
       </div>
     </div>

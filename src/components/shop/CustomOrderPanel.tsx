@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import {
@@ -18,7 +19,11 @@ function contactHref(kind: "email" | "instagram" | "facebook", value: string): s
   return trimmed.startsWith("http") ? trimmed : `https://facebook.com/${trimmed.replace(/^@/, "")}`;
 }
 
-export function CustomOrderPanel() {
+interface CustomOrderPanelProps {
+  onClose?: () => void;
+}
+
+export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
   const { language } = useLanguage();
 
   const copy =
@@ -27,6 +32,7 @@ export function CustomOrderPanel() {
           eyebrow: "Na zamówienie",
           about: "O zamówieniach",
           contact: "Kontakt",
+          close: "Zamknij",
           minBadge: "od 400 zł",
           email: "Email",
           instagram: "Instagram",
@@ -36,6 +42,7 @@ export function CustomOrderPanel() {
           eyebrow: "Made to order",
           about: "About custom orders",
           contact: "Contact",
+          close: "Close",
           minBadge: "from 400 PLN",
           email: "Email",
           instagram: "Instagram",
@@ -43,6 +50,9 @@ export function CustomOrderPanel() {
         };
 
   const title = pickBilingual(customOrderContent.title, customOrderContent.title, language);
+  const galleryLabels = customOrderCatalogCard.galleryImageLabels.map((label) =>
+    pickBilingual(label, label, language)
+  );
   const subtitle = pickBilingual(customOrderContent.subtitle, customOrderContent.subtitle, language);
   const eyebrow = pickBilingual(madeToOrderCategoryLabel, madeToOrderCategoryLabel, language);
   const body = customOrderContent.body[language];
@@ -83,10 +93,23 @@ export function CustomOrderPanel() {
             images={customOrderCatalogCard.galleryImages}
             title={title}
             compact
+            imageLabels={galleryLabels}
           />
         </div>
 
         <div className="shop-product-info-zone shop-product-info-zone-compact delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-[1.35rem] border-[var(--delivery-faq-line)] px-5 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:rounded-none lg:rounded-tr-[1.35rem] lg:rounded-br-[1.35rem] lg:border-b-0 lg:border-l">
+          {onClose ? (
+            <div className="mb-1 flex justify-end lg:mb-0">
+              <button
+                type="button"
+                onClick={onClose}
+                className="shop-product-close -mr-1 -mt-1 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
+                aria-label={copy.close}
+              >
+                <X className="h-6 w-6" strokeWidth={1.75} />
+              </button>
+            </div>
+          ) : null}
           <div className="flex flex-wrap items-start justify-between gap-2">
             <p className="shop-product-collection-tag delivery-faq-muted font-body text-[10px] uppercase">
               {eyebrow}

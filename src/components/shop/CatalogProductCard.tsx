@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMotionFlags } from "@/context/DemoControlsContext";
@@ -53,6 +54,7 @@ export function CatalogProductCard({
   const out = isOutOfStock(product);
   const statusLine = cardStatusLine(product, language, out);
   const unoptimizedImage = isDataImageUrl(product.image);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const returnTo = resolveProductReturnTo(
     pathname,
@@ -126,17 +128,28 @@ export function CatalogProductCard({
         ].join(" ")}
       >
         <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden sm:aspect-square">
+          {!imageLoaded ? (
+            <div
+              className="absolute inset-0 animate-pulse bg-[color-mix(in_srgb,var(--lookbook-ink)_8%,var(--lookbook-bg))]"
+              aria-hidden
+            />
+          ) : null}
           <Image
             src={product.image}
             alt={title}
             fill
             priority={imagePriority}
-            quality={imagePriority ? 80 : 72}
+            fetchPriority={imagePriority ? "high" : undefined}
+            loading={imagePriority ? "eager" : "lazy"}
+            quality={imagePriority ? 76 : 68}
             unoptimized={unoptimizedImage}
-            sizes="(max-width:768px) 45vw, (max-width:1280px) 22vw, 180px"
+            sizes="(max-width:768px) 42vw, (max-width:1280px) 22vw, 180px"
+            onLoad={() => setImageLoaded(true)}
+            onLoadingComplete={() => setImageLoaded(true)}
             className={[
               "object-contain object-center p-3 sm:p-5",
-              "transition-transform duration-500 ease-out",
+              "transition-[transform,opacity] duration-500 ease-out",
+              imageLoaded ? "opacity-100" : "opacity-0",
               showImageHoverScale ? "group-hover:scale-[1.02]" : "",
             ].join(" ")}
           />

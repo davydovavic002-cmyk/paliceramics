@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import { useLanguage } from "@/context/LanguageContext";
+import { useFormKeyboardScroll } from "@/hooks/useFormKeyboardScroll";
 import { ConsentField } from "@/components/site/ConsentField";
 
 interface WaitlistFormProps {
@@ -26,6 +27,7 @@ export function WaitlistForm({
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const light = variant === "product" || variant === "panel";
+  const formRef = useFormKeyboardScroll<HTMLFormElement>();
 
   const copy =
     language === "pl"
@@ -118,7 +120,7 @@ export function WaitlistForm({
         : "rounded-xl border border-[color-mix(in_srgb,#010a8b_10%,transparent)] bg-[color-mix(in_srgb,#ffffff_72%,transparent)] p-4 sm:p-5";
 
     return (
-      <form onSubmit={(e) => void submit(e)} className={formClass}>
+      <form ref={formRef} onSubmit={(e) => void submit(e)} className={`form-keyboard-safe ${formClass}`}>
         <div>
           <p className="delivery-faq-ink font-body text-[10px] uppercase tracking-[0.2em]">
             {copy.title}
@@ -159,7 +161,7 @@ export function WaitlistForm({
   }
 
   return (
-    <form onSubmit={(e) => void submit(e)} className="space-y-3 rounded-lg border border-theme/20 bg-theme-surface/30 p-4">
+    <form ref={formRef} onSubmit={(e) => void submit(e)} className="form-keyboard-safe space-y-3 rounded-lg border border-theme/20 bg-theme-surface/30 p-4">
       <div>
         <p className="font-display text-sm tracking-wide text-theme">{copy.title}</p>
         <p className="mt-1 font-body text-xs text-theme-muted">{copy.hint}</p>

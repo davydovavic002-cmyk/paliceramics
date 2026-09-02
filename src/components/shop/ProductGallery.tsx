@@ -2,14 +2,16 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { filterProjectImages } from "@/lib/productImages";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductGalleryProps {
   images: string[];
   title: string;
   compact?: boolean;
+  imageLabels?: string[];
 }
 
 const SWIPE_THRESHOLD = 48;
@@ -23,9 +25,11 @@ function pinchDistance(touches: React.TouchList | TouchList) {
   return Math.hypot(dx, dy);
 }
 
-export function ProductGallery({ images, title, compact = false }: ProductGalleryProps) {
+export function ProductGallery({ images, title, compact = false, imageLabels }: ProductGalleryProps) {
+  const { language } = useLanguage();
   const [active, setActive] = useState(0);
   const [zoom, setZoom] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const touchStart = useRef<number | null>(null);
   const pinchStartDistance = useRef<number | null>(null);
   const pinchStartZoom = useRef(1);
@@ -33,6 +37,9 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
   const safeActive = Math.min(active, Math.max(0, projectImages.length - 1));
   const activeSrc = projectImages[safeActive] ?? projectImages[0];
   const unoptimized = isDataImageUrl(activeSrc);
+  const activeLabel = imageLabels?.[safeActive];
+  const thumbLabel = (index: number) =>
+    imageLabels?.[index] ?? `${title} — ${index + 1}`;
   const hasMultiple = projectImages.length > 1;
 
   const goPrev = useCallback(() => {
@@ -47,7 +54,21 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
 
   useEffect(() => {
     resetZoom();
+    setLightboxOpen(false);
   }, [active, resetZoom]);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxOpen]);
 
   useEffect(() => {
     if (!hasMultiple) return;
@@ -137,8 +158,16 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          className="absolute bottom-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_20%,transparent)] bg-[color-mix(in_srgb,#faf7f0_92%,transparent)] text-[#010a8b] shadow-sm backdrop-blur-sm"
+          aria-label={language === "pl" ? "Powiększ zdjęcie" : "View larger image"}
+        >
+          <ZoomIn className="h-4 w-4" strokeWidth={1.5} />
+        </button>
         <div
-          className="absolute inset-0 transition-transform duration-75 ease-out"
+          className="pointer-events-none absolute inset-0 transition-transform duration-75 ease-out"
           style={{ transform: `scale(${zoom})` }}
         >
           <Image
@@ -182,8 +211,19 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
             >
               <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <p className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-[color-mix(in_srgb,#faf7f0_88%,transparent)] px-2.5 py-0.5 font-body text-[10px] tabular-nums shop-catalog-muted backdrop-blur-sm">
-              {safeActive + 1} / {projectImages.length}
+            <p className="pointer-events-none absolute bottom-2 left-1/2 z-10 max-w-[min(92%,16rem)] -translate-x-1/2 rounded-full bg-[color-mix(in_srgb,#faf7f0_88%,transparent)] px-2.5 py-0.5 text-center font-body text-[11px] shop-catalog-muted backdrop-blur-sm">
+              {activeLabel ? (
+                <>
+                  <span className="lookbook-ink">{activeLabel}</span>
+                  <span className="ml-1.5 tabular-nums opacity-75">
+                    {safeActive + 1}/{projectImages.length}
+                  </span>
+                </>
+              ) : (
+                <span className="tabular-nums">
+                  {safeActive + 1} / {projectImages.length}
+                </span>
+              )}
             </p>
           </>
         ) : null}
@@ -204,15 +244,15 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
                 resetZoom();
                 setActive(index);
               }}
-              aria-label={`${title} — ${index + 1}`}
+              aria-label={thumbLabel(index)}
               aria-current={safeActive === index ? "true" : undefined}
               className={[
                 "shop-product-thumb relative shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2",
-                "h-14 w-14 sm:h-16 sm:w-16",
+                imageLabels ? "h-auto w-[4.5rem] sm:w-20" : "h-14 w-14 sm:h-16 sm:w-16",
                 safeActive === index ? "shop-product-thumb-active" : "",
               ].join(" ")}
             >
-              <span className="relative block h-full w-full overflow-hidden rounded-md">
+              <span className="relative block h-14 w-full overflow-hidden rounded-md sm:h-16">
                 <Image
                   src={src}
                   alt=""
@@ -224,8 +264,46 @@ export function ProductGallery({ images, title, compact = false }: ProductGaller
                   className="object-contain p-1.5"
                 />
               </span>
+              {imageLabels?.[index] ? (
+                <span className="mt-1 block truncate px-0.5 text-center font-body text-[10px] leading-tight shop-catalog-muted">
+                  {imageLabels[index]}
+                </span>
+              ) : null}
             </button>
           ))}
+        </div>
+      ) : null}
+
+      {lightboxOpen ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#121418]/92 p-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]"
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(false)}
+            className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] z-10 rounded-full border border-white/20 bg-black/30 p-2 text-white"
+            aria-label={language === "pl" ? "Zamknij" : "Close"}
+          >
+            <X className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+          <div
+            className="relative h-[min(85dvh,720px)] w-full max-w-3xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Image
+              src={activeSrc}
+              alt={title}
+              fill
+              unoptimized={unoptimized}
+              sizes="100vw"
+              quality={88}
+              className="object-contain"
+            />
+          </div>
         </div>
       ) : null}
     </div>
