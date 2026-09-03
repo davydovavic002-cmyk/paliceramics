@@ -26,6 +26,7 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_IMAGE_UNOPTIMIZED: "1"
 
       - name: Pack .next
         run: tar -czf next-build.tar.gz .next
