@@ -585,15 +585,35 @@ html[data-cookie-banner="open"] main {
   }
 
   .shop-product-gallery-well-compact {
-    width: min(100%, 15.5rem);
-    max-height: min(28vh, 14rem);
+    width: min(100%, 14rem);
+    margin-inline: auto;
+    aspect-ratio: 4 / 3;
+    max-height: min(32vh, 14rem);
+  }
+
+  @media (min-width: 640px) {
+    .shop-product-gallery-well-compact {
+      width: min(100%, 13.5rem);
+      aspect-ratio: 1;
+      max-height: min(30vh, 13rem);
+    }
   }
 
   @media (min-width: 1024px) {
     .shop-product-gallery-well-compact {
-      width: 100%;
-      max-width: none;
-      max-height: min(28vh, 12.5rem);
+      width: min(100%, 16rem);
+      max-width: 16rem;
+      max-height: 12rem;
+    }
+  }
+
+  .shop-product-gallery-zone-compact {
+    justify-content: center;
+  }
+
+  @media (min-width: 1024px) {
+    .shop-product-gallery-zone-compact {
+      padding-block: 1rem;
     }
   }
 

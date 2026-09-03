@@ -88,13 +88,15 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
     <div
       className={[
         "flex h-full min-h-0 w-full flex-col",
-        compact ? "p-3 sm:p-4 lg:px-5 lg:pt-4 lg:pb-3" : "p-3 sm:p-5 lg:px-6 lg:pt-5 lg:pb-5",
+        compact ? "items-center p-3 sm:p-4 lg:px-4 lg:py-3" : "p-3 sm:p-5 lg:px-6 lg:pt-5 lg:pb-5",
       ].join(" ")}
     >
       <div
         className={[
           "shop-product-gallery-well relative w-full shrink-0 overflow-hidden rounded-xl",
-          compact ? "aspect-[4/3] sm:aspect-square" : "aspect-[4/3] sm:aspect-square",
+          compact
+            ? "shop-product-gallery-well-compact"
+            : "aspect-[4/3] sm:aspect-square",
         ].join(" ")}
         tabIndex={hasMultiple ? 0 : undefined}
         role={hasMultiple ? "region" : undefined}
@@ -102,21 +104,23 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        <Image
-          key={activeSrc}
-          src={activeSrc}
-          alt={title}
-          fill
-          priority={safeActive === 0}
-          quality={compact ? 72 : 80}
-          unoptimized={unoptimized}
-          sizes={compact ? "(max-width:1024px) 88vw, 420px" : "(max-width:1024px) 100vw, 50vw"}
-          className={[
-            "object-contain select-none",
-            compact ? "p-3 sm:p-4" : "p-4 sm:p-6",
-          ].join(" ")}
-          draggable={false}
-        />
+        <div className="absolute inset-0">
+          <Image
+            key={activeSrc}
+            src={activeSrc}
+            alt={title}
+            fill
+            priority={safeActive === 0}
+            quality={compact ? 72 : 80}
+            unoptimized={unoptimized}
+            sizes={compact ? "(max-width:1024px) 88vw, 420px" : "(max-width:1024px) 100vw, 50vw"}
+            className={[
+              "object-contain select-none",
+              compact ? "p-3 sm:p-4" : "p-4 sm:p-6",
+            ].join(" ")}
+            draggable={false}
+          />
+        </div>
 
         {hasMultiple ? (
           <>
@@ -158,7 +162,7 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
         <div
           className={[
             "flex gap-2 overflow-x-auto px-0.5 py-1 sm:gap-2.5",
-            compact ? "mt-2 lg:mt-3" : "mt-3 sm:mt-4",
+            compact ? "mt-2 max-w-[min(100%,16rem)] lg:mt-2.5" : "mt-3 sm:mt-4",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (
