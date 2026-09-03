@@ -584,6 +584,16 @@ html[data-cookie-banner="open"] main {
     border-radius: 1.35rem;
   }
 
+  @media (max-width: 1023px) {
+    .shop-product-sheet-compact .shop-product-gallery-zone {
+      border-right: 0;
+    }
+
+    .shop-product-sheet-compact .shop-product-info-zone.delivery-faq-split-b {
+      border-bottom-width: 0;
+    }
+  }
+
   .shop-product-gallery-well-standard {
     width: min(100%, 20rem);
     margin-inline: auto;

@@ -86,9 +86,9 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
   ] as const;
 
   return (
-    <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative overflow-visible rounded-[1.35rem]">
-      <div className="shop-product-sheet-inner grid rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
-        <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
+    <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative overflow-hidden rounded-[1.35rem]">
+      <div className="shop-product-sheet-inner grid min-w-0 rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
+        <div className="shop-product-gallery-zone flex min-h-0 min-w-0 flex-col overflow-hidden rounded-t-[1.35rem] border-b border-[var(--delivery-faq-line)] lg:rounded-l-[1.35rem] lg:rounded-tr-none lg:border-b-0 lg:border-r">
           <ProductGallery
             images={customOrderCatalogCard.galleryImages}
             title={title}
@@ -97,9 +97,9 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
           />
         </div>
 
-        <div className="shop-product-info-zone shop-product-info-zone-compact delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-[1.35rem] border-[var(--delivery-faq-line)] px-5 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:rounded-none lg:rounded-tr-[1.35rem] lg:rounded-br-[1.35rem] lg:border-b-0 lg:border-l">
+        <div className="shop-product-info-zone shop-product-info-zone-compact delivery-faq-split-b flex min-h-0 min-w-0 flex-col overflow-hidden rounded-b-[1.35rem] border-[var(--delivery-faq-line)] px-5 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:overflow-visible lg:rounded-none lg:rounded-tr-[1.35rem] lg:rounded-br-[1.35rem] lg:border-b-0 lg:border-l">
           {onClose ? (
-            <div className="mb-1 flex justify-end lg:mb-0">
+            <div className="mb-1 hidden justify-end lg:mb-0 lg:flex">
               <button
                 type="button"
                 onClick={onClose}

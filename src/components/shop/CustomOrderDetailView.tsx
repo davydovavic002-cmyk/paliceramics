@@ -67,7 +67,7 @@ export function CustomOrderDetailView() {
   const title = pickBilingual(customOrderContent.title, customOrderContent.title, language);
 
   return (
-    <div className="shop-catalog-page shop-product-page min-h-0 pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14">
+    <div className="shop-catalog-page shop-product-page shop-made-to-order-page min-h-0 overflow-x-clip pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14">
       <div className="mx-auto max-w-[960px] px-4 sm:px-6">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link

@@ -95,7 +95,7 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
         className={[
           "shop-product-gallery-well relative w-full shrink-0 overflow-hidden rounded-xl",
           compact
-            ? "aspect-[4/3] sm:aspect-square"
+            ? "aspect-[4/3] max-h-[min(48vw,16rem)] w-full max-w-[17.5rem] mx-auto lg:max-h-none lg:max-w-none lg:aspect-square"
             : "shop-product-gallery-well-standard",
         ].join(" ")}
         tabIndex={hasMultiple ? 0 : undefined}
@@ -161,8 +161,8 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
       {hasMultiple ? (
         <div
           className={[
-            "flex gap-2 overflow-x-auto px-0.5 py-1 sm:gap-2.5",
-            compact ? "mt-2 lg:mt-3" : "mt-3 max-w-[min(100%,24rem)] sm:mt-3.5",
+            "flex gap-2 overflow-x-auto overscroll-x-contain px-0.5 py-1 sm:gap-2.5",
+            compact ? "mt-2 w-full min-w-0 max-w-[17.5rem] mx-auto lg:mt-3 lg:max-w-none" : "mt-3 max-w-[min(100%,24rem)] sm:mt-3.5",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (
