@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import { shopCollectionHref, getCollectionById, type LookbookCollection } from "@/lib/lookbookCollections";
+import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
+import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { resolvePublicImageUrl } from "@/lib/productImages";
 import { images } from "@/lib/images";
@@ -35,7 +37,10 @@ export function LookbookCollectionCover({
 
   const name = pickBilingual(collection.name, collection.name, language);
   const subtitle = pickBilingual(collection.subtitle, collection.subtitle, language);
-  const href = collection.href ?? shopCollectionHref(collection.id);
+  const href =
+    (collection.href ?? shopCollectionHref(collection.id)) === MADE_TO_ORDER_DETAIL_HREF
+      ? appendReturnTo(MADE_TO_ORDER_DETAIL_HREF, HOME_LOOKBOOK_RETURN_TO)
+      : (collection.href ?? shopCollectionHref(collection.id));
 
   return (
     <Link

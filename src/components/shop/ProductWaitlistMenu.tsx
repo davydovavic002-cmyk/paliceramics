@@ -33,12 +33,12 @@ export function ProductWaitlistMenu({ sku, productTitle }: ProductWaitlistMenuPr
   const menuMotion = getMenuPanelProps(motionLevel);
 
   return (
-    <div ref={rootRef} className="shop-product-waitlist relative z-30 w-full min-w-0 sm:w-auto sm:shrink-0">
+    <div ref={rootRef} className="shop-product-waitlist relative z-30 w-full min-w-0">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="shop-waitlist-trigger inline-flex w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,#010a8b_22%,transparent)] bg-white/85 px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.16em] text-[#010a8b] transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,white)] sm:w-auto sm:tracking-[0.18em]"
+        className="shop-waitlist-trigger inline-flex w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,#010a8b_22%,transparent)] bg-white/85 px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.16em] text-[#010a8b] transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,white)] sm:tracking-[0.18em]"
       >
         <Bell className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
         <span className="truncate">{label}</span>
@@ -50,7 +50,7 @@ export function ProductWaitlistMenu({ sku, productTitle }: ProductWaitlistMenuPr
       <AnimatePresence>
         {open ? (
           <motion.div
-            className="shop-action-dropdown-panel shop-waitlist-panel delivery-faq-panel absolute left-0 top-[calc(100%+0.625rem)] z-40 w-[min(100%,22rem)] overflow-hidden rounded-xl shadow-[0_20px_48px_rgba(1,10,139,0.14)] sm:left-auto sm:right-0"
+            className="shop-action-dropdown-panel shop-action-dropdown-panel-up shop-waitlist-panel delivery-faq-panel absolute left-0 z-40 w-full overflow-hidden rounded-xl shadow-[0_20px_48px_rgba(1,10,139,0.14)]"
             {...menuMotion}
           >
             <WaitlistForm

@@ -88,15 +88,15 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
     <div
       className={[
         "flex h-full min-h-0 w-full flex-col",
-        compact ? "items-center p-3 sm:p-4 lg:px-4 lg:py-3" : "p-3 sm:p-5 lg:px-6 lg:pt-5 lg:pb-5",
+        compact ? "p-3 sm:p-4 lg:px-5 lg:pt-4 lg:pb-3" : "items-center p-3 sm:p-4 lg:px-5 lg:py-4",
       ].join(" ")}
     >
       <div
         className={[
           "shop-product-gallery-well relative w-full shrink-0 overflow-hidden rounded-xl",
           compact
-            ? "shop-product-gallery-well-compact"
-            : "aspect-[4/3] sm:aspect-square",
+            ? "aspect-[4/3] sm:aspect-square"
+            : "shop-product-gallery-well-standard",
         ].join(" ")}
         tabIndex={hasMultiple ? 0 : undefined}
         role={hasMultiple ? "region" : undefined}
@@ -162,7 +162,7 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
         <div
           className={[
             "flex gap-2 overflow-x-auto px-0.5 py-1 sm:gap-2.5",
-            compact ? "mt-2 max-w-[min(100%,16rem)] lg:mt-2.5" : "mt-3 sm:mt-4",
+            compact ? "mt-2 lg:mt-3" : "mt-3 max-w-[min(100%,24rem)] sm:mt-3.5",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (

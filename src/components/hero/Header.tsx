@@ -6,6 +6,7 @@ import { Info, Menu, Palette, ShoppingBag, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
+import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { handleSectionClick } from "@/lib/scrollToSection";
 import { useCompactViewport } from "@/hooks/useCompactViewport";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
@@ -34,8 +35,12 @@ function MenuNavLink({
     "block rounded-md px-2.5 py-2 font-body text-[10px] uppercase tracking-[0.14em] text-[color-mix(in_srgb,#ede8df_72%,transparent)] transition-colors hover:bg-white/10 hover:text-[#ede8df]";
 
   if (item.href.startsWith("/")) {
+    const href =
+      item.href === MADE_TO_ORDER_DETAIL_HREF && pathname === "/"
+        ? appendReturnTo(MADE_TO_ORDER_DETAIL_HREF, HOME_LOOKBOOK_RETURN_TO)
+        : item.href;
     return (
-      <Link href={item.href} className={linkClass} onClick={onNavigate}>
+      <Link href={href} className={linkClass} onClick={onNavigate}>
         {item.label[language]}
       </Link>
     );

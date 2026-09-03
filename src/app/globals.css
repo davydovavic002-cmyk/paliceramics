@@ -584,36 +584,36 @@ html[data-cookie-banner="open"] main {
     border-radius: 1.35rem;
   }
 
-  .shop-product-gallery-well-compact {
-    width: min(100%, 14rem);
+  .shop-product-gallery-well-standard {
+    width: min(100%, 20rem);
     margin-inline: auto;
     aspect-ratio: 4 / 3;
-    max-height: min(32vh, 14rem);
+    max-height: min(50vw, 18.5rem);
   }
 
   @media (min-width: 640px) {
-    .shop-product-gallery-well-compact {
-      width: min(100%, 13.5rem);
+    .shop-product-gallery-well-standard {
+      width: min(100%, 19rem);
       aspect-ratio: 1;
-      max-height: min(30vh, 13rem);
+      max-height: min(44vh, 19rem);
     }
   }
 
   @media (min-width: 1024px) {
-    .shop-product-gallery-well-compact {
-      width: min(100%, 16rem);
-      max-width: 16rem;
-      max-height: 12rem;
+    .shop-product-gallery-well-standard {
+      width: min(100%, 24rem);
+      max-width: 24rem;
+      max-height: 24rem;
     }
   }
 
-  .shop-product-gallery-zone-compact {
+  .shop-product-gallery-zone-standard {
     justify-content: center;
   }
 
   @media (min-width: 1024px) {
-    .shop-product-gallery-zone-compact {
-      padding-block: 1rem;
+    .shop-product-gallery-zone-standard {
+      padding-block: 1.5rem;
     }
   }
 
@@ -928,6 +928,47 @@ html[data-cookie-banner="open"] main {
       top: var(--header-offset);
       z-index: 45;
     }
+  }
+
+  .shop-product-page .shop-product-notes-actions {
+    position: relative;
+    z-index: 20;
+    isolation: isolate;
+  }
+
+  .shop-product-page .shop-product-notes {
+    overflow: visible;
+  }
+
+  .shop-product-page .shop-action-dropdown-panel-up {
+    position: absolute !important;
+    top: calc(100% + 0.625rem) !important;
+    bottom: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    margin-top: 0 !important;
+    z-index: 50;
+  }
+
+  .shop-product-page .shop-waitlist-panel {
+    width: min(100%, 22rem) !important;
+    max-width: 22rem;
+  }
+
+  .shop-product-page .shop-buy-menu-panel {
+    width: min(100%, 15.5rem) !important;
+    max-width: 15.5rem;
+  }
+
+  .shop-product-page .shop-product-notes-actions .shop-product-buy,
+  .shop-product-page .shop-product-notes-actions .shop-product-waitlist {
+    width: 100%;
+  }
+
+  .shop-product-page .shop-product-notes-actions .shop-buy-btn,
+  .shop-product-page .shop-product-notes-actions .shop-waitlist-trigger {
+    width: 100%;
+    justify-content: center;
   }
 
   .certificate-preview-lazy {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
+import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { madeToOrderCollection } from "@/lib/lookbookCollections";
 
 export function MadeToOrderStrip() {
@@ -18,7 +19,7 @@ export function MadeToOrderStrip() {
 
   return (
     <Link
-      href={MADE_TO_ORDER_DETAIL_HREF}
+      href={appendReturnTo(MADE_TO_ORDER_DETAIL_HREF, HOME_LOOKBOOK_RETURN_TO)}
       className="group flex items-center justify-between gap-4 border-y border-[var(--lookbook-line)] px-5 py-5 transition-colors hover:bg-[color-mix(in_srgb,var(--lookbook-ink)_4%,var(--lookbook-bg))] sm:px-8 sm:py-6 lg:px-10"
     >
       <div className="min-w-0">

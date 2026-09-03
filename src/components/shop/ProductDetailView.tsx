@@ -92,8 +92,8 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const showPurchase = product.status !== "sold" && !outOfStock;
 
   return (
-    <div className="shop-catalog-page shop-product-page min-h-0 pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14 lg:min-h-[100dvh]">
-      <div className="mx-auto max-w-[1080px] px-4 sm:px-8 xl:max-w-[1320px]">
+    <div className="shop-catalog-page shop-product-page min-h-0 pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14">
+      <div className="mx-auto max-w-[1024px] px-4 sm:px-6">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
             href="/"
@@ -116,7 +116,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
         <motion.div
           role="region"
           aria-labelledby="product-detail-title"
-          className="delivery-faq-panel shop-product-sheet relative mt-4 rounded-2xl sm:mt-6 sm:rounded-[1.75rem]"
+          className="delivery-faq-panel shop-product-sheet relative z-10 mb-2 mt-4 rounded-2xl sm:mb-4 sm:mt-6 sm:rounded-[1.75rem]"
         >
           <button
             type="button"
@@ -126,12 +126,12 @@ export function ProductDetailView({ sku }: { sku: string }) {
           >
             <X className="h-6 w-6" strokeWidth={1.75} />
           </button>
-          <div className="shop-product-sheet-inner grid rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-            <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
+          <div className="shop-product-sheet-inner grid rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:items-start">
+            <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>
 
-            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
+            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 sm:px-6 sm:py-6 lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
               <div className="flex items-start justify-end lg:hidden">
                 <button
                   type="button"
@@ -199,7 +199,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
         </motion.div>
 
         {related.length > 0 ? (
-          <section className="relative z-0 mt-12 sm:mt-14" aria-labelledby="related-products-heading">
+          <section className="relative z-0 mt-16 sm:mt-20 lg:mt-24" aria-labelledby="related-products-heading">
             <h2
               id="related-products-heading"
               className="shop-related-heading font-body text-[11px] uppercase tracking-[0.18em] shop-catalog-muted"

@@ -46,37 +46,35 @@ export function ProductDetailNotes({ product, language, actions }: ProductDetail
 
   return (
     <div className="shop-product-notes mt-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-3 sm:gap-y-2">
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => toggle("details")}
-            aria-expanded={open === "details"}
-            className={[
-              "shop-note-pill font-body",
-              open === "details" ? "shop-note-pill-active" : "",
-            ].join(" ")}
-          >
-            {copy.details}
-          </button>
-          <button
-            type="button"
-            onClick={() => toggle("care")}
-            aria-expanded={open === "care"}
-            className={[
-              "shop-note-pill font-body",
-              open === "care" ? "shop-note-pill-active" : "",
-            ].join(" ")}
-          >
-            {copy.care}
-          </button>
-        </div>
-        {actions ? (
-          <div className="shop-product-notes-actions flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-            {actions}
-          </div>
-        ) : null}
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => toggle("details")}
+          aria-expanded={open === "details"}
+          className={[
+            "shop-note-pill font-body",
+            open === "details" ? "shop-note-pill-active" : "",
+          ].join(" ")}
+        >
+          {copy.details}
+        </button>
+        <button
+          type="button"
+          onClick={() => toggle("care")}
+          aria-expanded={open === "care"}
+          className={[
+            "shop-note-pill font-body",
+            open === "care" ? "shop-note-pill-active" : "",
+          ].join(" ")}
+        >
+          {copy.care}
+        </button>
       </div>
+      {actions ? (
+        <div className="shop-product-notes-actions mt-3 flex w-full max-w-[22rem] flex-col gap-2">
+          {actions}
+        </div>
+      ) : null}
 
       <div className="min-h-[4.25rem]">
       <AnimatePresence mode="wait">

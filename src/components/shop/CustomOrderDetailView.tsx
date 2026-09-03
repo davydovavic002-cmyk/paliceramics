@@ -11,7 +11,13 @@ import {
   madeToOrderCategoryLabel,
   MADE_TO_ORDER_SHOP_HREF,
 } from "@/lib/customOrderContent";
-import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
+import {
+  decodeReturnTo,
+  isHomeLookbookReturn,
+  navigateBackFromProduct,
+  resolveBackHref,
+} from "@/lib/shopReturnTo";
+import { scrollToSection } from "@/lib/scrollToSection";
 import { CustomOrderPanel } from "./CustomOrderPanel";
 import { ProductMobileBackBar } from "./ProductMobileBackBar";
 
@@ -19,24 +25,31 @@ export function CustomOrderDetailView() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const backHref = resolveBackHref(decodeReturnTo(searchParams.get("returnTo")), MADE_TO_ORDER_SHOP_HREF);
+  const returnToParam = searchParams.get("returnTo");
+  const fromLookbook = isHomeLookbookReturn(returnToParam);
+  const backHref = resolveBackHref(decodeReturnTo(returnToParam), MADE_TO_ORDER_SHOP_HREF);
 
   useProductPageScrollTop("made-to-order");
 
   const copy =
     language === "pl"
       ? {
-          back: "Wróć do sklepu",
+          back: fromLookbook ? "Wróć do kolekcji" : "Wróć do sklepu",
           close: "Zamknij",
         }
       : {
-          back: "Back to shop",
+          back: fromLookbook ? "Back to collection" : "Back to shop",
           close: "Close",
         };
 
   const closePanel = useCallback(() => {
-    router.push(backHref, { scroll: false });
-  }, [router, backHref]);
+    navigateBackFromProduct(
+      router,
+      decodeReturnTo(returnToParam),
+      MADE_TO_ORDER_SHOP_HREF,
+      scrollToSection
+    );
+  }, [router, returnToParam]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -65,8 +78,26 @@ export function CustomOrderDetailView() {
             {language === "pl" ? "Strona główna" : "Home"}
           </Link>
           <span className="mx-2 opacity-40">/</span>
-          <Link href={backHref} scroll={false} className="transition-opacity hover:text-[var(--lookbook-ink)]">
-            {language === "pl" ? "Produkty" : "Products"}
+          <Link
+            href={fromLookbook ? "/" : backHref}
+            scroll={false}
+            onClick={
+              fromLookbook
+                ? (event) => {
+                    event.preventDefault();
+                    closePanel();
+                  }
+                : undefined
+            }
+            className="transition-opacity hover:text-[var(--lookbook-ink)]"
+          >
+            {fromLookbook
+              ? language === "pl"
+                ? "Kolekcja"
+                : "Collection"
+              : language === "pl"
+                ? "Produkty"
+                : "Products"}
           </Link>
           <span className="mx-2 opacity-40">/</span>
           <span className="lookbook-ink">{collectionLabel}</span>

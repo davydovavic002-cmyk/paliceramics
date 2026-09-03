@@ -87,8 +87,8 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
 
   return (
     <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative overflow-visible rounded-[1.35rem]">
-      <div className="shop-product-sheet-inner grid rounded-[1.35rem] lg:grid-cols-2 lg:items-start">
-        <div className="shop-product-gallery-zone shop-product-gallery-zone-compact flex min-h-0 flex-col overflow-visible rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
+      <div className="shop-product-sheet-inner grid rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
+        <div className="shop-product-gallery-zone flex min-h-0 flex-col overflow-visible rounded-t-[1.35rem] lg:rounded-l-[1.35rem] lg:rounded-tr-none">
           <ProductGallery
             images={customOrderCatalogCard.galleryImages}
             title={title}
