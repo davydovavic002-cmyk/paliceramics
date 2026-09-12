@@ -97,8 +97,8 @@ function GalleryBlockPreview({ variant }: { variant: ButtonVariantId }) {
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2 opacity-60">
-          <div className="aspect-[3/4] rounded-[2px] border border-theme bg-theme-surface/50" />
-          <div className="aspect-[3/4] rounded-[2px] border border-theme bg-theme-surface/50" />
+          <div className="aspect-[3/4] rounded-[2px] border border-theme/25 bg-theme-surface/50" />
+          <div className="aspect-[3/4] rounded-[2px] border border-theme/25 bg-theme-surface/50" />
         </div>
       </div>
 

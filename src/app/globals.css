@@ -1,3 +1,7 @@
+@import "@fontsource/inter/latin-ext-400.css";
+@import "@fontsource/inter/latin-ext-500.css";
+@import "@fontsource/work-sans/latin-ext-200.css";
+@import "@fontsource/work-sans/latin-ext-300.css";
 @import "@fontsource/work-sans/latin-500.css";
 @import "@fontsource/noto-serif-jp/latin-ext-400.css";
 @import "@fontsource/noto-serif-jp/latin-ext-500.css";
@@ -8,7 +12,7 @@
 @import "tailwindcss/utilities";
 
 html {
-  background-color: #2c2a27;
+  background-color: #353230;
 }
 
 body {
@@ -18,8 +22,10 @@ body {
 :root {
   --font-body: "Noto Serif JP", Georgia, serif;
   --font-display: "Shippori Mincho", Georgia, serif;
-  --font-sans: system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
   --font-product: "Work Sans", system-ui, sans-serif;
+  --font-hero: "Work Sans", system-ui, sans-serif;
   --ink: #1a1a1c;
   --porcelain: #f3f4f6;
   --porcelain-muted: #e5e5e5;
@@ -30,9 +36,9 @@ body {
   --paper: #ede8df;
 
   /* Demo theme tokens — overridden by DemoControlsProvider */
-  --theme-surface: #2c2a27;
-  --theme-surface-elevated: #353230;
-  --theme-surface-accent: #3a3732;
+  --theme-surface: #353230;
+  --theme-surface-elevated: #3d3a36;
+  --theme-surface-accent: #45423c;
   --theme-text: #ede8df;
   --theme-text-muted: #a89f94;
   --theme-border: #ede8df;
@@ -49,8 +55,8 @@ body {
   --hero-stroke-color: #010A8B;
   --brand-blue: #010A8B;
   /* Lookbook / shop editorial band — overridden per site theme */
-  --lookbook-bg: #2c2a27;
-  --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #3a3732);
+  --lookbook-bg: #353230;
+  --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #45423c);
   --lookbook-ink: #ede8df;
   --lookbook-muted: #a89f94;
   --lookbook-line: rgba(237, 232, 223, 0.22);
@@ -174,33 +180,21 @@ html[data-cookie-banner="open"] main {
   }
 }
 
+/* text-theme, text-theme-muted, bg-theme-surface, bg-theme-elevated and border-theme are now
+   generated from the `theme` colour in tailwind.config.ts, which also gives them working
+   slash-opacity variants. Only the tokens without a config counterpart stay hand-written. */
 @layer utilities {
-  .bg-theme-surface {
-    background-color: var(--theme-surface);
-  }
-  .bg-theme-elevated {
-    background-color: var(--theme-surface-elevated);
-  }
   .bg-theme-accent {
     background-color: var(--theme-surface-accent);
   }
   .bg-theme-header {
     background-color: var(--theme-header-bg);
   }
-  .text-theme {
-    color: var(--theme-text);
-  }
-  .text-theme-muted {
-    color: var(--theme-text-muted);
-  }
-  .border-theme {
-    border-color: color-mix(in srgb, var(--theme-border) 25%, transparent);
-  }
-  .border-theme-strong {
-    border-color: color-mix(in srgb, var(--theme-border) 45%, transparent);
-  }
   .text-theme-btn {
     color: var(--theme-btn-text, var(--theme-text));
+  }
+  .font-inter {
+    font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   }
 }
 
@@ -261,7 +255,7 @@ html[data-cookie-banner="open"] main {
 
   .header-hero-overlay .site-header-inner {
     border-bottom-color: color-mix(in srgb, #ede8df 12%, transparent);
-    background-color: color-mix(in srgb, #2c2a27 92%, transparent);
+    background-color: color-mix(in srgb, #353230 92%, transparent);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
   }
 
@@ -285,29 +279,81 @@ html[data-cookie-banner="open"] main {
 }
 
 .hero-dark-band {
-  --theme-surface: #2c2a27;
-  --theme-surface-elevated: #353230;
-  --theme-surface-accent: #3a3732;
-  --theme-text: #ede8df;
+  --theme-surface: #353230;
+  --theme-surface-elevated: #3d3a36;
+  --theme-surface-accent: #45423c;
+  --theme-text: #f7f4ef;
+  --hero-copy: #f7f4ef;
   --theme-text-muted: #a89f94;
-  --theme-border: #ede8df;
+  --theme-border: #f7f4ef;
   --theme-accent: #4a4844;
   --theme-accent-hover: #5a5752;
   --theme-btn-primary: #010a8b;
   --theme-btn-secondary: rgba(44, 42, 39, 0.55);
-  --theme-btn-text: #ede8df;
-  --theme-selection: rgba(237, 232, 223, 0.2);
-  background-color: #2c2a27 !important;
-  color: #ede8df;
+  --theme-btn-text: #f7f4ef;
+  --theme-selection: rgba(247, 244, 239, 0.2);
+  background-color: #353230 !important;
+  color: var(--hero-copy);
   isolation: isolate;
 }
 
-.hero-dark-band .theme-hero-tag {
-  color: color-mix(in srgb, #ede8df 72%, #a89f94);
+.hero-dark-band .hero-copy {
+  color: var(--hero-copy);
+}
+
+.hero-copy-column {
+  /* longest line is "handcrafted" (~9.5em at 0.4em track) — keep the column just wider */
+  max-width: min(14rem, calc(100vw - 2.5rem));
+  margin-inline: auto;
+  overflow-x: clip;
+  text-align: center;
+}
+
+.hero-copy-headline,
+.hero-copy-subline {
+  --hero-track: 0.4em;
+  font-family: var(--font-hero);
+  font-weight: 200;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  text-transform: lowercase;
+  letter-spacing: var(--hero-track);
+  color: var(--hero-copy);
+}
+
+@media (min-width: 1024px) {
+  .hero-copy-headline,
+  .hero-copy-subline {
+    font-size: 1rem;
+  }
+}
+
+.hero-copy-headline > p,
+.hero-copy-subline > p {
+  line-height: 1.5;
+}
+
+/* letter-spacing also lands after the last glyph — pull it back so centring stays optical */
+.hero-copy-line {
+  display: inline-block;
+  white-space: nowrap;
+  margin-inline-end: calc(-1 * var(--hero-track));
+}
+
+.hero-dark-band .hero-copy-dot {
+  background-color: var(--hero-copy);
+  margin-block: 2rem;
+}
+
+.hero-dark-band .hero-brand-logo {
+  margin-bottom: 24px;
 }
 
 .hero-dark-band .hero-brand-logo-mark {
-  background-color: #ede8df;
+  height: 50px;
+  width: 50px;
+  background-color: var(--hero-copy);
   -webkit-mask-image: url("/images/brand/pali-logo-circle.png");
   mask-image: url("/images/brand/pali-logo-circle.png");
   -webkit-mask-size: contain;
@@ -330,7 +376,7 @@ html[data-cookie-banner="open"] main {
 
 .header-hero-overlay .header-bar-solid {
   border-bottom-color: color-mix(in srgb, #ede8df 12%, transparent);
-  background-color: color-mix(in srgb, #2c2a27 88%, transparent);
+  background-color: color-mix(in srgb, #353230 88%, transparent);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
 }
 
@@ -374,7 +420,65 @@ html[data-cookie-banner="open"] main {
 }
 
 .header-menu-panel {
+  --header-menu-surface: #010a8b;
+  --header-menu-surface-deep: color-mix(in srgb, #000 18%, #010a8b);
+  --header-menu-border: color-mix(in srgb, #ede8df 14%, #010a8b);
+  --header-menu-text: color-mix(in srgb, #ede8df 86%, transparent);
+  --header-menu-text-hover: #ede8df;
+}
+
+.header-menu-panel__dropdown {
   animation: header-menu-in 0.22s ease-out;
+}
+
+.header-menu-panel__body {
+  border: 1px solid var(--header-menu-border);
+  background-color: var(--header-menu-surface);
+  box-shadow:
+    0 16px 48px rgba(1, 10, 139, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.header-menu-panel__category {
+  border: 1px solid color-mix(in srgb, #ede8df 12%, transparent);
+  background-color: var(--header-menu-surface-deep);
+}
+
+.header-menu-panel__icon-wrap {
+  background: color-mix(in srgb, #ede8df 14%, transparent);
+  color: #ede8df;
+}
+
+.header-menu-panel__category-label {
+  color: #ede8df;
+}
+
+.header-menu-panel__link {
+  color: var(--header-menu-text);
+}
+
+.header-menu-panel__link:hover {
+  background: color-mix(in srgb, #ede8df 10%, transparent);
+  color: #ede8df;
+}
+
+.header-menu-btn-active {
+  border-color: color-mix(in srgb, #010a8b 40%, #ede8df) !important;
+  background-color: #010a8b !important;
+  color: #ede8df !important;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .header-controls {
+    gap: 0.75rem;
+  }
 }
 
 @keyframes header-menu-in {
@@ -389,6 +493,22 @@ html[data-cookie-banner="open"] main {
 }
 
 [data-theme="raw-clay"] {
+  /* Mirror of THEME_TOKENS["raw-clay"] in src/lib/demoPresets.ts. DemoControlsProvider sets
+     the same values, but only after hydration — without them here the first paint used the
+     dark :root fallbacks, leaving light text on the light page until JS ran. */
+  --theme-surface: #e8dfd0;
+  --theme-surface-elevated: #f2ebe0;
+  --theme-surface-accent: #ddd0bc;
+  --theme-text: #3d3428;
+  --theme-text-muted: #6b5d4a;
+  --theme-border: #a89578;
+  --theme-accent: #4f5d73;
+  --theme-accent-hover: #3d4556;
+  --theme-btn-primary: #3d4556;
+  --theme-btn-secondary: rgba(61, 69, 86, 0.14);
+  --theme-btn-text: #f2ebe0;
+  --theme-header-bg: rgba(242, 235, 224, 0.96);
+  --theme-selection: rgba(61, 52, 40, 0.15);
   --hero-illustr-blue: #010A8B;
   --hero-illustr-clay: #b8a484;
   --hero-stroke-color: #010A8B;
@@ -406,8 +526,8 @@ html[data-cookie-banner="open"] main {
 }
 
 [data-theme="glazed-matte"] {
-  --lookbook-bg: #2c2a27;
-  --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #3a3732);
+  --lookbook-bg: #353230;
+  --lookbook-bg-well: color-mix(in srgb, var(--lookbook-bg) 72%, #45423c);
   --lookbook-ink: #ede8df;
   --lookbook-muted: #a89f94;
   --lookbook-line: rgba(237, 232, 223, 0.22);
@@ -474,9 +594,10 @@ html[data-cookie-banner="open"] main {
     color: color-mix(in srgb, var(--lookbook-ink) 68%, var(--lookbook-muted));
   }
 
+  /* exact height, not min-height: the hero must never push past a single screen */
   .hero-viewport-height {
-    min-height: 100vh;
-    min-height: 100svh;
+    height: 100vh;
+    height: 100dvh;
   }
 
   .skip-to-content {
@@ -651,20 +772,10 @@ html[data-cookie-banner="open"] main {
     );
   }
 
+  /* Stay transparent so the sheet gradient is the only backdrop — a local fill here
+     read as a cooler strip under Detale / Pielęgnacja whenever this column was shorter. */
   .shop-product-info-zone {
-    background-color: #faf7f0;
-  }
-
-  [data-theme="raw-clay"] .shop-product-info-zone {
-    background: linear-gradient(
-      180deg,
-      #fffef9 0%,
-      #faf7f0 38%
-    );
-  }
-
-  [data-theme="glazed-matte"] .shop-product-info-zone {
-    background: linear-gradient(165deg, #fcf9f2 0%, #faf7f0 45%, #f5f0e6 100%);
+    background-color: transparent;
   }
 
   .shop-product-collection-tag {
@@ -700,10 +811,11 @@ html[data-cookie-banner="open"] main {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    font-family: var(--font-inter), "Inter", system-ui, sans-serif;
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: color-mix(in srgb, #010a8b 52%, #4a4a55);
+    color: color-mix(in srgb, var(--theme-text-muted) 88%, var(--theme-text));
   }
 
   .shop-product-section-label::after {
@@ -718,9 +830,11 @@ html[data-cookie-banner="open"] main {
   }
 
   .shop-product-note-text {
-    font-size: 12px;
-    line-height: 1.45;
-    color: color-mix(in srgb, #010a8b 82%, #4a4a55);
+    font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.625;
+    color: var(--theme-text-muted);
   }
 
   .shop-product-notes {
@@ -864,7 +978,9 @@ html[data-cookie-banner="open"] main {
 
   .shop-product-thumb-active {
     border-color: #010a8b;
-    box-shadow: 0 6px 18px color-mix(in srgb, #010a8b 12%, transparent);
+    /* kept within the thumbnail strip's 12px gutter (offset + blur <= 12px) so the shadow is
+       not cut off by the strip's horizontal scroll container */
+    box-shadow: 0 3px 9px color-mix(in srgb, #010a8b 12%, transparent);
   }
 
   .shop-buy-btn {
@@ -1111,10 +1227,10 @@ html[data-cookie-banner="open"] main {
 
   .lookbook-full-bleed {
     position: relative;
-    left: 50%;
-    width: 100vw;
-    max-width: 100%;
-    transform: translateX(-50%);
+    left: auto;
+    width: 100%;
+    max-width: none;
+    transform: none;
     overflow-x: clip;
   }
 
@@ -1124,6 +1240,8 @@ html[data-cookie-banner="open"] main {
 
   .lookbook-collections-grid {
     grid-auto-rows: auto;
+    /* the strip below owns the shared 1px rule — a grid box-edge here stacked into a fat bar */
+    border-bottom-width: 0;
   }
 
   @media (min-width: 1024px) {

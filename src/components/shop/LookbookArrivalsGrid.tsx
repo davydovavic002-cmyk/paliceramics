@@ -12,10 +12,11 @@ import { LookbookCollectionCover } from "./LookbookCollectionCover";
 import { MadeToOrderStrip } from "./MadeToOrderStrip";
 
 function collectionDividerClass(index: number) {
+  /* last row (2, 3) has no bottom edge — MadeToOrderStrip draws the single shared rule */
   if (index === 0) return "lookbook-split-r lookbook-split-b";
   if (index === 1) return "lookbook-split-b";
-  if (index === 2) return "lookbook-split-r lookbook-split-b lg:lookbook-split-b-0";
-  return "lookbook-split-b lg:lookbook-split-b-0";
+  if (index === 2) return "lookbook-split-r";
+  return "";
 }
 
 export function LookbookArrivalsGrid() {
@@ -53,7 +54,7 @@ export function LookbookArrivalsGrid() {
       <div className="lookbook-full-bleed">
         <MotionReveal>
           <div className="lookbook-grid lookbook-collections-grid grid grid-cols-2 gap-0 lg:grid-cols-3 lg:grid-rows-2">
-            <div className="col-span-2 flex min-h-[220px] flex-col justify-start gap-5 p-5 sm:gap-6 sm:p-6 lg:col-span-1 lg:row-span-2 lg:min-h-0 lg:justify-between lg:p-8 lookbook-split-r lookbook-split-b">
+            <div className="col-span-2 flex min-h-[220px] flex-col justify-start gap-5 p-5 sm:gap-6 sm:p-6 lg:col-span-1 lg:row-span-2 lg:min-h-0 lg:justify-between lg:p-8 lookbook-split-r lookbook-split-b lg:border-b-0">
               <div>
                 <p className="lookbook-ink font-display text-[clamp(1.25rem,2.5vw,1.75rem)] uppercase leading-snug tracking-[0.05em]">
                   {copy.headline}

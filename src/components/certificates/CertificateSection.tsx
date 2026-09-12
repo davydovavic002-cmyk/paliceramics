@@ -30,8 +30,9 @@ const initialCertificateDraft: CertificateDraft = {
   participantCount: 1,
 };
 
+/* square corners to match the type picker, participant toggles and submit button */
 const inputClass =
-  "w-full rounded-lg border border-theme/20 bg-theme-elevated/50 px-4 py-2 font-body text-sm text-theme outline-none transition-colors focus:border-[#010a8b]";
+  "w-full rounded-none border border-theme/20 bg-theme-elevated/50 px-4 py-2 font-body text-sm text-theme outline-none transition-colors focus:border-[#010a8b]";
 
 export function CertificateSection() {
   const { language } = useLanguage();

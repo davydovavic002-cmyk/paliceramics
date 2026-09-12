@@ -46,6 +46,8 @@ export const siteContent: SiteContent = {
       en: ["handcrafted", "limited", "tableware"],
       pl: ["ręcznie", "tworzona", "limitowana", "ceramika", "stołowa"],
     },
+    /* index of the first headline line rendered in the larger accent style */
+    heroHeadlineAccentFrom: { en: 2, pl: 3 },
     heroSubline: {
       en: "carefully shaped in small batches. each piece is one of a kind.",
       pl: "ostrożnie kształtowane w małych seriach. każdy egzemplarz jest wyjątkowy.",

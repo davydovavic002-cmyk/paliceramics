@@ -38,7 +38,7 @@ function CatalogCard({
     <motion.button
       type="button"
       onClick={() => onSelect(item)}
-      className="group cursor-pointer overflow-hidden rounded-[2px] border border-theme bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-shadow duration-300 hover:shadow-[0_20px_48px_rgba(0,0,0,0.2)]"
+      className="group cursor-pointer overflow-hidden rounded-[2px] border border-theme/25 bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-shadow duration-300 hover:shadow-[0_20px_48px_rgba(0,0,0,0.2)]"
       {...scaleAnim}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >

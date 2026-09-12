@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { submitInboxMessage } from "@/lib/inboxClient";
 import { pickBilingual } from "@/lib/adminTypes";
@@ -127,6 +128,10 @@ export function WorkshopBookingBuilder() {
           step1: "Krok 1 — Warsztat",
           step2: "Krok 2 — Termin",
           step3: "Krok 3 — Dane",
+          stepsAria: "Postęp rezerwacji",
+          stepDone: "ukończony — wróć do tego kroku",
+          stepCurrent: "aktualny krok",
+          stepLocked: "niedostępny — najpierw ukończ poprzednie kroki",
           chooseType: "Wybierz format",
           chooseDate: "Wybierz termin",
           contact: "Wyślij zapytanie",
@@ -156,6 +161,10 @@ export function WorkshopBookingBuilder() {
           step1: "Step 1 — Workshop",
           step2: "Step 2 — Date",
           step3: "Step 3 — Details",
+          stepsAria: "Booking progress",
+          stepDone: "completed — go back to this step",
+          stepCurrent: "current step",
+          stepLocked: "locked — finish the earlier steps first",
           chooseType: "Choose your session",
           chooseDate: "Pick a date",
           contact: "Send request",
@@ -246,31 +255,73 @@ export function WorkshopBookingBuilder() {
   const btnSecondary =
     "relative z-[1] cursor-pointer rounded-full border-2 border-theme/25 bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:border-theme/40";
 
+  const stepTitles = [copy.step1, copy.step2, copy.step3];
+
+  /* Explicit colours instead of border-theme/15 & co: there is no `theme` colour in
+     tailwind.config, so those slash-opacity classes compiled to nothing and left the
+     upcoming steps and the connector unstyled. */
+  const stepCircleClass = (s: number) => {
+    const base =
+      "relative flex shrink-0 items-center justify-center rounded-full border font-body tracking-[0.12em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2";
+
+    if (s < step) {
+      return `${base} h-8 w-8 cursor-pointer border-[color-mix(in_srgb,#010a8b_45%,transparent)] bg-white text-[11px] text-[#010a8b] hover:border-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_7%,#ffffff)]`;
+    }
+    if (s === step) {
+      return `${base} h-9 w-9 cursor-default border-[#010a8b] bg-[#010a8b] text-[12px] font-medium text-white shadow-[0_4px_14px_rgba(1,10,139,0.3)]`;
+    }
+    return `${base} h-8 w-8 cursor-not-allowed border-dashed border-[color-mix(in_srgb,#010a8b_28%,transparent)] bg-transparent text-[11px] text-[#4a4a55] opacity-45`;
+  };
+
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-8 flex items-center justify-center gap-2 sm:gap-3">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              disabled={s > step}
-              onClick={() => {
-                if (s < step) setStep(s);
-              }}
-              className={[
-                "flex h-8 w-8 items-center justify-center rounded-full border font-body text-[11px] tracking-[0.12em] transition-colors",
-                step >= s
-                  ? "border-[color-mix(in_srgb,var(--theme-accent)_50%,transparent)] bg-white text-theme"
-                  : "border-theme/15 bg-white/90 text-theme-muted/50",
-                s < step ? "cursor-pointer hover:border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)]" : "",
-              ].join(" ")}
-            >
-              {s}
-            </button>
-            {s < 3 ? <span className="h-px w-6 bg-theme/15 sm:w-10" aria-hidden /> : null}
-          </div>
-        ))}
-      </div>
+      {/* role="list" is explicit because Tailwind's preflight strips list-style, which drops
+          the implicit list role in Safari and would swallow the aria-label */}
+      <ol
+        role="list"
+        className="mb-8 flex items-center justify-center gap-2 sm:gap-3"
+        aria-label={copy.stepsAria}
+      >
+        {[1, 2, 3].map((s) => {
+          const done = s < step;
+          const current = s === step;
+          const state = done ? copy.stepDone : current ? copy.stepCurrent : copy.stepLocked;
+
+          return (
+            <li key={s} className="flex items-center gap-2 sm:gap-3">
+              <button
+                type="button"
+                /* only already-completed steps are reachable; the current one is not a
+                   destination, so it stays out of the tab order too */
+                disabled={!done}
+                onClick={() => {
+                  if (done) setStep(s);
+                }}
+                className={stepCircleClass(s)}
+                aria-current={current ? "step" : undefined}
+                aria-label={`${stepTitles[s - 1]} — ${state}`}
+                title={done ? stepTitles[s - 1] : undefined}
+              >
+                {done ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden /> : s}
+              </button>
+
+              {s < 3 ? (
+                <span
+                  className="relative block h-[2px] w-8 overflow-hidden rounded-full bg-[color-mix(in_srgb,#010a8b_15%,transparent)] sm:w-12"
+                  aria-hidden
+                >
+                  <motion.span
+                    className="absolute inset-y-0 left-0 block rounded-full bg-[#010a8b]"
+                    initial={false}
+                    animate={{ width: step > s ? "100%" : "0%" }}
+                    transition={{ duration: 0.45, ease: "easeOut" }}
+                  />
+                </span>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
 
       <AnimatePresence mode="wait">
         {step === 1 ? (

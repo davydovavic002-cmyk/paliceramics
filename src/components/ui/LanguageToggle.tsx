@@ -28,7 +28,7 @@ export function LanguageToggle({
   return (
     <div
       className={[
-        "flex items-center gap-1.5 font-body text-[11px] font-medium uppercase tracking-[0.2em]",
+        "header-controls font-body text-[11px] font-medium uppercase",
         heroOverlay ? "[text-shadow:0_1px_5px_rgba(0,0,0,0.45)]" : "",
       ].join(" ")}
       role="group"
@@ -41,13 +41,14 @@ export function LanguageToggle({
           onClick={() => setLanguage(lang)}
           data-active={language === lang || undefined}
           className={[
-            "header-lang-btn inline-flex h-8 w-8 items-center justify-center rounded-full border text-[10px] transition-all duration-200",
+            "header-lang-btn inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border p-0 font-body text-[10px] font-medium uppercase leading-none tracking-normal transition-all duration-200",
             language === lang ? langActiveClass : langIdleClass,
           ].join(" ")}
           aria-pressed={language === lang}
           aria-label={langLabels[lang]}
         >
           <motion.span
+            className="block leading-none"
             animate={{ opacity: isTransitioning ? 0.35 : 1 }}
             transition={{ duration: 0.35 }}
           >

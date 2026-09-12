@@ -1,5 +1,17 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * The runtime theme tokens are hex custom properties (see `globals.css` and
+ * `DemoControlsContext`), not `r g b` triplets, so `rgb(var(--x) / <alpha-value>)` cannot be
+ * used. `color-mix` applies the alpha without duplicating every token as a triplet.
+ *
+ * Tailwind substitutes `<alpha-value>` with the slash modifier (`border-theme/25` -> `0.25`)
+ * and with `1` when there is no modifier, so `calc(<alpha-value> * 100%)` resolves to a
+ * valid `color-mix` percentage in both cases.
+ */
+const themeToken = (token: string) =>
+  `color-mix(in srgb, var(${token}) calc(<alpha-value> * 100%), transparent)`;
+
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
@@ -12,11 +24,18 @@ const config: Config = {
         paper: "#EDE8DF",
         gosu: { DEFAULT: "#101A26", stroke: "#2A3F5C" },
         indigo: { accent: "#1e3a5f", light: "#2a5080" },
+        theme: {
+          DEFAULT: themeToken("--theme-text"),
+          muted: themeToken("--theme-text-muted"),
+          surface: themeToken("--theme-surface"),
+          elevated: themeToken("--theme-surface-elevated"),
+        },
       },
         fontFamily: {
         display: ["var(--font-display)", '"Zen Old Mincho"', "Georgia", "serif"],
         body: ["var(--font-body)", "Georgia", "serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        inter: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
         product: ["var(--font-product)", "system-ui", "sans-serif"],
       },
       animation: {

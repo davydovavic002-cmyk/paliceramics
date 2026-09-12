@@ -20,6 +20,7 @@
     "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
     "@fontsource/noto-serif-jp": "^5.2.5",
     "@fontsource/shippori-mincho": "^5.2.5",
     "@fontsource/work-sans": "^5.3.0",

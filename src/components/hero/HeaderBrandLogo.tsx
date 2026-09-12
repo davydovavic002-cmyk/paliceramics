@@ -8,16 +8,16 @@ export function HeaderBrandLogo({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/"
-      className={["header-brand-logo relative inline-flex shrink-0 -translate-y-0.5 items-center", className].join(" ")}
+      className={["header-brand-logo relative inline-flex shrink-0 items-center", className].join(" ")}
       aria-label="Pali ceramics"
     >
-      <span className="relative block h-7 w-7 sm:h-8 sm:w-8">
+      <span className="relative block h-9 w-9 sm:h-10 sm:w-10">
         <Image
           src={images.brandLogoCircle}
           alt=""
           fill
           priority
-          sizes="48px"
+          sizes="(max-width:639px) 36px, 40px"
           className="object-contain"
         />
       </span>

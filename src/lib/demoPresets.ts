@@ -58,9 +58,9 @@ export type ThemeTokens = {
 
 export const THEME_TOKENS: Record<SiteTheme, ThemeTokens> = {
   "glazed-matte": {
-    surface: "#2C2A27",
-    surfaceElevated: "#353230",
-    surfaceAccent: "#3A3732",
+    surface: "#353230",
+    surfaceElevated: "#3D3A36",
+    surfaceAccent: "#45423C",
     text: "#EDE8DF",
     textMuted: "#A89F94",
     border: "#EDE8DF",

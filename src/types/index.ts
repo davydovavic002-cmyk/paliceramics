@@ -18,6 +18,7 @@ export interface HeroContent {
   heroTag: Record<Language, string>;
   heroHeadline: Record<Language, string>;
   heroHeadlineLines: Record<Language, string[]>;
+  heroHeadlineAccentFrom: Record<Language, number>;
   heroSubline: Record<Language, string>;
   heroSublineLines: Record<Language, string[]>;
   heroCtaShop: Record<Language, string>;

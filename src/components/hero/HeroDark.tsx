@@ -6,29 +6,13 @@ import dynamic from "next/dynamic";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMotionFlags } from "@/context/DemoControlsContext";
 import { siteContent } from "@/lib/content";
-import { JapandiBackground } from "./JapandiBackground";
 
 const HakemeStrokes = dynamic(() => import("./HakemeStrokes").then((m) => m.HakemeStrokes), {
   ssr: false,
 });
 
-const AmbientLightCanvas = dynamic(
-  () => import("./AmbientLightCanvas").then((m) => m.AmbientLightCanvas),
-  { ssr: false }
-);
-
-const ForegroundBokehCanvas = dynamic(
-  () => import("./ForegroundBokehCanvas").then((m) => m.ForegroundBokehCanvas),
-  { ssr: false }
-);
-
-const DustMotesCanvas = dynamic(
-  () => import("./DustMotesCanvas").then((m) => m.DustMotesCanvas),
-  { ssr: false }
-);
-
-function SpacedLine({ children, className = "" }: { children: string; className?: string }) {
-  return <span className={className}>{children.split("").join(" ")}</span>;
+function HeroCopyLine({ children }: { children: string }) {
+  return <span className="hero-copy-line">{children}</span>;
 }
 
 function HeroCtaIcon({ variant }: { variant: "ring" | "target" }) {
@@ -58,12 +42,12 @@ function HeroSquareLink({
     <Link
       href={href}
       className={[
-        "hero-square-cta flex h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5 xl:h-[min(16vw,120px)] xl:w-[min(16vw,120px)]",
-        "font-display text-[9px] font-normal tracking-[0.04em] text-[#ede8df] transition-opacity duration-300 hover:opacity-90 sm:text-[10px]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede8df] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2c2a27]",
+        "hero-square-cta flex h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5",
+        "font-display text-[9px] font-normal tracking-[0.04em] text-[#f7f4ef] transition-opacity duration-300 hover:opacity-90 sm:text-[10px]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7f4ef] focus-visible:ring-offset-2 focus-visible:ring-offset-[#353230]",
         variant === "filled"
-          ? "bg-[#010A8B] text-[#ede8df]"
-          : "border border-[#ede8df] bg-transparent text-[#ede8df]",
+          ? "bg-[#010A8B] text-[#f7f4ef]"
+          : "border border-[#f7f4ef] bg-transparent text-[#f7f4ef]",
       ].join(" ")}
     >
       <span className="flex flex-1 items-center justify-center">
@@ -76,7 +60,7 @@ function HeroSquareLink({
 
 export function HeroDark() {
   const { language, isTransitioning } = useLanguage();
-  const { showWebGL, showMicroAnimations, showDriftingStrokes } = useMotionFlags();
+  const { showDriftingStrokes } = useMotionFlags();
   const { hero } = siteContent;
 
   const fade = {
@@ -84,72 +68,67 @@ export function HeroDark() {
     transition: { duration: 0.35 },
   };
 
+  /* the hero statement stays in English in both locales, as in the reference design */
   const sublineLines = hero.heroSublineLines.en;
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band hero-viewport-height relative isolate overflow-hidden bg-[#2c2a27]">
-      {showWebGL ? <AmbientLightCanvas /> : null}
-      <JapandiBackground />
-      {showWebGL ? <ForegroundBokehCanvas /> : null}
-      {showWebGL && showMicroAnimations ? <DustMotesCanvas /> : null}
+    <section className="hero-dark-band hero-viewport-height relative isolate flex flex-col items-center justify-center overflow-hidden bg-[#353230]">
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
-      <div className="hero-viewport-height relative z-10 mx-auto flex max-w-[1800px] flex-col px-5 lg:min-h-screen lg:px-16">
+      <div className="hero-viewport-height relative z-10 mx-auto flex w-full max-w-[1800px] flex-col px-5 lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>
 
-        <div className="flex flex-1 flex-col items-center justify-center pb-28 pt-[max(5.5rem,env(safe-area-inset-top))] sm:pb-32 lg:min-h-screen lg:pb-36 lg:pt-[10vh]">
-          <div className="flex w-full max-w-[min(88vw,360px)] flex-col items-center text-center">
-            <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo mb-5 sm:mb-6">
-              <span
-                className="hero-brand-logo-mark block h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20"
-                role="img"
-                aria-label="Pali ceramics"
-              />
+        <div className="flex flex-1 flex-col items-center justify-center pb-32 pt-[max(4.5rem,env(safe-area-inset-top))]">
+          <div className="hero-copy-column flex w-full flex-col items-center text-center">
+            <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo">
+              <span className="hero-brand-logo-mark block" role="img" aria-label="Pali ceramics" />
             </motion.div>
 
             <motion.div
               key={`headline-${language}`}
-              className="space-y-1 font-sans text-[11px] font-light lowercase leading-none text-[#ede8df] sm:text-[12px]"
+              className="hero-copy hero-copy-headline"
               animate={fade}
             >
               {headlineLines.map((line) => (
                 <p key={line}>
-                  <SpacedLine>{line}</SpacedLine>
+                  <HeroCopyLine>{line}</HeroCopyLine>
                 </p>
               ))}
             </motion.div>
 
             <motion.span
               key={`dot-${language}`}
-              className="my-5 block h-1.5 w-1.5 rounded-full bg-[#ede8df]"
+              className="hero-copy-dot block h-1.5 w-1.5 rounded-full"
               animate={fade}
               aria-hidden
             />
 
             <motion.div
               key={`lines-${language}`}
-              className="space-y-1 font-sans text-[11px] font-light lowercase leading-[1.5] text-[#ede8df] sm:text-[12px] sm:leading-[1.55]"
+              className="hero-copy hero-copy-subline"
               animate={fade}
             >
               {sublineLines.map((line) => (
                 <p key={line}>
-                  <SpacedLine>{line}</SpacedLine>
+                  <HeroCopyLine>{line}</HeroCopyLine>
                 </p>
               ))}
             </motion.div>
           </div>
         </div>
-
-        <motion.div
-          key={`cta-${language}`}
-          className="pointer-events-auto absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 flex gap-2 sm:gap-2.5 lg:left-16"
-          animate={fade}
-        >
-          <HeroSquareLink href="#collection" label={hero.ctaPrimary[language]} variant="filled" />
-          <HeroSquareLink href="#contact" label={hero.ctaSecondary[language]} variant="outline" />
-        </motion.div>
       </div>
+
+      {/* pinned to the section, not the max-w-[1800px] track, so the offset stays 32px
+          from the screen edge on wide monitors */}
+      <motion.div
+        key={`cta-${language}`}
+        className="pointer-events-auto absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-8 z-10 flex gap-2 sm:gap-2.5"
+        animate={fade}
+      >
+        <HeroSquareLink href="#collection" label={hero.ctaPrimary[language]} variant="filled" />
+        <HeroSquareLink href="#contact" label={hero.ctaSecondary[language]} variant="outline" />
+      </motion.div>
     </section>
   );
 }

@@ -161,8 +161,12 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
       {hasMultiple ? (
         <div
           className={[
-            "flex gap-2 overflow-x-auto overscroll-x-contain px-0.5 py-1 sm:gap-2.5",
-            compact ? "mt-2 w-full min-w-0 max-w-[17.5rem] mx-auto lg:mt-3 lg:max-w-none" : "mt-3 max-w-[min(100%,24rem)] sm:mt-3.5",
+            /* overflow-x-auto also forces overflow-y to compute to auto, so this strip clips
+               on every side. The 12px gutter is what keeps the focus ring (ring-2 +
+               ring-offset-2 = 4px) and the active thumb's shadow from being sliced; the top
+               margins below are reduced by the same amount so spacing is unchanged. */
+            "flex gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:gap-2.5",
+            compact ? "w-full min-w-0 max-w-[17.5rem] mx-auto lg:mt-1 lg:max-w-none" : "mt-1 max-w-[min(100%,24rem)] sm:mt-1.5",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (

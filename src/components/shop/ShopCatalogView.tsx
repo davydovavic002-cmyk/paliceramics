@@ -496,12 +496,13 @@ function ShopCatalogContent() {
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((value) => !value)}
-              className="shop-filter-touch lookbook-ink flex w-full min-h-[44px] items-center justify-between rounded-md px-2 py-2.5 font-body text-[11px] uppercase tracking-[0.18em] lg:mb-1"
+              className="shop-filter-touch lookbook-ink flex w-full min-h-[44px] items-center justify-between rounded-md px-2 py-2.5 font-body text-[11px] uppercase tracking-[0.18em] lg:mb-1 lg:cursor-default lg:pointer-events-none"
               aria-expanded={mobileFiltersOpen}
             >
               <span>{copy.filters}</span>
-              <span className="flex items-center gap-2">
-                <span className="font-body text-[11px] normal-case tracking-normal shop-catalog-muted lg:hidden">
+              {/* the panel below is always visible from lg up, so the toggle affordance is mobile-only */}
+              <span className="flex items-center gap-2 lg:hidden">
+                <span className="font-body text-[11px] normal-case tracking-normal shop-catalog-muted">
                   {productCountLabel}
                 </span>
                 <ChevronDown
@@ -515,8 +516,8 @@ function ShopCatalogContent() {
           </div>
 
           <div className={`pb-3 lg:pb-0 ${mobileFiltersOpen ? "block lg:block" : "hidden lg:block"}`}>
-          <div className="mb-4 h-5">
-            {hasActiveFilters ? (
+          {hasActiveFilters ? (
+            <div className="mb-2">
               <button
                 type="button"
                 onClick={clearAllFilters}
@@ -524,8 +525,8 @@ function ShopCatalogContent() {
               >
                 {copy.removeAll}
               </button>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
 
           <FilterSection
             title={copy.collections}

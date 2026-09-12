@@ -103,7 +103,7 @@ export function ForegroundBokehCanvas() {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-0 z-[2] mix-blend-screen"
+      className="pointer-events-none absolute inset-0 z-[2] mix-blend-soft-light opacity-75"
       aria-hidden
     />
   );

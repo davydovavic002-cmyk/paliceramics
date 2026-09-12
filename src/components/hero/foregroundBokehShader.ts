@@ -59,11 +59,11 @@ void main() {
   float b4 = softBlob(uv, pos4, 0.78, 0.68);
   float b5 = softBlob(st, pos5, 1.2, 1.05);
 
-  float light = b1 * 0.28 + b2 * 0.32 + b3 * 0.22 + b4 * 0.4 + b5 * 0.18;
-  light *= 0.65 + grain * 0.35;
+  float light = b1 * 0.22 + b2 * 0.26 + b3 * 0.18 + b4 * 0.28 + b5 * 0.14;
+  light *= 0.58 + grain * 0.28;
 
-  vec3 bokeColor = vec3(0.98, 0.97, 0.94);
-  float alpha = light * 0.72;
+  vec3 bokeColor = vec3(0.84, 0.82, 0.78);
+  float alpha = light * 0.34;
 
   gl_FragColor = vec4(bokeColor, alpha);
 }

@@ -15,6 +15,7 @@ import {
 } from "@/lib/shopCatalog";
 import { decodeReturnTo, resolveBackHref } from "@/lib/shopReturnTo";
 import { clearShopCatalogReturnState } from "@/lib/shopScrollRestore";
+import { pickBilingual } from "@/lib/adminTypes";
 import { t } from "@/lib/galleryContent";
 import { getCollectionLabel } from "@/lib/lookbookCollections";
 import { CatalogProductCard } from "./CatalogProductCard";
@@ -29,7 +30,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const { products } = useShopCatalog();
+  const { products, pieceTypes } = useShopCatalog();
   const product = findShopProductBySku(products, sku);
   const related = product ? getRelatedProducts(products, product) : [];
 
@@ -90,9 +91,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const description = t(product.description, language);
   const outOfStock = isOutOfStock(product);
   const showPurchase = product.status !== "sold" && !outOfStock;
+  const sizeLabel = t(product.specs.dimensions, language);
+  const pieceTypeName = pieceTypes.find((type) => type.id === product.pieceTypeId);
+  const specSubtitle = [
+    sizeLabel && sizeLabel !== "—" ? sizeLabel : null,
+    pieceTypeName ? pickBilingual(pieceTypeName.name, pieceTypeName.name, language) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
-    <div className="shop-catalog-page shop-product-page min-h-0 pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14">
+      <div className="shop-catalog-page shop-product-page min-h-0 overflow-x-clip pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14">
       <div className="mx-auto max-w-[1024px] px-4 sm:px-6">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
@@ -126,12 +135,15 @@ export function ProductDetailView({ sku }: { sku: string }) {
           >
             <X className="h-6 w-6" strokeWidth={1.75} />
           </button>
-          <div className="shop-product-sheet-inner grid rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:items-start">
+          {/* columns stretch to the row height on purpose: with items-start the shorter column
+              stopped early and the sheet's own gradient (which ends warm) showed through as a
+              mismatched strip under the info panel */}
+          <div className="shop-product-sheet-inner grid min-w-0 rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
             <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>
 
-            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 sm:px-6 sm:py-6 lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
+            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
               <div className="flex items-start justify-end lg:hidden">
                 <button
                   type="button"
@@ -143,37 +155,45 @@ export function ProductDetailView({ sku }: { sku: string }) {
                 </button>
               </div>
               <div className="flex flex-wrap items-start justify-between gap-3 pr-0 lg:pr-12">
-                <p className="shop-product-collection-tag delivery-faq-muted font-body text-[10px] uppercase">
+                <p className="shop-product-collection-tag font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
                   {collectionLabel}
                 </p>
-                <p className="shop-product-sku delivery-faq-muted font-body text-[10px] uppercase">
+                <p className="shop-product-sku font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
                   {product.sku}
                 </p>
               </div>
 
               <h1
                 id="product-detail-title"
-                className="delivery-faq-ink mt-2 font-display text-[clamp(1.2rem,4vw,2rem)] leading-[1.15] tracking-[0.02em] sm:mt-3"
+                className="mt-1.5 min-w-0 font-inter text-lg font-normal leading-snug tracking-tight text-theme sm:text-xl"
               >
                 {title}
               </h1>
+              {specSubtitle ? (
+                <p className="mt-1 font-inter text-xs font-normal leading-relaxed text-theme-muted">
+                  {specSubtitle}
+                </p>
+              ) : null}
 
-              <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-2 sm:mt-4">
+              <div className="mt-2.5 flex items-center justify-between gap-4">
                 {product.pricePln > 0 ? (
-                  <p className="shop-product-price delivery-faq-ink font-display tabular-nums">
-                    {product.pricePln} PLN
+                  <p className="font-inter text-base font-medium tabular-nums tracking-tight text-theme">
+                    PLN {product.pricePln}
                   </p>
-                ) : null}
+                ) : (
+                  <span />
+                )}
                 <ShopStatusBadge
                   status={product.status}
                   outOfStock={outOfStock}
                   variant="light"
+                  className="font-inter shrink-0"
                 />
               </div>
 
-              <div className="mt-5">
-                <p className="shop-product-section-label font-body">{copy.about}</p>
-                <p className="delivery-faq-ink mt-2 max-w-prose font-body text-[14px] leading-[1.65] sm:mt-3 sm:text-[15px] sm:leading-[1.75]">
+              <div className="mt-4">
+                <p className="shop-product-section-label font-inter">{copy.about}</p>
+                <p className="mt-2 max-w-prose font-inter text-sm font-normal leading-relaxed text-theme">
                   {description}
                 </p>
                 <ProductDetailNotes
