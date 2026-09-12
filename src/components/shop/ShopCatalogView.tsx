@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
@@ -133,8 +133,17 @@ function ShopCatalogContent() {
     return sectionId ? new Set([sectionId]) : new Set();
   });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const productsGridRef = useRef<HTMLDivElement>(null);
 
   useShopCatalogScrollRestore();
+
+  const scrollProductsGridIntoView = useCallback(() => {
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(max-width: 1023px)").matches) return;
+    requestAnimationFrame(() => {
+      productsGridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   useEffect(() => {
     const sectionId = filterSectionIdForMode(filterMode);
@@ -229,6 +238,7 @@ function ShopCatalogContent() {
   const selectCollection = useCallback(
     (id: string | null) => {
       const nextId = id !== null && id === activeCollectionId ? null : id;
+      scrollProductsGridIntoView();
       navigateShop(
         buildShopHref({
           category: nextId,
@@ -237,7 +247,7 @@ function ShopCatalogContent() {
         })
       );
     },
-    [activeCollectionId, buildShopHref, navigateShop]
+    [activeCollectionId, buildShopHref, navigateShop, scrollProductsGridIntoView]
   );
 
   const selectAvailability = useCallback(
@@ -246,6 +256,7 @@ function ShopCatalogContent() {
         filter === "all" || filter === activeAvailability
           ? null
           : filter;
+      scrollProductsGridIntoView();
       navigateShop(
         buildShopHref({
           category: null,
@@ -254,12 +265,13 @@ function ShopCatalogContent() {
         })
       );
     },
-    [activeAvailability, buildShopHref, navigateShop]
+    [activeAvailability, buildShopHref, navigateShop, scrollProductsGridIntoView]
   );
 
   const selectPieceType = useCallback(
     (pieceType: string | null) => {
       const next = pieceType !== null && pieceType === activePieceType ? null : pieceType;
+      scrollProductsGridIntoView();
       navigateShop(
         buildShopHref({
           category: null,
@@ -268,7 +280,7 @@ function ShopCatalogContent() {
         })
       );
     },
-    [activePieceType, buildShopHref, navigateShop]
+    [activePieceType, buildShopHref, navigateShop, scrollProductsGridIntoView]
   );
 
   const selectSort = useCallback(
@@ -424,6 +436,7 @@ function ShopCatalogContent() {
 
   const clearAllFilters = () => {
     setOpenSections(new Set());
+    scrollProductsGridIntoView();
     navigateShop(pathname);
   };
 
@@ -626,6 +639,10 @@ function ShopCatalogContent() {
             />
           </div>
 
+          <div
+            ref={productsGridRef}
+            className="shop-catalog-products-grid"
+          >
           {productGroups.length === 0 && !showCustomOrderCard ? (
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
           ) : (
@@ -686,6 +703,7 @@ function ShopCatalogContent() {
               ) : null}
             </div>
           )}
+          </div>
         </main>
       </div>
     </div>

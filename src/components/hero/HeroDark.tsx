@@ -73,13 +73,13 @@ export function HeroDark() {
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band hero-viewport-height relative isolate flex flex-col items-center justify-center overflow-hidden bg-[#353230]">
+    <section className="hero-dark-band hero-viewport-height relative isolate flex flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230] pb-20 md:pb-0">
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
-      <div className="hero-viewport-height relative z-10 mx-auto flex w-full max-w-[1800px] flex-col px-5 lg:px-16">
+      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1800px] flex-1 flex-col overflow-x-clip px-5 lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>
 
-        <div className="flex flex-1 flex-col items-center justify-center pb-32 pt-[max(4.5rem,env(safe-area-inset-top))]">
+        <div className="flex flex-1 flex-col items-center justify-center pb-44 pt-[max(4.5rem,env(safe-area-inset-top))] md:pb-32">
           <div className="hero-copy-column flex w-full flex-col items-center text-center">
             <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo">
               <span className="hero-brand-logo-mark block" role="img" aria-label="Pali ceramics" />
@@ -123,7 +123,7 @@ export function HeroDark() {
           from the screen edge on wide monitors */}
       <motion.div
         key={`cta-${language}`}
-        className="pointer-events-auto absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-8 z-10 flex gap-2 sm:gap-2.5"
+        className="pointer-events-auto absolute bottom-[max(5rem,env(safe-area-inset-bottom))] left-8 z-10 flex gap-2 sm:gap-2.5 md:bottom-[max(2rem,env(safe-area-inset-bottom))]"
         animate={fade}
       >
         <HeroSquareLink href="#collection" label={hero.ctaPrimary[language]} variant="filled" />

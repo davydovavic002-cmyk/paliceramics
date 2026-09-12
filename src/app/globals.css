@@ -419,53 +419,8 @@ html[data-cookie-banner="open"] main {
   color: #ede8df;
 }
 
-.header-menu-panel {
-  --header-menu-surface: #010a8b;
-  --header-menu-surface-deep: color-mix(in srgb, #000 18%, #010a8b);
-  --header-menu-border: color-mix(in srgb, #ede8df 14%, #010a8b);
-  --header-menu-text: color-mix(in srgb, #ede8df 86%, transparent);
-  --header-menu-text-hover: #ede8df;
-}
-
-.header-menu-panel__dropdown {
+.header-menu-overlay {
   animation: header-menu-in 0.22s ease-out;
-}
-
-.header-menu-panel__body {
-  border: 1px solid var(--header-menu-border);
-  background-color: var(--header-menu-surface);
-  box-shadow:
-    0 16px 48px rgba(1, 10, 139, 0.45),
-    0 4px 16px rgba(0, 0, 0, 0.35);
-}
-
-.header-menu-panel__category {
-  border: 1px solid color-mix(in srgb, #ede8df 12%, transparent);
-  background-color: var(--header-menu-surface-deep);
-}
-
-.header-menu-panel__icon-wrap {
-  background: color-mix(in srgb, #ede8df 14%, transparent);
-  color: #ede8df;
-}
-
-.header-menu-panel__category-label {
-  color: #ede8df;
-}
-
-.header-menu-panel__link {
-  color: var(--header-menu-text);
-}
-
-.header-menu-panel__link:hover {
-  background: color-mix(in srgb, #ede8df 10%, transparent);
-  color: #ede8df;
-}
-
-.header-menu-btn-active {
-  border-color: color-mix(in srgb, #010a8b 40%, #ede8df) !important;
-  background-color: #010a8b !important;
-  color: #ede8df !important;
 }
 
 .header-controls {
@@ -484,11 +439,9 @@ html[data-cookie-banner="open"] main {
 @keyframes header-menu-in {
   from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.97);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 
@@ -1053,6 +1006,12 @@ html[data-cookie-banner="open"] main {
       position: sticky;
       top: var(--header-offset);
       z-index: 45;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .shop-catalog-products-grid {
+      scroll-margin-top: calc(var(--header-offset, 4rem) + 3.75rem);
     }
   }
 
