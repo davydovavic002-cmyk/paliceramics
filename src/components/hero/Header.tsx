@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { siteContent } from "@/lib/content";
@@ -16,6 +16,15 @@ import { HeaderMenuOverlay } from "@/components/hero/HeaderMenuOverlay";
 import type { NavItem } from "@/types";
 
 const SCROLL_THRESHOLD = 56;
+const HERO_SELECTOR = ".hero-dark-band";
+
+function readScrolledPastHero(): boolean {
+  if (typeof window === "undefined") return false;
+  if (window.scrollY > SCROLL_THRESHOLD) return true;
+  const hero = document.querySelector(HERO_SELECTOR);
+  if (!hero) return false;
+  return hero.getBoundingClientRect().bottom <= SCROLL_THRESHOLD;
+}
 
 function resolveNavHref(href: string, pathname: string): string {
   if (!href.startsWith("#")) return href;
@@ -149,7 +158,7 @@ export function Header() {
      light lookbook background, where a transparent bar left the light nav text invisible
      until the first scroll — so the bar stays solid there from the start. */
   const isHome = pathname === "/";
-  const solidBar = compactViewport || scrolled || !isHome;
+  const solidBar = scrolled || !isHome;
   const heroOverlay = isHome && !solidBar;
   const barClass = compactViewport
     ? "header-bar-mobile"
@@ -157,12 +166,61 @@ export function Header() {
       ? "header-bar-solid"
       : "border-b border-transparent bg-transparent";
 
-  useEffect(() => {
-    const sync = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
-    sync();
-    window.addEventListener("scroll", sync, { passive: true });
-    return () => window.removeEventListener("scroll", sync);
+  const syncScrolled = useCallback(() => {
+    setScrolled(readScrolledPastHero());
   }, []);
+
+  const scheduleScrollSync = useCallback(() => {
+    syncScrolled();
+    requestAnimationFrame(() => {
+      syncScrolled();
+      requestAnimationFrame(syncScrolled);
+    });
+    /* iOS Safari restores scroll after pageshow/popstate, often without a scroll event. */
+    window.setTimeout(syncScrolled, 0);
+    window.setTimeout(syncScrolled, 50);
+    window.setTimeout(syncScrolled, 200);
+  }, [syncScrolled]);
+
+  useLayoutEffect(() => {
+    syncScrolled();
+  }, [pathname, syncScrolled]);
+
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      scheduleScrollSync();
+      if (!event.persisted) return;
+      window.setTimeout(scheduleScrollSync, 100);
+    };
+
+    window.addEventListener("scroll", syncScrolled, { passive: true });
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("popstate", scheduleScrollSync);
+    window.visualViewport?.addEventListener("resize", syncScrolled);
+    window.visualViewport?.addEventListener("scroll", syncScrolled);
+
+    return () => {
+      window.removeEventListener("scroll", syncScrolled);
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("popstate", scheduleScrollSync);
+      window.visualViewport?.removeEventListener("resize", syncScrolled);
+      window.visualViewport?.removeEventListener("scroll", syncScrolled);
+    };
+  }, [scheduleScrollSync, syncScrolled]);
+
+  useEffect(() => {
+    scheduleScrollSync();
+
+    const hero = document.querySelector(HERO_SELECTOR);
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(() => syncScrolled(), {
+      threshold: [0, 0.01, 1],
+      rootMargin: `-${SCROLL_THRESHOLD}px 0px 0px 0px`,
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [pathname, scheduleScrollSync, syncScrolled]);
 
   useEffect(() => {
     if (!open) return;
