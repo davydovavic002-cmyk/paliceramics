@@ -45,7 +45,7 @@ export function CustomOrderCatalogCard() {
       <div className="shop-card-image relative aspect-square w-full overflow-hidden">
         <Image
           src={customOrderCatalogCard.image}
-          alt=""
+          alt={title}
           fill
           sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 20vw"
           className="object-contain object-center p-5 sm:p-6 transition-transform duration-500 ease-out group-hover:scale-[1.02]"

@@ -2,9 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X } from "lucide-react";
-import { HeaderBrandLogo } from "@/components/hero/HeaderBrandLogo";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { handleSectionClick } from "@/lib/scrollToSection";
@@ -27,7 +24,7 @@ function OverlayNavLink({
   const pathname = usePathname();
   const resolvedHref = resolveNavHref(item.href, pathname);
   const className =
-    "font-sans text-xl font-normal text-theme transition-opacity hover:opacity-60 md:text-2xl";
+    "inline-flex min-h-[44px] items-center justify-center px-2 py-2 text-center font-sans text-[1.375rem] font-normal leading-snug text-theme transition-opacity hover:opacity-60 active:opacity-70 sm:text-xl md:text-2xl";
 
   if (item.href.startsWith("/")) {
     const href =
@@ -77,52 +74,33 @@ export function HeaderMenuOverlay({
 }) {
   return (
     <div
-      className="header-menu-overlay pointer-events-auto fixed inset-0 z-[80] bg-[#F9F7F2]/95 font-sans text-theme backdrop-blur-md"
+      className="header-menu-overlay fixed inset-0 z-40 h-[100dvh] w-full overflow-x-hidden overflow-y-auto bg-[#F5F2EC] font-sans text-theme"
       role="dialog"
       aria-modal="true"
       aria-label={language === "pl" ? "Menu" : "Menu"}
     >
-      <div className="mx-auto flex h-full w-full max-w-[1800px] flex-col px-5 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(0.625rem,env(safe-area-inset-top))] md:px-8 lg:px-16">
-        <div className="flex items-center justify-between gap-4 py-2.5 md:py-3">
-          <span onClick={onClose}>
-            <HeaderBrandLogo className="text-theme" />
-          </span>
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <LanguageToggle />
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-theme/20 text-theme transition-colors hover:bg-theme/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme/30 focus-visible:ring-offset-2"
-              aria-label={language === "pl" ? "Zamknij menu" : "Close menu"}
-            >
-              <X size={18} strokeWidth={1.75} aria-hidden />
-            </button>
-          </div>
+      <nav className="flex min-h-full w-full flex-col items-center justify-start px-6 pb-10 pt-[var(--header-offset)] text-center sm:justify-center">
+        <div className="flex flex-col items-center gap-6 sm:gap-8 md:gap-10">
+          {categories.map((category) => (
+            <div key={category.id}>
+              <p className="mb-3 font-sans text-[11px] font-medium uppercase tracking-[0.25em] text-theme/40 md:mb-4">
+                {category.label}
+              </p>
+              <ul className="space-y-3.5 sm:space-y-4">
+                {category.items.map((item) => (
+                  <li key={item.id}>
+                    <OverlayNavLink
+                      item={item}
+                      language={language}
+                      onNavigate={onClose}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-
-        <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-8 md:py-12">
-          <div className="space-y-10 md:space-y-12">
-            {categories.map((category) => (
-              <div key={category.id}>
-                <p className="mb-3 font-sans text-[11px] font-medium uppercase tracking-[0.25em] text-theme/40">
-                  {category.label}
-                </p>
-                <ul className="space-y-3.5">
-                  {category.items.map((item) => (
-                    <li key={item.id}>
-                      <OverlayNavLink
-                        item={item}
-                        language={language}
-                        onNavigate={onClose}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </nav>
-      </div>
+      </nav>
     </div>
   );
 }

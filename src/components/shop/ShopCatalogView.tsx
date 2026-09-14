@@ -485,7 +485,7 @@ function ShopCatalogContent() {
   return (
     <div className="shop-catalog-page min-h-[100dvh] pt-[var(--header-offset,5.5rem)] transition-colors duration-700">
       <BackToTopButton threshold={640} />
-      <div className={`border-b ${line} px-5 py-3 sm:px-8 lg:px-10`}>
+      <div className={`border-b ${line} px-4 py-3 sm:px-6 lg:px-8`}>
         <nav className="font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted">
           <Link href="/" className="transition-opacity hover:opacity-75">
             {copy.home}
@@ -503,9 +503,9 @@ function ShopCatalogContent() {
 
       <div className="flex flex-col lg:flex-row">
         <aside
-          className={`w-full shrink-0 border-b px-5 py-0 sm:px-8 lg:sticky lg:top-[var(--header-offset)] lg:z-20 lg:max-h-[calc(100svh-var(--header-offset))] lg:w-[240px] lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r lg:px-8 lg:py-8 lg:shop-catalog-aside-scroll xl:w-[260px] ${line}`}
+          className={`w-full shrink-0 border-b px-4 py-0 sm:px-6 lg:sticky lg:top-[var(--header-offset)] lg:z-20 lg:max-h-[calc(100svh-var(--header-offset))] lg:w-[240px] lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r lg:px-8 lg:py-8 lg:shop-catalog-aside-scroll xl:w-[260px] ${line}`}
         >
-          <div className="shop-catalog-mobile-sticky -mx-5 border-b border-[var(--lookbook-line)] bg-[color-mix(in_srgb,#faf7f0_96%,transparent)] px-5 py-2 backdrop-blur-md lg:static lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+          <div className="shop-catalog-mobile-sticky -mx-4 border-b border-[var(--lookbook-line)] bg-[color-mix(in_srgb,#faf7f0_96%,transparent)] px-4 py-2 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((value) => !value)}
@@ -665,7 +665,7 @@ function ShopCatalogContent() {
                           </h2>
                         </header>
                       ) : null}
-                      <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
+                      <div className="grid grid-cols-1 gap-x-4 gap-y-6 min-[380px]:grid-cols-2 sm:gap-x-4 sm:gap-y-8 lg:grid-cols-3 lg:gap-x-5 xl:grid-cols-4 xl:gap-x-6">
                         {group.products.map((product) => {
                           const index = cardIndex++;
                           return (
@@ -694,7 +694,7 @@ function ShopCatalogContent() {
                       )}
                     </h2>
                   </header>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 md:gap-x-5 xl:grid-cols-5 xl:gap-x-6">
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 xl:grid-cols-4 xl:gap-x-6">
                     <MotionReveal key="custom-order" delay={0} y={14}>
                       <CustomOrderCatalogCard />
                     </MotionReveal>

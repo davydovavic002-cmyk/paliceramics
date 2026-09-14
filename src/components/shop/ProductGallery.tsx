@@ -10,12 +10,20 @@ interface ProductGalleryProps {
   images: string[];
   title: string;
   compact?: boolean;
+  /** Cream well + inset padding around the photo. Regular product cards keep this on. */
+  framed?: boolean;
   imageLabels?: string[];
 }
 
 const SWIPE_THRESHOLD = 48;
 
-export function ProductGallery({ images, title, compact = false, imageLabels }: ProductGalleryProps) {
+export function ProductGallery({
+  images,
+  title,
+  compact = false,
+  framed = true,
+  imageLabels,
+}: ProductGalleryProps) {
   const [active, setActive] = useState(0);
   const touchStart = useRef<number | null>(null);
   const projectImages = filterProjectImages(images);
@@ -27,13 +35,30 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
     imageLabels?.[index] ?? `${title} — ${index + 1}`;
   const hasMultiple = projectImages.length > 1;
 
+  const blurGalleryFocus = useCallback(() => {
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && focused.closest(".shop-product-thumb, .shop-product-gallery-nav")) {
+      focused.blur();
+    }
+  }, []);
+
   const goPrev = useCallback(() => {
     setActive((i) => (i <= 0 ? projectImages.length - 1 : i - 1));
-  }, [projectImages.length]);
+    blurGalleryFocus();
+  }, [blurGalleryFocus, projectImages.length]);
 
   const goNext = useCallback(() => {
     setActive((i) => (i >= projectImages.length - 1 ? 0 : i + 1));
-  }, [projectImages.length]);
+    blurGalleryFocus();
+  }, [blurGalleryFocus, projectImages.length]);
+
+  const selectImage = useCallback(
+    (index: number) => {
+      setActive(index);
+      blurGalleryFocus();
+    },
+    [blurGalleryFocus]
+  );
 
   useEffect(() => {
     if (!hasMultiple) return;
@@ -84,19 +109,28 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
     );
   }
 
+  const customOrder = !framed && !compact;
+
   return (
     <div
       className={[
-        "flex h-full min-h-0 w-full flex-col",
-        compact ? "p-3 sm:p-4 lg:px-5 lg:pt-4 lg:pb-3" : "items-center p-3 sm:p-4 lg:px-5 lg:py-4",
+        "flex h-full min-h-0 w-full min-w-0 flex-col",
+        compact
+          ? "p-3 sm:p-4 lg:px-5 lg:pt-4 lg:pb-3"
+          : customOrder
+            ? "p-3 sm:p-4 lg:px-5 lg:py-4"
+            : "items-center p-3 sm:p-4 lg:px-5 lg:py-4",
       ].join(" ")}
     >
       <div
         className={[
-          "shop-product-gallery-well relative w-full shrink-0 overflow-hidden rounded-xl",
+          "relative w-full shrink-0 overflow-hidden",
+          framed ? "shop-product-gallery-well rounded-xl" : "shop-product-gallery-well-plain",
           compact
             ? "aspect-[4/3] max-h-[min(48vw,16rem)] w-full max-w-[17.5rem] mx-auto lg:max-h-none lg:max-w-none lg:aspect-square"
-            : "shop-product-gallery-well-standard",
+            : customOrder
+              ? "aspect-square"
+              : "shop-product-gallery-well-standard",
         ].join(" ")}
         tabIndex={hasMultiple ? 0 : undefined}
         role={hasMultiple ? "region" : undefined}
@@ -115,8 +149,8 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
             unoptimized={unoptimized}
             sizes={compact ? "(max-width:1024px) 88vw, 420px" : "(max-width:1024px) 100vw, 50vw"}
             className={[
-              "object-contain select-none",
-              compact ? "p-3 sm:p-4" : "p-4 sm:p-6",
+              "h-full w-full object-contain select-none",
+              compact ? "p-3 sm:p-4" : customOrder ? "p-2 sm:p-3" : "p-4 sm:p-6",
             ].join(" ")}
             draggable={false}
           />
@@ -127,7 +161,7 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
             <button
               type="button"
               onClick={goPrev}
-              className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_20%,transparent)] bg-[color-mix(in_srgb,#faf7f0_92%,transparent)] text-[#010a8b] shadow-sm backdrop-blur-sm sm:left-3 sm:h-10 sm:w-10"
+              className="shop-product-gallery-nav absolute left-2 top-1/2 z-10 flex h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_20%,transparent)] bg-[color-mix(in_srgb,#faf7f0_92%,transparent)] text-[#010a8b] shadow-sm backdrop-blur-sm active:opacity-75 sm:left-3"
               aria-label="Previous image"
             >
               <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
@@ -135,7 +169,7 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
             <button
               type="button"
               onClick={goNext}
-              className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_20%,transparent)] bg-[color-mix(in_srgb,#faf7f0_92%,transparent)] text-[#010a8b] shadow-sm backdrop-blur-sm sm:right-3 sm:h-10 sm:w-10"
+              className="shop-product-gallery-nav absolute right-2 top-1/2 z-10 flex h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_20%,transparent)] bg-[color-mix(in_srgb,#faf7f0_92%,transparent)] text-[#010a8b] shadow-sm backdrop-blur-sm active:opacity-75 sm:right-3"
               aria-label="Next image"
             >
               <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
@@ -165,33 +199,48 @@ export function ProductGallery({ images, title, compact = false, imageLabels }: 
                on every side. The 12px gutter is what keeps the focus ring (ring-2 +
                ring-offset-2 = 4px) and the active thumb's shadow from being sliced; the top
                margins below are reduced by the same amount so spacing is unchanged. */
-            "flex gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:gap-2.5",
-            compact ? "w-full min-w-0 max-w-[17.5rem] mx-auto lg:mt-1 lg:max-w-none" : "mt-1 max-w-[min(100%,24rem)] sm:mt-1.5",
+            compact
+              ? "mt-1 flex w-full min-w-0 max-w-[17.5rem] gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:gap-2.5 mx-auto lg:mt-1 lg:max-w-none"
+              : customOrder
+                ? "mt-3 grid w-full grid-cols-5 gap-2"
+                : "mt-1 flex max-w-[min(100%,24rem)] gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:mt-1.5 sm:gap-2.5",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (
             <button
               key={`${src}-${index}`}
               type="button"
-              onClick={() => setActive(index)}
+              tabIndex={-1}
+              onClick={() => selectImage(index)}
               aria-label={thumbLabel(index)}
               aria-current={safeActive === index ? "true" : undefined}
               className={[
-                "shop-product-thumb relative shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2",
-                imageLabels ? "h-auto w-[4.5rem] sm:w-20" : "h-14 w-14 sm:h-16 sm:w-16",
-                safeActive === index ? "shop-product-thumb-active" : "",
+                "shop-product-thumb relative rounded-lg outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0",
+                customOrder
+                  ? "aspect-square h-auto w-full min-w-0"
+                  : imageLabels
+                    ? "h-auto w-[4.5rem] shrink-0 sm:w-20"
+                    : "h-14 w-14 shrink-0 sm:h-16 sm:w-16",
+                safeActive === index
+                  ? "shop-product-thumb-active border-blue-900 ring-2 ring-inset ring-blue-900"
+                  : "",
               ].join(" ")}
             >
-              <span className="relative block h-14 w-full overflow-hidden rounded-md sm:h-16">
+              <span
+                className={[
+                  "relative block w-full overflow-hidden rounded-md",
+                  customOrder ? "aspect-square h-full" : "h-14 sm:h-16",
+                ].join(" ")}
+              >
                 <Image
                   src={src}
                   alt=""
                   fill
                   quality={60}
                   unoptimized={isDataImageUrl(src)}
-                  sizes="64px"
+                  sizes={customOrder ? "80px" : "64px"}
                   loading="lazy"
-                  className="object-contain p-1.5"
+                  className="h-full w-full object-contain p-1"
                 />
               </span>
               {imageLabels?.[index] ? (

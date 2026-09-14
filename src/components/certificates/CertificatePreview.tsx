@@ -125,7 +125,7 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
       {displaySrc ? (
         <img
           src={displaySrc}
-          alt=""
+          alt={language === "pl" ? "Podgląd vouchera" : "Gift voucher preview"}
           width={3496}
           height={2480}
           className="absolute inset-0 block h-full w-full object-fill"

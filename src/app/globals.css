@@ -67,7 +67,7 @@ body {
   --footer-muted: #97a3c4;
   --footer-line: color-mix(in srgb, var(--footer-ink) 32%, transparent);
 
-  --header-offset: calc(3.35rem + env(safe-area-inset-top, 0px));
+  --header-offset: calc(4.25rem + env(safe-area-inset-top, 0px));
   --cookie-banner-offset: 0px;
   --keyboard-inset: 0px;
 
@@ -85,12 +85,23 @@ body {
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE и старый Edge */
 }
 
 body {
   background: var(--theme-surface);
   color: var(--theme-text);
   overflow-x: hidden;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE и старый Edge */
+}
+
+/* Скрытие скроллбара для Chrome, Safari, Opera и Edge */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 html[data-cookie-banner="open"] main {
@@ -245,7 +256,7 @@ html[data-cookie-banner="open"] main {
 
 @media (max-width: 1023px) {
   .site-header-inner {
-    min-height: 3.35rem;
+    min-height: 4.25rem;
     border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 12%, transparent);
     background-color: color-mix(in srgb, var(--theme-surface) 98%, transparent);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -322,6 +333,11 @@ html[data-cookie-banner="open"] main {
   color: var(--hero-copy);
 }
 
+.hero-copy-subline {
+  color: #fffef8;
+  text-shadow: 0 1px 10px rgba(21, 18, 16, 0.45);
+}
+
 @media (min-width: 1024px) {
   .hero-copy-headline,
   .hero-copy-subline {
@@ -342,12 +358,39 @@ html[data-cookie-banner="open"] main {
 }
 
 .hero-dark-band .hero-copy-dot {
-  background-color: var(--hero-copy);
-  margin-block: 2rem;
+  display: block;
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-inline: auto;
+  margin-block: 1.5rem;
+  background-color: #fffef8;
+  border-radius: 9999px;
+}
+
+@media (max-width: 639px) {
+  .hero-dark-band .hero-copy-dot {
+    margin-block: 1.25rem;
+  }
 }
 
 .hero-dark-band .hero-brand-logo {
   margin-bottom: 24px;
+}
+
+@media (max-height: 799px) {
+  .hero-dark-band .hero-brand-logo {
+    margin-bottom: 1rem;
+  }
+
+  .hero-dark-band .hero-copy-dot {
+    margin-block: 1.1rem;
+  }
+
+  .hero-copy-headline,
+  .hero-copy-subline {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
 }
 
 .hero-dark-band .hero-brand-logo-mark {
@@ -419,15 +462,79 @@ html[data-cookie-banner="open"] main {
   color: #ede8df;
 }
 
+/* Open overlay sits on a light field — undo the dark-hero light chrome. */
+.header-menu-open .header-nav-link,
+.header-hero-overlay.header-menu-open .header-nav-link {
+  color: #1e293b;
+}
+
+.header-menu-open .header-nav-link:hover,
+.header-menu-open .header-nav-link[data-active="true"],
+.header-hero-overlay.header-menu-open .header-nav-link:hover,
+.header-hero-overlay.header-menu-open .header-nav-link[data-active="true"] {
+  color: #0f172a;
+}
+
+.header-menu-open .header-lang-btn,
+.header-hero-overlay.header-menu-open .header-lang-btn {
+  border-color: #cbd5e1;
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.header-menu-open .header-lang-btn:hover,
+.header-hero-overlay.header-menu-open .header-lang-btn:hover {
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.header-menu-open .header-lang-btn[data-active="true"],
+.header-hero-overlay.header-menu-open .header-lang-btn[data-active="true"] {
+  border-color: #1e3a8a;
+  background-color: #1e3a8a;
+  color: #fff;
+}
+
+.header-menu-open .header-icon-btn,
+.header-hero-overlay.header-menu-open .header-icon-btn {
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.header-menu-open .header-icon-btn:hover,
+.header-hero-overlay.header-menu-open .header-icon-btn:hover {
+  border-color: #94a3b8;
+}
+
 .header-menu-overlay {
-  animation: header-menu-in 0.22s ease-out;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  width: 100%;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  background: #f5f2ec;
+}
+
+@media (max-height: 700px) {
+  .header-menu-overlay nav > div {
+    gap: 1.25rem;
+  }
 }
 
 .header-controls {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
+  gap: 0.375rem;
+}
+
+.header-controls-end {
+  padding-right: 0;
 }
 
 @media (min-width: 640px) {
@@ -695,7 +802,7 @@ html[data-cookie-banner="open"] main {
     justify-content: center;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .shop-product-gallery-zone-standard {
       padding-block: 1.5rem;
     }
@@ -798,15 +905,17 @@ html[data-cookie-banner="open"] main {
     border-radius: 9999px;
     border: 1px solid color-mix(in srgb, #010a8b 16%, transparent);
     background: color-mix(in srgb, #ffffff 72%, transparent);
-    padding: 0.35rem 0.75rem;
-    font-size: 9px;
+    min-height: 44px;
+    padding: 0.625rem 1rem;
+    font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: color-mix(in srgb, #010a8b 58%, #4a4a55);
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease,
-      color 0.2s ease;
+      color 0.2s ease,
+      opacity 0.15s ease;
   }
 
   .shop-note-pill:focus-visible {
@@ -814,9 +923,8 @@ html[data-cookie-banner="open"] main {
     box-shadow: 0 0 0 2px #fffef9, 0 0 0 4px #010a8b;
   }
 
-  .shop-note-pill:hover {
-    border-color: color-mix(in srgb, #010a8b 28%, transparent);
-    color: #010a8b;
+  .shop-note-pill:active {
+    opacity: 0.75;
   }
 
   .shop-note-pill-active {
@@ -915,6 +1023,12 @@ html[data-cookie-banner="open"] main {
     box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 80%, transparent);
   }
 
+  .shop-product-gallery-well-plain {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
   [data-theme="glazed-matte"] .shop-product-gallery-well {
     background: linear-gradient(180deg, #ffffff 0%, #f3efe8 100%);
   }
@@ -925,12 +1039,23 @@ html[data-cookie-banner="open"] main {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .shop-product-thumb:hover {
-    border-color: color-mix(in srgb, #010a8b 28%, transparent);
+  .shop-product-thumb:active {
+    opacity: 0.8;
+  }
+
+  .shop-product-thumb:focus,
+  .shop-product-thumb:focus-visible {
+    outline: none;
+  }
+
+  .shop-product-thumb:focus:not(.shop-product-thumb-active),
+  .shop-product-thumb:focus-visible:not(.shop-product-thumb-active) {
+    border-color: color-mix(in srgb, #010a8b 12%, transparent);
+    box-shadow: none;
   }
 
   .shop-product-thumb-active {
-    border-color: #010a8b;
+    border-color: #1e3a8a;
     /* kept within the thumbnail strip's 12px gutter (offset + blur <= 12px) so the shadow is
        not cut off by the strip's horizontal scroll container */
     box-shadow: 0 3px 9px color-mix(in srgb, #010a8b 12%, transparent);
@@ -944,9 +1069,8 @@ html[data-cookie-banner="open"] main {
     transition: opacity 0.2s ease, background-color 0.2s ease;
   }
 
-  .shop-buy-btn:hover {
-    opacity: 0.92;
-    background: color-mix(in srgb, #010a8b 92%, #020c6e);
+  .shop-buy-btn:active {
+    opacity: 0.82;
   }
 
   .shop-product-actions {
@@ -961,9 +1085,8 @@ html[data-cookie-banner="open"] main {
     transition: opacity 0.2s ease, background-color 0.2s ease;
   }
 
-  .shop-waitlist-btn:hover:not(:disabled) {
-    opacity: 0.92;
-    background: color-mix(in srgb, #010a8b 92%, #020c6e);
+  .shop-waitlist-btn:active:not(:disabled) {
+    opacity: 0.82;
   }
 
   .shop-buy-menu-panel {
@@ -1267,14 +1390,46 @@ html[data-cookie-banner="open"] main {
   }
 
   .section-inner {
-    @apply relative z-10 mx-auto max-w-[1200px] px-5 py-12 sm:px-8 sm:py-14 lg:px-16 lg:py-16;
+    @apply relative z-10 mx-auto max-w-[1200px] px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16;
   }
 
   .section-inner-narrow {
-    @apply relative z-10 mx-auto max-w-[900px] px-5 py-12 sm:px-8 sm:py-14 lg:px-16 lg:py-16;
+    @apply relative z-10 mx-auto max-w-[900px] px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16;
   }
 
   .section-inner-wide {
-    @apply relative z-10 mx-auto max-w-[1800px] px-5 py-12 sm:px-8 sm:py-14 lg:px-10 lg:py-16;
+    @apply relative z-10 mx-auto max-w-[1800px] px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16;
+  }
+}
+
+.shop-filter-touch {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (max-height: 700px) {
+  .shop-product-page .shop-product-sheet {
+    overflow: visible;
+  }
+}
+
+@media (hover: hover) {
+  .shop-note-pill:hover {
+    border-color: color-mix(in srgb, #010a8b 28%, transparent);
+    color: #010a8b;
+  }
+
+  .shop-product-thumb:hover {
+    border-color: color-mix(in srgb, #010a8b 28%, transparent);
+  }
+
+  .shop-buy-btn:hover {
+    opacity: 0.92;
+    background: color-mix(in srgb, #010a8b 92%, #020c6e);
+  }
+
+  .shop-waitlist-btn:hover:not(:disabled) {
+    opacity: 0.92;
+    background: color-mix(in srgb, #010a8b 92%, #020c6e);
   }
 }

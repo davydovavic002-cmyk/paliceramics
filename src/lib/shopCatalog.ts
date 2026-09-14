@@ -13,7 +13,6 @@ import {
 import { getProductImages } from "@/lib/productGallery";
 import { getProductPieceTypeId } from "@/lib/lookbookCollections";
 import { productPhotos } from "@/lib/adminTypes";
-import type { ProductPieceTypeId } from "@/lib/lookbookCollections";
 import { images } from "@/lib/images";
 import { filterProjectImages } from "@/lib/productImages";
 import { preferOptimizedImage, resolveCatalogImageUrls } from "@/lib/catalogImages";

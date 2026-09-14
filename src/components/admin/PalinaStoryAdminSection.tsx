@@ -112,7 +112,7 @@ function StoryImageEditor({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <div className="relative h-28 w-40 shrink-0 overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
           {image.src ? (
-            <Image src={image.src} alt="" fill unoptimized className="object-cover" />
+            <Image src={image.src} alt={IMAGE_LABELS[image.id]} fill unoptimized className="object-cover" />
           ) : null}
         </div>
         <div className="min-w-0 flex-1 space-y-2">

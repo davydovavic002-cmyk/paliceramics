@@ -63,7 +63,7 @@ export function LookbookCollectionCover({
         <div className="relative h-[88px] w-full max-w-[9.5rem] sm:h-[96px] sm:max-w-[10.5rem] lg:h-[92px] lg:max-w-[9rem]">
           <Image
             src={imageSrc}
-            alt=""
+            alt={name}
             fill
             priority={imagePriority}
             fetchPriority={imagePriority ? "high" : undefined}

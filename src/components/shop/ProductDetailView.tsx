@@ -130,7 +130,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
           <button
             type="button"
             onClick={closeProduct}
-            className="shop-product-close absolute right-3 top-3 z-30 hidden p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 lg:inline-flex"
+            className="shop-product-close absolute right-3 top-3 z-30 hidden min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 md:inline-flex"
             aria-label={copy.close}
           >
             <X className="h-6 w-6" strokeWidth={1.75} />
@@ -138,17 +138,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
           {/* columns stretch to the row height on purpose: with items-start the shorter column
               stopped early and the sheet's own gradient (which ends warm) showed through as a
               mismatched strip under the info panel */}
-          <div className="shop-product-sheet-inner grid min-w-0 rounded-2xl sm:rounded-[1.75rem] lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-            <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] lg:rounded-l-[1.75rem] lg:rounded-tr-none">
+          <div className="shop-product-sheet-inner grid min-w-0 grid-cols-1 rounded-2xl sm:rounded-[1.75rem] md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+            <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] md:rounded-l-[1.75rem] md:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>
 
-            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 lg:rounded-none lg:rounded-tr-[1.75rem] lg:rounded-br-[1.75rem] lg:border-b-0 lg:border-l lg:px-8 lg:py-8">
-              <div className="flex items-start justify-end lg:hidden">
+            <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 md:rounded-none md:rounded-tr-[1.75rem] md:rounded-br-[1.75rem] md:border-b-0 md:border-l lg:px-8 lg:py-8">
+              <div className="flex items-start justify-end md:hidden">
                 <button
                   type="button"
                   onClick={closeProduct}
-                  className="shop-product-close -mr-1 -mt-1 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
+                  className="shop-product-close -mr-1 -mt-1 inline-flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
                   aria-label={copy.close}
                 >
                   <X className="h-6 w-6" strokeWidth={1.75} />
@@ -175,7 +175,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
                 </p>
               ) : null}
 
-              <div className="mt-2.5 flex items-center justify-between gap-4">
+              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 {product.pricePln > 0 ? (
                   <p className="font-inter text-base font-medium tabular-nums tracking-tight text-theme">
                     PLN {product.pricePln}

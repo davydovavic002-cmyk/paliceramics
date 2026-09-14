@@ -35,7 +35,7 @@ export function WorkshopsBookingSection() {
             <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">
               {header.eyebrow}
             </p>
-            <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-tight tracking-[0.06em] text-theme">
+            <h2 className="mt-3 font-display text-2xl leading-tight tracking-[0.06em] text-theme sm:text-4xl lg:text-5xl">
               {header.title}
             </h2>
             <p className="mt-3 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">
@@ -46,7 +46,7 @@ export function WorkshopsBookingSection() {
               <Link
                 href="#certificates"
                 onClick={(e) => handleSectionClick(e, "#certificates")}
-                className="group inline-flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:text-theme"
+                className="group inline-flex min-h-[44px] items-center gap-2 py-2 font-body text-[10px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:text-theme active:opacity-70"
               >
                 <span>{giftLink.label}</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

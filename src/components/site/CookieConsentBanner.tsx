@@ -59,14 +59,14 @@ export function CookieConsentBanner() {
               <button
                 type="button"
                 onClick={essentialOnly}
-                className="rounded-full border border-theme/25 px-4 py-2 font-body text-[10px] uppercase tracking-[0.16em] text-theme-muted transition-colors hover:border-theme/40 hover:text-theme"
+                className="min-h-[44px] rounded-full border border-theme/25 px-4 py-3 font-body text-[10px] uppercase tracking-[0.16em] text-theme-muted transition-colors hover:border-theme/40 hover:text-theme active:opacity-75"
               >
                 {cookieBannerCopy.essential[language]}
               </button>
               <button
                 type="button"
                 onClick={acceptMaps}
-                className="rounded-full border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-2 font-body text-[10px] uppercase tracking-[0.16em] text-theme-btn transition-colors hover:bg-[var(--theme-accent-hover)]"
+                className="min-h-[44px] rounded-full border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-3 font-body text-[10px] uppercase tracking-[0.16em] text-theme-btn transition-colors hover:bg-[var(--theme-accent-hover)] active:opacity-80"
               >
                 {cookieBannerCopy.accept[language]}
               </button>

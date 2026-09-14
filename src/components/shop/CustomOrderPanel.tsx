@@ -50,9 +50,6 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
         };
 
   const title = pickBilingual(customOrderContent.title, customOrderContent.title, language);
-  const galleryLabels = customOrderCatalogCard.galleryImageLabels.map((label) =>
-    pickBilingual(label, label, language)
-  );
   const subtitle = pickBilingual(customOrderContent.subtitle, customOrderContent.subtitle, language);
   const eyebrow = pickBilingual(madeToOrderCategoryLabel, madeToOrderCategoryLabel, language);
   const body = customOrderContent.body[language];
@@ -86,54 +83,76 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
   ] as const;
 
   return (
-    <div className="delivery-faq-panel shop-product-sheet shop-product-sheet-compact relative overflow-hidden rounded-[1.35rem]">
-      <div className="shop-product-sheet-inner grid min-w-0 rounded-[1.35rem] lg:grid-cols-2 lg:items-stretch">
-        <div className="shop-product-gallery-zone flex min-h-0 min-w-0 flex-col overflow-hidden rounded-t-[1.35rem] border-b border-[var(--delivery-faq-line)] lg:rounded-l-[1.35rem] lg:rounded-tr-none lg:border-b-0 lg:border-r">
+    <div
+      role="region"
+      aria-labelledby="custom-order-title"
+      className="delivery-faq-panel shop-product-sheet relative z-10 rounded-2xl sm:rounded-[1.75rem]"
+    >
+      {onClose ? (
+        <button
+          type="button"
+          onClick={onClose}
+          className="shop-product-close absolute right-3 top-3 z-30 hidden min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 md:inline-flex"
+          aria-label={copy.close}
+        >
+          <X className="h-6 w-6" strokeWidth={1.75} />
+        </button>
+      ) : null}
+
+      <div className="shop-product-sheet-inner grid min-w-0 grid-cols-1 rounded-2xl sm:rounded-[1.75rem] md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+        <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 min-w-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] md:rounded-l-[1.75rem] md:rounded-tr-none">
           <ProductGallery
             images={customOrderCatalogCard.galleryImages}
             title={title}
-            compact
-            imageLabels={galleryLabels}
+            framed={false}
           />
         </div>
 
-        <div className="shop-product-info-zone shop-product-info-zone-compact delivery-faq-split-b flex min-h-0 min-w-0 flex-col overflow-hidden rounded-b-[1.35rem] border-[var(--delivery-faq-line)] px-5 py-5 sm:px-6 sm:py-6 lg:min-h-full lg:overflow-visible lg:rounded-none lg:rounded-tr-[1.35rem] lg:rounded-br-[1.35rem] lg:border-b-0 lg:border-l">
+        <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 md:rounded-none md:rounded-tr-[1.75rem] md:rounded-br-[1.75rem] md:border-b-0 md:border-l lg:px-8 lg:py-8">
           {onClose ? (
-            <div className="mb-1 hidden justify-end lg:mb-0 lg:flex">
+            <div className="flex items-start justify-end md:hidden">
               <button
                 type="button"
                 onClick={onClose}
-                className="shop-product-close -mr-1 -mt-1 p-1 text-[#010a8b] transition-opacity hover:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
+                className="shop-product-close -mr-1 -mt-1 inline-flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
                 aria-label={copy.close}
               >
                 <X className="h-6 w-6" strokeWidth={1.75} />
               </button>
             </div>
           ) : null}
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <p className="shop-product-collection-tag delivery-faq-muted font-body text-[10px] uppercase">
+
+          <div className="flex flex-wrap items-start justify-between gap-3 pr-0 lg:pr-12">
+            <p className="shop-product-collection-tag font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
               {eyebrow}
             </p>
           </div>
 
-          <h1 className="delivery-faq-ink mt-2 font-display text-[clamp(1.25rem,2.2vw,1.65rem)] leading-[1.15] tracking-[0.02em]">
+          <h1
+            id="custom-order-title"
+            className="mt-1.5 min-w-0 font-inter text-lg font-normal leading-snug tracking-tight text-theme sm:text-xl"
+          >
             {title}
           </h1>
+          <p className="mt-1 font-inter text-xs font-normal leading-relaxed text-slate-500">
+            {subtitle}
+          </p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <p className="shop-product-price delivery-faq-ink font-display tabular-nums">
+          <div className="mt-2.5 flex items-center justify-between gap-4">
+            <p className="font-inter text-base font-medium tabular-nums tracking-tight text-slate-900">
               {copy.minBadge}
             </p>
-            <p className="delivery-faq-muted font-body text-[11px]">{subtitle}</p>
           </div>
 
-          <div className="mt-5">
-            <p className="shop-product-section-label font-body">{copy.about}</p>
-            <div className="mt-2.5 space-y-2">
+          <div className="mt-4">
+            <p className="shop-product-section-label font-inter">
+              {copy.about}
+            </p>
+            <div className="mt-2 space-y-2">
               {body.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 28)}
-                  className="delivery-faq-ink max-w-prose font-body text-[13px] leading-[1.6]"
+                  className="max-w-prose font-inter text-sm font-normal leading-relaxed text-theme"
                 >
                   {paragraph}
                 </p>
@@ -141,19 +160,23 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
             </div>
           </div>
 
-          <div className="mt-5 pb-1">
-            <p className="shop-product-section-label font-body">{copy.contact}</p>
-            <div className="mt-2.5 flex flex-col gap-2">
+          <div className="mt-4 pb-1">
+            <p className="shop-product-section-label font-inter">
+              {copy.contact}
+            </p>
+            <div className="mt-2 flex flex-col gap-2">
               {contactLinks.map((link) => (
                 <a
                   key={link.key}
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="shop-buy-menu-panel block rounded-xl px-3.5 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,transparent)]"
+                  className="block min-h-[44px] py-3 transition-opacity hover:opacity-70 active:opacity-70"
                 >
-                  <span className="delivery-faq-ink block font-body text-sm">{link.label}</span>
-                  <span className="delivery-faq-muted mt-0.5 block break-all font-body text-[11px] leading-snug">
+                  <span className="block font-inter text-sm font-normal text-slate-900">
+                    {link.label}
+                  </span>
+                  <span className="mt-0.5 block break-all font-inter text-xs font-normal leading-relaxed text-slate-500">
                     {link.detail}
                   </span>
                 </a>

@@ -265,12 +265,12 @@ export function WorkshopBookingBuilder() {
       "relative flex shrink-0 items-center justify-center rounded-full border font-body tracking-[0.12em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2";
 
     if (s < step) {
-      return `${base} h-8 w-8 cursor-pointer border-[color-mix(in_srgb,#010a8b_45%,transparent)] bg-white text-[11px] text-[#010a8b] hover:border-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_7%,#ffffff)]`;
+      return `${base} h-11 w-11 min-h-[44px] min-w-[44px] cursor-pointer border-[color-mix(in_srgb,#010a8b_45%,transparent)] bg-white text-[11px] text-[#010a8b] hover:border-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_7%,#ffffff)]`;
     }
     if (s === step) {
-      return `${base} h-9 w-9 cursor-default border-[#010a8b] bg-[#010a8b] text-[12px] font-medium text-white shadow-[0_4px_14px_rgba(1,10,139,0.3)]`;
+      return `${base} h-11 w-11 min-h-[44px] min-w-[44px] cursor-default border-[#010a8b] bg-[#010a8b] text-[12px] font-medium text-white shadow-[0_4px_14px_rgba(1,10,139,0.3)]`;
     }
-    return `${base} h-8 w-8 cursor-not-allowed border-dashed border-[color-mix(in_srgb,#010a8b_28%,transparent)] bg-transparent text-[11px] text-[#4a4a55] opacity-45`;
+    return `${base} h-11 w-11 min-h-[44px] min-w-[44px] cursor-not-allowed border-dashed border-[color-mix(in_srgb,#010a8b_28%,transparent)] bg-transparent text-[11px] text-[#4a4a55] opacity-45`;
   };
 
   return (

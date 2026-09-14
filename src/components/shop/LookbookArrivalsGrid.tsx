@@ -45,8 +45,8 @@ export function LookbookArrivalsGrid() {
 
   return (
     <div className="w-full pb-0">
-      <div className="mx-auto max-w-[1800px] px-5 pb-5 sm:px-8 lg:px-10">
-        <h2 className="lookbook-ink font-display text-[clamp(1.35rem,3vw,2rem)] uppercase leading-none tracking-[0.08em]">
+      <div className="mx-auto max-w-[1800px] px-4 pb-5 sm:px-6 lg:px-8">
+        <h2 className="lookbook-ink font-display text-2xl uppercase leading-none tracking-[0.08em] sm:text-4xl lg:text-5xl">
           {copy.title}
         </h2>
       </div>
@@ -65,7 +65,7 @@ export function LookbookArrivalsGrid() {
               </div>
               <Link
                 href="/shop"
-                className="inline-flex w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[10px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90"
+                className="inline-flex min-h-[44px] w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[10px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90 active:opacity-80"
               >
                 {copy.cta}
               </Link>

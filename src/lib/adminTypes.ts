@@ -19,7 +19,6 @@ import {
   seedCollections,
   seedPieceTypes,
   sortCollections,
-  slugifyCatalogId,
   canonicalCollectionId,
 } from "@/lib/catalogConfig";
 import { productCollectionById, productPieceTypeById, LEGACY_CATEGORY_IDS } from "@/lib/lookbookCollections";
@@ -380,7 +379,6 @@ export function seedWorkshopTypes(): AdminWorkshopType[] {
 }
 
 export function seedWorkshops(): AdminWorkshopSlot[] {
-  const defaultTypeId = workshopFormats[0]?.id ?? "one-time";
   const year = new Date().getFullYear();
 
   return calendarSlots.map((slot, index) => {

@@ -10,7 +10,7 @@ import type { ShopProduct } from "@/lib/shopCatalog";
 import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { appendReturnTo } from "@/lib/shopReturnTo";
-import { buildCurrentReturnTo, resolveProductReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
+import { resolveProductReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
 import { statusLabels, t } from "@/lib/galleryContent";
 
 const linkFocus =
@@ -42,7 +42,6 @@ function cardStatusLine(
 export function CatalogProductCard({
   product,
   title,
-  categoryLabel,
   variant = "grid",
   className = "",
   imagePriority = false,
@@ -154,7 +153,7 @@ export function CatalogProductCard({
           />
         </div>
 
-        <div className="flex min-h-[3.5rem] flex-col gap-0.5 pt-2 font-product-medium text-[10px] leading-snug tracking-[0.06em] sm:min-h-[4rem] sm:text-[11px]">
+        <div className="flex min-h-[3.5rem] flex-col gap-0.5 pt-2 font-product-medium text-[11px] leading-snug tracking-[0.06em] sm:min-h-[4rem]">
           <p className="lookbook-ink line-clamp-1">
             <span className="shop-catalog-muted">{language === "pl" ? "nr" : "no"}</span>{" "}
             <span className="tabular-nums">{product.sku}</span>

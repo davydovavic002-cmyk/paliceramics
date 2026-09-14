@@ -69,7 +69,7 @@ export function AboutPhilosophySection() {
             {header.eyebrow}
           </motion.p>
           <motion.h2
-            className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-tight tracking-[0.06em] text-theme"
+            className="mt-4 font-display text-2xl leading-tight tracking-[0.06em] text-theme sm:text-4xl lg:text-5xl"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}

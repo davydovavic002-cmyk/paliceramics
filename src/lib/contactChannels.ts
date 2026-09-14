@@ -4,7 +4,6 @@ import {
   emailComposeHref,
   facebookUrl,
   instagramUrl,
-  mailtoHref,
   normalizeEmailAddress,
   openEmailCompose,
   whatsappUrl,

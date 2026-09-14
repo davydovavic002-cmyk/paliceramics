@@ -204,7 +204,7 @@ export function ProductPurchaseMenu({
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="shop-buy-btn relative z-50 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 font-body text-[10px] uppercase tracking-[0.22em]"
+        className="shop-buy-btn relative z-50 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-body text-[10px] uppercase tracking-[0.22em] active:opacity-80"
       >
         {copy.buy}
         <ChevronDown
@@ -231,7 +231,7 @@ export function ProductPurchaseMenu({
                   target={channel.external ? "_blank" : undefined}
                   rel={channel.external ? "noopener noreferrer" : undefined}
                   onClick={(event) => handleChannelClick(event, channel)}
-                  className="block rounded-md px-2.5 py-2 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]"
+                  className="flex min-h-[44px] items-center rounded-md px-3 py-3 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)] active:opacity-80"
                 >
                   <span className="delivery-faq-ink font-body text-[13px]">{channel.label}</span>
                   {channel.sublabel ? (

@@ -23,7 +23,6 @@ export function WaitlistForm({
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState(false);
-  const [savedEmail, setSavedEmail] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const light = variant === "product" || variant === "panel";
@@ -79,7 +78,6 @@ export function WaitlistForm({
         return;
       }
 
-      setSavedEmail(trimmed);
       setSent(true);
       setEmail("");
       setConsent(false);

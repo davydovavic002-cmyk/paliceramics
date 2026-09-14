@@ -92,7 +92,7 @@ export function ProductsInventoryPanel({
                     {collection.coverImageUrl ? (
                       <Image
                         src={collection.coverImageUrl}
-                        alt=""
+                        alt={collection.name.en}
                         width={480}
                         height={360}
                         unoptimized={isDataImageUrl(collection.coverImageUrl)}
@@ -180,7 +180,7 @@ export function ProductsInventoryPanel({
                                   {cover ? (
                                     <Image
                                       src={cover}
-                                      alt=""
+                                      alt={product.title || "Untitled"}
                                       fill
                                       unoptimized={isDataImageUrl(cover)}
                                       className="object-cover"

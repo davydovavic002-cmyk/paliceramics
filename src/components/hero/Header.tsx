@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
@@ -171,14 +171,8 @@ export function Header() {
       if (e.key === "Escape") setOpen(false);
     };
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   const fade = {
@@ -194,6 +188,7 @@ export function Header() {
       className={[
         "site-header-shell pointer-events-none fixed inset-x-0 top-0 z-[70]",
         heroOverlay ? "header-hero-overlay" : "",
+        open ? "header-menu-open" : "",
       ].join(" ")}
     >
       <div
@@ -204,7 +199,7 @@ export function Header() {
       >
         <div
           className={[
-            "mx-auto flex w-full max-w-[1800px] items-center gap-4 px-5 py-2.5 md:px-8 md:py-3 lg:px-16 lg:py-3.5",
+            "mx-auto flex w-full min-w-0 max-w-[1800px] items-center gap-3 px-4 py-2.5 sm:px-6 md:px-8 md:py-3 lg:gap-5 lg:px-8 lg:py-3.5",
             heroOverlay ? "relative justify-end" : "justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-5",
           ].join(" ")}
         >
@@ -251,24 +246,34 @@ export function Header() {
 
           <div
             className={[
-              "header-controls relative shrink-0",
+              "header-controls header-controls-end relative shrink-0",
               heroOverlay ? "relative z-[2] ml-auto" : "lg:justify-self-end",
             ].join(" ")}
           >
-            <LanguageToggle onBar={solidBar} heroOverlay={heroOverlay} />
+            <LanguageToggle
+              onBar={solidBar}
+              heroOverlay={heroOverlay}
+              menuOpen={open}
+            />
             <button
               type="button"
               className={[
-                "header-icon-btn relative z-[2] inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border p-0 text-theme transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
-                solidBar
-                  ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
-                  : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",
+                "header-icon-btn relative z-[2] inline-flex h-11 w-11 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full border p-0 transition-colors hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2",
+                open
+                  ? "border-slate-300 text-slate-900 hover:border-slate-400"
+                  : solidBar
+                    ? "border-[color-mix(in_srgb,var(--theme-border)_28%,transparent)] text-theme hover:border-[color-mix(in_srgb,var(--theme-border)_45%,transparent)]"
+                    : "border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)] text-theme hover:border-[color-mix(in_srgb,var(--theme-border)_40%,transparent)] [box-shadow:0_1px_8px_rgba(0,0,0,0.25)]",
               ].join(" ")}
               onClick={() => setOpen((prev) => !prev)}
-              aria-label="Menu"
+              aria-label={open ? "Close menu" : "Menu"}
               aria-expanded={open}
             >
-              <Menu size={18} strokeWidth={1.75} className="shrink-0" aria-hidden />
+              {open ? (
+                <X size={18} strokeWidth={1.75} className="shrink-0 text-slate-900" aria-hidden />
+              ) : (
+                <Menu size={18} strokeWidth={1.75} className="shrink-0" aria-hidden />
+              )}
             </button>
           </div>
         </div>

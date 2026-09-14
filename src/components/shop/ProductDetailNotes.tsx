@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { Language } from "@/types";
 import type { ShopProduct } from "@/lib/shopCatalog";
 import { useDemoControls } from "@/context/DemoControlsContext";

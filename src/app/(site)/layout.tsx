@@ -14,7 +14,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <HashScrollHandler />
       <SkipToContent />
       <Header />
-      <main id="main-content" tabIndex={-1}>
+      <main id="main-content" tabIndex={-1} className="overflow-x-hidden">
         {children}
       </main>
       <SiteFooter />

@@ -38,7 +38,7 @@ export function ProductWaitlistMenu({ sku, productTitle }: ProductWaitlistMenuPr
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="shop-waitlist-trigger inline-flex w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,#010a8b_22%,transparent)] bg-white/85 px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.16em] text-[#010a8b] transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,white)] sm:tracking-[0.18em]"
+        className="shop-waitlist-trigger inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,#010a8b_22%,transparent)] bg-white/85 px-4 py-3 font-body text-[10px] uppercase tracking-[0.16em] text-[#010a8b] transition-colors hover:bg-[color-mix(in_srgb,#010a8b_5%,white)] active:opacity-80 sm:tracking-[0.18em]"
       >
         <Bell className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
         <span className="truncate">{label}</span>

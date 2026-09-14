@@ -44,7 +44,7 @@ function FooterLink({
 
   if (isMailOrTel) {
     return (
-      <a href={href} className="footer-muted transition-colors hover:text-[var(--footer-ink)]">
+      <a href={href} className="footer-muted inline-flex min-h-[44px] items-center py-2 transition-colors hover:text-[var(--footer-ink)] active:opacity-70">
         {children}
       </a>
     );
@@ -55,7 +55,7 @@ function FooterLink({
       <Link
         href={href.startsWith("/#") ? href : `/${href}`}
         onClick={(e) => handleSectionClick(e, href.replace(/^\/?/, ""))}
-        className="footer-muted transition-colors hover:text-[var(--footer-ink)]"
+        className="footer-muted inline-flex min-h-[44px] items-center py-2 transition-colors hover:text-[var(--footer-ink)] active:opacity-70"
       >
         {children}
       </Link>
@@ -68,7 +68,7 @@ function FooterLink({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="footer-muted transition-colors hover:text-[var(--footer-ink)]"
+        className="footer-muted inline-flex min-h-[44px] items-center py-2 transition-colors hover:text-[var(--footer-ink)] active:opacity-70"
       >
         {children}
       </a>
@@ -76,7 +76,7 @@ function FooterLink({
   }
 
   return (
-    <Link href={href} className="footer-muted transition-colors hover:text-[var(--footer-ink)]">
+    <Link href={href} className="footer-muted inline-flex min-h-[44px] items-center py-2 transition-colors hover:text-[var(--footer-ink)] active:opacity-70">
       {children}
     </Link>
   );
@@ -163,15 +163,15 @@ export function SiteFooter() {
             </p>
             <nav
               aria-label={language === "pl" ? "Szybkie linki" : "Quick links"}
-              className="flex flex-wrap gap-x-4 gap-y-2 font-body text-[10px] uppercase tracking-[0.16em]"
+              className="flex flex-wrap gap-x-4 gap-y-1 font-body text-[10px] uppercase tracking-[0.16em]"
             >
-              <Link href="/shop" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+              <Link href="/shop" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
                 {language === "pl" ? "Sklep" : "Shop"}
               </Link>
-              <Link href="/privacy" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+              <Link href="/privacy" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
                 {copy.privacy}
               </Link>
-              <Link href="/regulamin" className="text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)]">
+              <Link href="/regulamin" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
                 {copy.terms}
               </Link>
             </nav>
@@ -182,7 +182,7 @@ export function SiteFooter() {
               href={instagramHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-2 self-start font-body text-[10px] uppercase tracking-[0.22em] text-[var(--footer-ink)] transition-opacity hover:opacity-70 lg:self-end"
+              className="inline-flex min-h-[44px] shrink-0 items-center gap-2 self-start py-3 font-body text-[10px] uppercase tracking-[0.22em] text-[var(--footer-ink)] transition-opacity hover:opacity-70 active:opacity-70 lg:self-end"
             >
               {copy.studioCta}
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
@@ -203,7 +203,7 @@ export function SiteFooter() {
               <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
                 {copy.info}
               </p>
-              <ul className="footer-muted mt-4 space-y-2.5 font-body text-sm">
+              <ul className="footer-muted mt-4 space-y-1 font-body text-sm">
                 {shopLinks.slice(2).map((link) => (
                   <li key={link.href}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -216,7 +216,7 @@ export function SiteFooter() {
               <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
                 {copy.menu}
               </p>
-              <ul className="mt-4 space-y-2.5 font-body text-sm">
+              <ul className="mt-4 space-y-1 font-body text-sm">
                 {navLinks.map((link) => (
                   <li key={`${link.href}-${link.label}`}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -229,7 +229,7 @@ export function SiteFooter() {
               <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
                 {language === "pl" ? "Sklep" : "Shop"}
               </p>
-              <ul className="mt-4 space-y-2.5 font-body text-sm">
+              <ul className="mt-4 space-y-1 font-body text-sm">
                 {shopLinks.map((link) => (
                   <li key={link.href}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -242,7 +242,7 @@ export function SiteFooter() {
               <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
                 {copy.contact}
               </p>
-              <ul className="mt-4 space-y-2.5 font-body text-sm">
+              <ul className="mt-4 space-y-1 font-body text-sm">
                 {contacts?.email ? (
                   <li>
                     <FooterLink href={contactHref("email", contacts.email)}>

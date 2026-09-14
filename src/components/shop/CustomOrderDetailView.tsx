@@ -68,7 +68,7 @@ export function CustomOrderDetailView() {
 
   return (
     <div className="shop-catalog-page shop-product-page shop-made-to-order-page min-h-0 overflow-x-clip pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14">
-      <div className="mx-auto max-w-[960px] px-4 sm:px-6">
+      <div className="mx-auto max-w-[1024px] px-4 sm:px-6">
         <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
             href="/"
@@ -107,7 +107,7 @@ export function CustomOrderDetailView() {
 
         <ProductMobileBackBar label={copy.back} onBack={closePanel} />
 
-        <div className="relative mt-4 sm:mt-5">
+        <div className="relative mb-2 mt-4 sm:mb-4 sm:mt-6">
           <CustomOrderPanel onClose={closePanel} />
         </div>
       </div>

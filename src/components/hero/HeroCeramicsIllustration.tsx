@@ -21,7 +21,7 @@ export function HeroCeramicsIllustration({ className = "" }: HeroCeramicsIllustr
       >
         <Image
           src={images.heroCeramicsCollage}
-          alt=""
+          alt="Handmade ceramic pieces"
           width={558}
           height={590}
           priority

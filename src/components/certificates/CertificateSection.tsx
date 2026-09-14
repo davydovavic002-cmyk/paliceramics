@@ -153,7 +153,7 @@ export function CertificateSection() {
             <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">
               {copy.eyebrow}
             </p>
-            <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-tight tracking-[0.06em] text-theme">
+            <h2 className="mt-3 font-display text-2xl leading-tight tracking-[0.06em] text-theme sm:text-4xl lg:text-5xl">
               {copy.title}
             </h2>
             <p className="mt-3 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">

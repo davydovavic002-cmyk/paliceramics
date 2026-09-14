@@ -73,49 +73,47 @@ export function HeroDark() {
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band hero-viewport-height relative isolate flex flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230] pb-20 md:pb-0">
+    <section className="hero-dark-band hero-viewport-height relative isolate flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230]">
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
-      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1800px] flex-1 flex-col overflow-x-clip px-5 lg:px-16">
+      <div className="hero-copy-stack relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1800px] flex-col items-center justify-center overflow-x-clip px-5 pb-32 pt-12 sm:py-16 md:pb-16 lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>
 
-        <div className="flex flex-1 flex-col items-center justify-center pb-44 pt-[max(4.5rem,env(safe-area-inset-top))] md:pb-32">
-          <div className="hero-copy-column flex w-full flex-col items-center text-center">
-            <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo">
-              <span className="hero-brand-logo-mark block" role="img" aria-label="Pali ceramics" />
-            </motion.div>
+        <div className="hero-copy-column flex w-full flex-col items-center text-center">
+          <motion.div key={`logo-${language}`} animate={fade} className="hero-brand-logo">
+            <span className="hero-brand-logo-mark block" role="img" aria-label="Pali ceramics" />
+          </motion.div>
 
-            <motion.div
-              key={`headline-${language}`}
-              className="hero-copy hero-copy-headline"
-              animate={fade}
-            >
-              {headlineLines.map((line) => (
-                <p key={line}>
-                  <HeroCopyLine>{line}</HeroCopyLine>
-                </p>
-              ))}
-            </motion.div>
+          <motion.div
+            key={`headline-${language}`}
+            className="hero-copy hero-copy-headline"
+            animate={fade}
+          >
+            {headlineLines.map((line) => (
+              <p key={line}>
+                <HeroCopyLine>{line}</HeroCopyLine>
+              </p>
+            ))}
+          </motion.div>
 
-            <motion.span
-              key={`dot-${language}`}
-              className="hero-copy-dot block h-1.5 w-1.5 rounded-full"
-              animate={fade}
-              aria-hidden
-            />
+          <motion.span
+            key={`dot-${language}`}
+            className="hero-copy-dot"
+            animate={fade}
+            aria-hidden
+          />
 
-            <motion.div
-              key={`lines-${language}`}
-              className="hero-copy hero-copy-subline"
-              animate={fade}
-            >
-              {sublineLines.map((line) => (
-                <p key={line}>
-                  <HeroCopyLine>{line}</HeroCopyLine>
-                </p>
-              ))}
-            </motion.div>
-          </div>
+          <motion.div
+            key={`lines-${language}`}
+            className="hero-copy hero-copy-subline"
+            animate={fade}
+          >
+            {sublineLines.map((line) => (
+              <p key={line}>
+                <HeroCopyLine>{line}</HeroCopyLine>
+              </p>
+            ))}
+          </motion.div>
         </div>
       </div>
 
