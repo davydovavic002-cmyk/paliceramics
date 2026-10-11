@@ -6,10 +6,13 @@ import type {
 } from "@/lib/adminTypes";
 import { pickBilingual } from "@/lib/adminTypes";
 import {
+  ceramicKindFilters,
   productCollections,
   productPieceTypes,
   type LookbookCollection,
 } from "@/lib/lookbookCollections";
+
+export { ceramicKindFilters };
 import type { Language } from "@/types";
 import { images } from "@/lib/images";
 import { resolvePublicImageUrl } from "@/lib/productImages";
@@ -106,16 +109,19 @@ export function normalizePieceType(
     fallback ?? seedPieceTypes().find((item) => item.id === pieceType.id);
 
   const rawName = pieceType.name ?? { en: "", pl: "" };
-  const name = defaults
-    ? {
-        en: rawName.en?.trim() && !looksLikeSlug(rawName.en, pieceType.id)
-          ? rawName.en
-          : defaults.name.en,
-        pl: rawName.pl?.trim() && !looksLikeSlug(rawName.pl, pieceType.id)
-          ? rawName.pl
-          : defaults.name.pl,
-      }
-    : mergeBilingual(rawName, { en: pieceType.id, pl: pieceType.id });
+  const knownKind = ceramicKindFilters.find((kind) => kind.id === pieceType.id);
+  const name = knownKind
+    ? knownKind.name
+    : defaults
+      ? {
+          en: rawName.en?.trim() && !looksLikeSlug(rawName.en, pieceType.id)
+            ? rawName.en
+            : defaults.name.en,
+          pl: rawName.pl?.trim() && !looksLikeSlug(rawName.pl, pieceType.id)
+            ? rawName.pl
+            : defaults.name.pl,
+        }
+      : mergeBilingual(rawName, { en: pieceType.id, pl: pieceType.id });
 
   return {
     id: pieceType.id,

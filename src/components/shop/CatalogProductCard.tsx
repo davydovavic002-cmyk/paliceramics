@@ -11,10 +11,13 @@ import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { appendReturnTo } from "@/lib/shopReturnTo";
 import { resolveProductReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
-import { statusLabels, t } from "@/lib/galleryContent";
+import { t } from "@/lib/galleryContent";
+import { ShopStatusBadge } from "./ShopStatusBadge";
 
 const linkFocus =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2";
+
+const soldPriceClass = "line-through opacity-60 text-stone-500";
 
 interface CatalogProductCardProps {
   product: ShopProduct;
@@ -25,18 +28,27 @@ interface CatalogProductCardProps {
   imagePriority?: boolean;
 }
 
-function cardStatusLine(
-  product: ShopProduct,
-  language: "en" | "pl",
-  out: boolean
-): string | null {
-  if (product.status === "sold") {
-    return t(statusLabels.sold, language);
-  }
-  if (out) {
-    return language === "pl" ? "Wyprzedane" : "Sold out";
-  }
-  return null;
+function CatalogPrice({
+  amount,
+  unavailable,
+  className,
+}: {
+  amount: number;
+  unavailable: boolean;
+  className: string;
+}) {
+  if (amount <= 0) return null;
+  return (
+    <p
+      className={
+        unavailable
+          ? className.replace("shop-catalog-muted", "").trim() + ` ${soldPriceClass}`
+          : className
+      }
+    >
+      {amount} PLN
+    </p>
+  );
 }
 
 export function CatalogProductCard({
@@ -51,9 +63,13 @@ export function CatalogProductCard({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const out = isOutOfStock(product);
-  const statusLine = cardStatusLine(product, language, out);
+  const sold = product.status === "sold";
+  const unavailable = sold || out;
   const unoptimizedImage = isDataImageUrl(product.image);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const hoverScale = showImageHoverScale
+    ? "[@media(hover:hover)]:group-hover:scale-[1.02]"
+    : "";
 
   const returnTo = resolveProductReturnTo(
     pathname,
@@ -74,11 +90,7 @@ export function CatalogProductCard({
       <Link
         href={productHref}
         onClick={onOpenProduct}
-        className={[
-          "group flex h-full w-full flex-col bg-transparent p-3 transition-opacity duration-300 hover:opacity-90 sm:p-4",
-          linkFocus,
-          className,
-        ].join(" ")}
+        className={["group flex h-full w-full flex-col", linkFocus, className].join(" ")}
       >
         <div
           className={[
@@ -95,18 +107,23 @@ export function CatalogProductCard({
             className={[
               "object-contain object-center p-4 sm:p-5",
               "transition-transform duration-500",
-              showImageHoverScale ? "group-hover:scale-[1.02]" : "",
+              hoverScale,
             ].join(" ")}
           />
         </div>
-        <div className="shrink-0 pt-2">
+        <div className="shrink-0 bg-transparent p-3 pt-2 transition-opacity duration-300 sm:p-4 sm:pt-2 [@media(hover:hover)]:group-hover:opacity-90">
           <p className="lookbook-ink font-display text-sm leading-snug sm:text-[15px]">
             {title}
           </p>
-          {product.pricePln > 0 ? (
-            <p className="mt-0.5 font-body text-[11px] tracking-[0.08em] shop-catalog-muted">
-              {product.pricePln} PLN
-            </p>
+          <CatalogPrice
+            amount={product.pricePln}
+            unavailable={unavailable}
+            className="mt-0.5 font-body text-[11px] tracking-[0.08em] shop-catalog-muted"
+          />
+          {unavailable ? (
+            <div className="mt-1">
+              <ShopStatusBadge status={product.status} outOfStock={out} variant="light" />
+            </div>
           ) : null}
         </div>
       </Link>
@@ -120,11 +137,7 @@ export function CatalogProductCard({
       <Link
         href={productHref}
         onClick={onOpenProduct}
-        className={[
-          "group flex h-full w-full flex-col text-left",
-          linkFocus,
-          className,
-        ].join(" ")}
+        className={["group flex h-full w-full flex-col text-left", linkFocus, className].join(" ")}
       >
         <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden sm:aspect-square">
           {!imageLoaded ? (
@@ -148,7 +161,7 @@ export function CatalogProductCard({
             className={[
               "object-contain object-center p-3 sm:p-5",
               "transition-transform duration-500 ease-out",
-              showImageHoverScale ? "group-hover:scale-[1.02]" : "",
+              hoverScale,
             ].join(" ")}
           />
         </div>
@@ -162,14 +175,14 @@ export function CatalogProductCard({
             <span className="shop-catalog-muted">{language === "pl" ? "rozmiar" : "size"}</span>{" "}
             <span>{sizeLabel}</span>
           </p>
-          <div className="mt-auto space-y-0.5 pt-1">
-            {product.pricePln > 0 ? (
-              <p className="font-body text-[12px] tabular-nums shop-catalog-muted sm:text-[13px]">
-                {product.pricePln} PLN
-              </p>
-            ) : null}
-            {statusLine ? (
-              <p className="font-body text-[11px] shop-catalog-muted">{statusLine}</p>
+          <div className="mt-auto space-y-1 pt-1">
+            <CatalogPrice
+              amount={product.pricePln}
+              unavailable={unavailable}
+              className="font-body text-[12px] tabular-nums shop-catalog-muted sm:text-[13px]"
+            />
+            {unavailable ? (
+              <ShopStatusBadge status={product.status} outOfStock={out} variant="light" />
             ) : null}
           </div>
         </div>
@@ -183,8 +196,10 @@ export function CatalogProductCard({
       onClick={onOpenProduct}
       className={[
         "group flex h-full w-full flex-col overflow-hidden bg-theme-surface/50 text-left shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[transform,box-shadow] duration-500",
+        showHoverTilt
+          ? "[@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:shadow-[0_20px_48px_rgba(0,0,0,0.22)]"
+          : "",
         linkFocus,
-        showHoverTilt ? "hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(0,0,0,0.22)]" : "",
         className,
       ].join(" ")}
     >
@@ -197,20 +212,27 @@ export function CatalogProductCard({
           sizes="(max-width:640px) 50vw, 25vw"
           className={[
             "object-cover transition-transform duration-500",
-            showImageHoverScale ? "group-hover:scale-[1.05]" : "",
+            showImageHoverScale ? "[@media(hover:hover)]:group-hover:scale-[1.05]" : "",
           ].join(" ")}
         />
       </div>
-      <div className="flex min-h-[7.25rem] flex-1 flex-col p-4 transition-colors duration-300 group-hover:bg-[color-mix(in_srgb,var(--theme-surface-accent)_12%,transparent)] sm:min-h-[7.5rem]">
-        <p className="h-3 shrink-0 font-body text-[9px] leading-none tracking-[0.18em] text-theme-muted">
+      <div className="flex min-h-[7.25rem] flex-1 flex-col p-4 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-[color-mix(in_srgb,var(--theme-surface-accent)_12%,transparent)] sm:min-h-[7.5rem]">
+        <p className="h-3 shrink-0 font-body text-[11px] leading-none tracking-[0.18em] text-theme-muted">
           {product.sku}
         </p>
         <p className="mt-1 h-[2.75rem] shrink-0 overflow-hidden font-display text-sm leading-snug text-theme sm:h-[3rem] sm:text-base">
           <span className="line-clamp-2">{title}</span>
         </p>
-        <p className="mt-auto h-5 shrink-0 pt-2 font-body text-[11px] leading-none tracking-[0.1em] text-theme-muted">
-          {product.pricePln > 0 ? `${product.pricePln} PLN` : "—"}
-        </p>
+        <div className="mt-auto shrink-0 space-y-1 pt-2">
+          <CatalogPrice
+            amount={product.pricePln}
+            unavailable={unavailable}
+            className="font-body text-[11px] leading-none tracking-[0.1em] text-theme-muted"
+          />
+          {unavailable ? (
+            <ShopStatusBadge status={product.status} outOfStock={out} variant="light" />
+          ) : null}
+        </div>
       </div>
     </Link>
   );

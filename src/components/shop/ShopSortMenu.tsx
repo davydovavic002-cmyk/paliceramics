@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-type SortKey = "collection" | "price-asc" | "price-desc" | "name";
+export type ShopSortKey = "recommended" | "newest" | "price-asc" | "price-desc";
 
 interface ShopSortMenuProps {
-  value: SortKey;
-  labels: Record<SortKey, string>;
-  options: SortKey[];
+  value: ShopSortKey;
+  labels: Record<ShopSortKey, string>;
+  options: ShopSortKey[];
   sortLabel: string;
-  onChange: (value: SortKey) => void;
+  onChange: (value: ShopSortKey) => void;
 }
 
 export function ShopSortMenu({
@@ -92,7 +92,7 @@ export function ShopSortMenu({
                   "shop-filter-touch flex w-full min-h-[44px] items-center px-4 py-2.5 text-left font-body text-sm transition-colors",
                   value === key
                     ? "lookbook-ink bg-[color-mix(in_srgb,var(--lookbook-ink)_8%,var(--lookbook-bg))]"
-                    : "shop-catalog-muted hover:bg-[color-mix(in_srgb,var(--lookbook-ink)_4%,transparent)] hover:text-[var(--lookbook-ink)]",
+                    : "shop-catalog-muted [@media(hover:hover)]:hover:bg-[color-mix(in_srgb,var(--lookbook-ink)_4%,transparent)] [@media(hover:hover)]:hover:text-[var(--lookbook-ink)]",
                 ].join(" ")}
               >
                 {labels[key]}

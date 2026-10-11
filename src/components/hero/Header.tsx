@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { siteContent } from "@/lib/content";
 import { handleSectionClick } from "@/lib/scrollToSection";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useCompactViewport } from "@/hooks/useCompactViewport";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { HeaderBrandLogo } from "@/components/hero/HeaderBrandLogo";
@@ -52,7 +53,7 @@ function NavItemLink({
   /* heroOverlay is the only transparent state, and it is coloured from CSS
      (.header-hero-overlay .header-nav-link); every other state sits on a solid bar. */
   const className = [
-    "header-nav-link group relative font-body text-[10px] font-medium uppercase tracking-[0.22em] transition-colors duration-300 sm:text-[11px]",
+    "header-nav-link group relative font-body text-[11px] font-medium uppercase tracking-[0.22em] transition-colors duration-300 sm:text-[11px]",
     heroOverlay ? "" : "text-theme-muted hover:text-theme",
     !heroOverlay && active ? "text-theme" : "",
   ].join(" ");
@@ -108,40 +109,41 @@ function NavItemLink({
 }
 
 function useMenuCategories(language: "en" | "pl") {
+  const { t, tBoth } = useSiteTexts();
   return useMemo(
     () => [
       {
         id: "shop",
-        label: language === "pl" ? "Sklep" : "Shop",
+        label: t("menu.groupShop"),
         items: [
-          { id: "collection", href: "#collection", label: { pl: "Kolekcja", en: "Collection" } },
-          { id: "shop", href: "/shop", label: { pl: "Sklep", en: "Shop" } },
+          { id: "collection", href: "#collection", label: tBoth("menu.collection") },
+          { id: "shop", href: "/shop", label: tBoth("menu.shop") },
           {
             id: "made-to-order",
             href: MADE_TO_ORDER_DETAIL_HREF,
-            label: { pl: "Na zamówienie", en: "Made to order" },
+            label: tBoth("mto.label"),
           },
         ] satisfies NavItem[],
       },
       {
         id: "studio",
-        label: language === "pl" ? "Pracownia" : "Studio",
+        label: t("menu.groupStudio"),
         items: [
-          { id: "workshops", href: "#workshops", label: { pl: "Warsztaty", en: "Workshops" } },
-          { id: "certificates", href: "#certificates", label: { pl: "Voucher", en: "Gift card" } },
+          { id: "workshops", href: "#workshops", label: tBoth("menu.workshops") },
+          { id: "certificates", href: "#certificates", label: tBoth("menu.certificates") },
         ] satisfies NavItem[],
       },
       {
         id: "info",
-        label: language === "pl" ? "Informacje" : "Info",
+        label: t("menu.groupInfo"),
         items: [
-          { id: "about", href: "#about", label: { pl: "O mnie", en: "About me" } },
-          { id: "delivery", href: "#delivery", label: { pl: "Dostawa", en: "Delivery" } },
-          { id: "contact", href: "#contact", label: { pl: "Kontakt", en: "Contact" } },
+          { id: "about", href: "#about", label: tBoth("menu.about") },
+          { id: "delivery", href: "#faq", label: tBoth("menu.delivery") },
+          { id: "contact", href: "#contact", label: tBoth("menu.contact") },
         ] satisfies NavItem[],
       },
     ],
-    [language]
+    [t, tBoth]
   );
 }
 
@@ -151,7 +153,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const compactViewport = useCompactViewport();
-  const { nav } = siteContent;
+  const { navItems } = useSiteTexts();
+  const nav = navItems(siteContent.nav);
   const menuCategories = useMenuCategories(language);
 
   /* Only the homepage starts behind the dark hero. Everywhere else the page opens on the

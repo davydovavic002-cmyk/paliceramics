@@ -58,7 +58,10 @@ export function resolveWorkshopMkFormats(
       title: format.title,
       teaser: format.teaser,
       paragraphs: format.paragraphs,
-      priceLine: format.priceLine,
+      priceLine: {
+        pl: format.priceLine.pl.replace(/\d[\d\s]*(?:[.,]\d+)?\s*(?:zł|PLN)/i, `${pricePln} zł`),
+        en: format.priceLine.en.replace(/\d[\d\s]*(?:[.,]\d+)?\s*(?:zł|PLN)/i, `${pricePln} PLN`),
+      },
       pricePln,
     };
   });

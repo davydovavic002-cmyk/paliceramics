@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProductDetailView } from "@/components/shop/ProductDetailView";
 
@@ -24,6 +25,15 @@ function ProductDetailSkeleton() {
       </div>
     </div>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ sku: string }>;
+}): Promise<Metadata> {
+  const { sku } = await params;
+  return { title: `${decodeURIComponent(sku)} — Sklep — pali ceramics` };
 }
 
 export default async function ProductPage({

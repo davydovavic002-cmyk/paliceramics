@@ -1,53 +1,32 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
-import { pickSectionCopy } from "@/lib/adminTypes";
-import { aboutHeader } from "@/lib/aboutContent";
-import { MotionReveal } from "@/components/ui/MotionReveal";
-import { AboutDecorCutouts } from "./AboutDecorCutouts";
+import { useAdminContent } from "@/hooks/useAdminContent";
+import { palinaStoryForLanguage } from "@/lib/contentResolve";
 import { PalinaStoryGallery } from "./PalinaStoryGallery";
 
 export function AboutStudioSection() {
   const { language } = useLanguage();
-  const header = pickSectionCopy(undefined, aboutHeader, language);
+  const { palinaStory } = useAdminContent();
+  const label = palinaStoryForLanguage(palinaStory, language).sectionLabel;
+  const eyebrow = language === "en" ? "About me and the brand" : "O mnie i marce";
+  const heading = language === "en" ? "About me" : "O mnie";
 
   return (
     <section
       id="about"
-      className="relative isolate scroll-mt-28 overflow-hidden bg-theme-surface text-theme transition-colors duration-700"
+      aria-label={label}
+      className="about-editorial-band relative isolate w-full scroll-mt-28 overflow-x-clip bg-transparent font-sans"
     >
-      <AboutDecorCutouts />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--theme-border)]/20 to-transparent"
-        aria-hidden
-      />
-
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: `
-            radial-gradient(ellipse 55% 45% at 82% 18%, rgba(210,190,160,0.06) 0%, transparent 55%),
-            radial-gradient(ellipse 40% 35% at 15% 75%, rgba(180,175,165,0.04) 0%, transparent 50%)
-          `,
-        }}
-        aria-hidden
-      />
-
-      <div className="section-inner relative z-10 !pb-8 !pt-6 sm:!py-12 lg:!py-16">
-        <header className="pointer-events-none mx-auto max-w-2xl text-center">
-          <MotionReveal>
-            <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">
-              {header.eyebrow}
-            </p>
-            <h2 className="mt-4 font-display text-2xl leading-tight tracking-[0.06em] text-theme sm:text-4xl lg:text-5xl">
-              {header.title}
-            </h2>
-            <p className="mt-4 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">
-              {header.subtitle}
-            </p>
-          </MotionReveal>
-        </header>
-
+      <div className="relative z-10 mt-8 flex w-full flex-col items-center justify-center px-4 text-center sm:px-6">
+        <p className="mb-3 text-center font-sans text-xs uppercase tracking-[0.25em] text-[#78716c] opacity-80 dark:text-stone-500 sm:text-sm">
+          {eyebrow}
+        </p>
+        <h2 className="mb-8 break-words text-center font-serif font-display text-4xl font-normal text-[#292524] sm:text-5xl">
+          {heading}
+        </h2>
+      </div>
+      <div className="about-bento-bleed relative z-10 w-full bg-transparent">
         <PalinaStoryGallery />
       </div>
     </section>

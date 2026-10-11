@@ -168,19 +168,6 @@ export function InboxTab() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2 admin-panel px-3 py-2">
-        <p className="text-xs text-admin-muted">
-          {server.serverMode
-            ? "Synced with studio server."
-            : "Local demo inbox until PostgreSQL is connected."}
-        </p>
-        {counts.unread > 0 ? (
-          <span className="admin-badge admin-badge-accent">
-            {counts.unread} unread
-          </span>
-        ) : null}
-      </div>
-
       <div className="admin-segmented flex flex-wrap">
         {FILTER_OPTIONS.map(({ id, label, icon: Icon }) => {
           const count = id === "all" ? counts.all : counts[id];
@@ -203,6 +190,11 @@ export function InboxTab() {
             </button>
           );
         })}
+        {counts.unread > 0 ? (
+          <span className="admin-badge admin-badge-accent ml-2 self-center">
+            {counts.unread} unread
+          </span>
+        ) : null}
       </div>
 
       {server.loading ? (
@@ -286,7 +278,10 @@ function MessageDetail({
   onConfirmVoucher: () => void;
 }) {
   const status = message.payload.status;
-  const orderedKeys = Object.keys(message.payload).sort((a, b) => {
+  const HIDDEN_KEYS = new Set(["workshopId", "slotId", "type", "status", "lang"]);
+  const orderedKeys = Object.keys(message.payload)
+    .filter((key) => !HIDDEN_KEYS.has(key))
+    .sort((a, b) => {
     const priority = [
       "recipient",
       "voucherCode",

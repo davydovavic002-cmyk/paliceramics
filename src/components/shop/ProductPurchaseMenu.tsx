@@ -231,7 +231,7 @@ export function ProductPurchaseMenu({
                   target={channel.external ? "_blank" : undefined}
                   rel={channel.external ? "noopener noreferrer" : undefined}
                   onClick={(event) => handleChannelClick(event, channel)}
-                  className="flex min-h-[44px] items-center rounded-md px-3 py-3 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)] active:opacity-80"
+                  className="flex min-h-[44px] flex-col justify-center rounded-md px-3 py-2.5 transition-colors hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)] active:opacity-80"
                 >
                   <span className="delivery-faq-ink font-body text-[13px]">{channel.label}</span>
                   {channel.sublabel ? (

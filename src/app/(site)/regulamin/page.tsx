@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { termsMeta, termsSections } from "@/lib/termsContent";
+import { useAdminContent } from "@/hooks/useAdminContent";
 
 function TermsParagraph({ text, language }: { text: string; language: "en" | "pl" }) {
   const privacyLabel = language === "pl" ? "Polityce Prywatności" : "Privacy Policy";
@@ -64,6 +64,8 @@ function TermsParagraph({ text, language }: { text: string; language: "en" | "pl
 
 export default function TermsPage() {
   const { language } = useLanguage();
+  const { legal } = useAdminContent();
+  const doc = legal.terms;
   const back = language === "pl" ? "Wróć na stronę" : "Back to site";
 
   return (
@@ -71,7 +73,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16 lg:px-16">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme"
+          className="inline-flex min-h-[44px] items-center gap-2 font-body text-[11px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
           {back}
@@ -84,18 +86,18 @@ export default function TermsPage() {
           transition={{ duration: 0.55 }}
         >
           <h1 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] tracking-[0.05em] text-theme">
-            {termsMeta.title[language]}
+            {doc.title[language]}
           </h1>
-          <p className="mt-3 font-body text-sm text-theme-muted">{termsMeta.updated[language]}</p>
+          <p className="mt-3 font-body text-sm text-theme-muted">{doc.updated[language]}</p>
           <p className="mt-6 font-body text-sm leading-relaxed text-theme-muted">
-            {termsMeta.intro[language]}
+            {doc.intro[language]}
           </p>
         </motion.header>
 
         <div className="mt-10 space-y-8">
-          {termsSections.map((section, index) => (
+          {doc.sections.map((section, index) => (
             <motion.section
-              key={section.title.en}
+              key={index}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.03 }}
@@ -104,8 +106,8 @@ export default function TermsPage() {
                 {section.title[language]}
               </h2>
               <ul className="mt-3 space-y-2">
-                {section.body[language].map((paragraph) => (
-                  <TermsParagraph key={paragraph} text={paragraph} language={language} />
+                {section.body[language].map((paragraph, pIndex) => (
+                  <TermsParagraph key={pIndex} text={paragraph} language={language} />
                 ))}
               </ul>
             </motion.section>

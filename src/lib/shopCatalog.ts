@@ -95,7 +95,7 @@ export function buildShopCatalog(
         pieceTypeId: product.pieceTypeId ?? getProductPieceTypeId(product.id),
         status: product.status,
         stock: product.stock,
-        pricePln: product.pricePln,
+        pricePln: product.pricePln > 0 ? product.pricePln : (gallery?.pricePln ?? 0),
         image,
         images: galleryImages,
         description,

@@ -12,19 +12,18 @@ import {
   getCollectionLabelFromList,
 } from "@/lib/catalogConfig";
 import { pickBilingual } from "@/lib/adminTypes";
-import { madeToOrderCollection } from "@/lib/lookbookCollections";
-import { sortProductsByCollectionName } from "@/lib/lookbookCollections";
+import { ceramicKindFilters, madeToOrderCollection } from "@/lib/lookbookCollections";
 import { MADE_TO_ORDER_CATEGORY_ID } from "@/lib/customOrderContent";
 import { CatalogGridSkeleton } from "./CatalogGridSkeleton";
 import { CatalogProductCard } from "./CatalogProductCard";
 import { CustomOrderCatalogCard } from "./CustomOrderCatalogCard";
-import { ShopSortMenu } from "./ShopSortMenu";
+import { ShopSortMenu, type ShopSortKey } from "./ShopSortMenu";
 import { isOutOfStock, type ShopProduct } from "@/lib/shopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
 import { useShopCatalogScrollRestore } from "@/hooks/useShopCatalogScrollRestore";
 
-type SortKey = "collection" | "price-asc" | "price-desc" | "name";
+type SortKey = ShopSortKey;
 type AvailabilityFilter = "all" | "available" | "sold";
 
 const line = "border-[var(--lookbook-line)]";
@@ -46,23 +45,24 @@ function matchesAvailability(product: ShopProduct, filter: AvailabilityFilter): 
 function sortProducts(
   products: ShopProduct[],
   sort: SortKey,
-  language: "en" | "pl"
+  sourceOrder: Map<string, number>
 ) {
   const list = [...products];
+  const indexOf = (product: ShopProduct) => sourceOrder.get(product.sku) ?? 0;
   switch (sort) {
-    case "collection":
-      return sortProductsByCollectionName(list, language);
+    case "newest":
+      return list.sort((a, b) => {
+        const byOrder = indexOf(b) - indexOf(a);
+        if (byOrder !== 0) return byOrder;
+        return skuSortNumber(b.sku) - skuSortNumber(a.sku);
+      });
     case "price-asc":
       return list.sort((a, b) => a.pricePln - b.pricePln);
     case "price-desc":
       return list.sort((a, b) => b.pricePln - a.pricePln);
-    case "name":
-      return list.sort((a, b) => {
-        const diff = skuSortNumber(a.sku) - skuSortNumber(b.sku);
-        return diff !== 0 ? diff : a.sku.localeCompare(b.sku);
-      });
+    case "recommended":
     default:
-      return list;
+      return list.sort((a, b) => indexOf(a) - indexOf(b));
   }
 }
 
@@ -79,10 +79,10 @@ function parsePieceType(value: string | null, validIds: string[]): string | null
 }
 
 function parseSort(value: string | null): SortKey {
-  if (value === "price-asc" || value === "price-desc" || value === "name" || value === "collection") {
+  if (value === "newest" || value === "price-asc" || value === "price-desc") {
     return value;
   }
-  return "collection";
+  return "recommended";
 }
 
 function filterSectionIdForMode(
@@ -130,7 +130,7 @@ function ShopCatalogContent() {
 
   const [openSections, setOpenSections] = useState<Set<string>>(() => {
     const sectionId = filterSectionIdForMode(filterMode);
-    return sectionId ? new Set([sectionId]) : new Set();
+    return sectionId ? new Set([sectionId]) : new Set(["pieceType"]);
   });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const productsGridRef = useRef<HTMLDivElement>(null);
@@ -199,7 +199,7 @@ function ShopCatalogContent() {
         params.set("piece", patch.piece);
       }
 
-      if (patch.sort === null || patch.sort === "collection") {
+      if (patch.sort === null || patch.sort === "recommended") {
         params.delete("sort");
       } else if (patch.sort) {
         params.set("sort", patch.sort);
@@ -312,10 +312,10 @@ function ShopCatalogContent() {
           available: "Dostępne",
           sold: "Wyprzedane",
           sortBy: "Sortuj:",
-          sortPriceAsc: "Cena rosnąco",
-          sortPriceDesc: "Cena malejąco",
-          sortName: "Nr rosnąco",
-          sortCollection: "Kolekcja",
+          sortRecommended: "Rekomendowane",
+          sortNewest: "Najnowsze",
+          sortPriceAsc: "Cena: od najniższej",
+          sortPriceDesc: "Cena: od najwyższej",
           filters: "Filtry",
           of: "z",
           productsLabel: "produktów",
@@ -334,10 +334,10 @@ function ShopCatalogContent() {
           available: "Available",
           sold: "Sold out",
           sortBy: "Sort by:",
+          sortRecommended: "Recommended",
+          sortNewest: "Newest",
           sortPriceAsc: "Price: low to high",
           sortPriceDesc: "Price: high to low",
-          sortName: "No. low to high",
-          sortCollection: "Collection",
           filters: "Filters",
           of: "of",
           productsLabel: "products",
@@ -372,6 +372,29 @@ function ShopCatalogContent() {
     return map;
   }, [products]);
 
+  const catalogPieceTypes = useMemo(() => {
+    const byId = new Map(pieceTypes.map((type) => [type.id, type]));
+    const known = ceramicKindFilters
+      .map((kind) => {
+        const existing = byId.get(kind.id);
+        if (!existing) return null;
+        return { ...existing, name: kind.name };
+      })
+      .filter((type): type is NonNullable<typeof type> => Boolean(type));
+    const extras = pieceTypes.filter(
+      (type) => !ceramicKindFilters.some((kind) => kind.id === type.id)
+    );
+    return [...known, ...extras];
+  }, [pieceTypes]);
+
+  const sourceOrder = useMemo(() => {
+    const map = new Map<string, number>();
+    products.forEach((product, index) => {
+      map.set(product.sku, index);
+    });
+    return map;
+  }, [products]);
+
   const filtered = useMemo(() => {
     if (isMadeToOrderFilter) return [];
 
@@ -385,11 +408,7 @@ function ShopCatalogContent() {
       next = products.filter((product) => matchesAvailability(product, activeAvailability));
     }
 
-    if (sort === "collection") {
-      return sortProductsByCollectionName(next, language);
-    }
-
-    return sortProducts(next, sort, language);
+    return sortProducts(next, sort, sourceOrder);
   }, [
     products,
     activeProductCollectionId,
@@ -398,7 +417,7 @@ function ShopCatalogContent() {
     activeAvailability,
     filterMode,
     sort,
-    language,
+    sourceOrder,
   ]);
 
   const productGroups = useMemo(() => {
@@ -426,13 +445,13 @@ function ShopCatalogContent() {
   }, [activeCollectionId, collections, filterMode, isMadeToOrderFilter, language]);
 
   const sortLabels: Record<SortKey, string> = {
-    collection: copy.sortCollection,
+    recommended: copy.sortRecommended,
+    newest: copy.sortNewest,
     "price-asc": copy.sortPriceAsc,
     "price-desc": copy.sortPriceDesc,
-    name: copy.sortName,
   };
 
-  const sortOptions: SortKey[] = ["collection", "price-asc", "price-desc", "name"];
+  const sortOptions: SortKey[] = ["recommended", "newest", "price-asc", "price-desc"];
 
   const clearAllFilters = () => {
     setOpenSections(new Set());
@@ -456,7 +475,7 @@ function ShopCatalogContent() {
         : count === 1
           ? "product"
           : "products";
-    if (hasActiveFilters || sort !== "collection") {
+    if (hasActiveFilters || sort !== "recommended") {
       return `${count} ${unit}`;
     }
     return `${count} ${copy.of} ${total} ${language === "pl" ? "produktów" : "products"}`;
@@ -486,8 +505,8 @@ function ShopCatalogContent() {
     <div className="shop-catalog-page min-h-[100dvh] pt-[var(--header-offset,5.5rem)] transition-colors duration-700">
       <BackToTopButton threshold={640} />
       <div className={`border-b ${line} px-4 py-3 sm:px-6 lg:px-8`}>
-        <nav className="font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted">
-          <Link href="/" className="transition-opacity hover:opacity-75">
+        <nav className="font-body text-[11px] uppercase tracking-[0.18em] shop-catalog-muted">
+          <Link href="/" className="transition-opacity [@media(hover:hover)]:hover:opacity-75">
             {copy.home}
           </Link>
           <span className="mx-2 opacity-40">/</span>
@@ -534,7 +553,7 @@ function ShopCatalogContent() {
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="shop-filter-touch inline-flex min-h-[44px] items-center font-body text-[11px] uppercase tracking-[0.14em] shop-catalog-muted underline underline-offset-4 transition-opacity hover:opacity-75"
+                className="shop-filter-touch inline-flex min-h-[44px] items-center font-body text-[11px] uppercase tracking-[0.14em] shop-catalog-muted underline underline-offset-4 transition-opacity [@media(hover:hover)]:hover:opacity-75"
               >
                 {copy.removeAll}
               </button>
@@ -589,7 +608,7 @@ function ShopCatalogContent() {
               label={copy.allPieceTypes}
               count={products.length}
             />
-            {pieceTypes.map((pieceType) => (
+            {catalogPieceTypes.map((pieceType) => (
               <FilterOption
                 key={pieceType.id}
                 active={filterMode === "piece" && activePieceType === pieceType.id}
@@ -627,7 +646,7 @@ function ShopCatalogContent() {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 px-5 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
+        <main className="min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="hidden font-body text-sm shop-catalog-muted lg:block">{productCountLabel}</p>
             <ShopSortMenu
@@ -641,7 +660,7 @@ function ShopCatalogContent() {
 
           <div
             ref={productsGridRef}
-            className="shop-catalog-products-grid"
+            className="shop-catalog-products-grid min-h-[280px] transition-[min-height] duration-300 min-[380px]:min-h-[360px] sm:min-h-[440px] lg:min-h-[500px]"
           >
           {productGroups.length === 0 && !showCustomOrderCard ? (
             <p className="py-16 text-center font-body text-sm shop-catalog-muted">{copy.empty}</p>
@@ -715,10 +734,10 @@ export function ShopCatalogView() {
     <Suspense
       fallback={
         <div className="shop-catalog-page min-h-[calc(100svh-var(--header-offset,5.5rem))] pt-[var(--header-offset,5.5rem)]">
-          <div className="border-b border-[var(--lookbook-line)] px-5 py-3 sm:px-8 lg:px-10">
+          <div className="border-b border-[var(--lookbook-line)] px-4 py-3 sm:px-8 lg:px-10">
             <div className="h-3 w-40 animate-pulse rounded-full bg-[color-mix(in_srgb,var(--lookbook-ink)_10%,var(--lookbook-bg))]" />
           </div>
-          <div className="px-5 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
+          <div className="px-4 py-5 sm:px-8 sm:py-7 lg:px-10 lg:py-8">
             <CatalogGridSkeleton count={10} />
           </div>
         </div>
@@ -779,7 +798,7 @@ function FilterOption({
         "shop-filter-touch flex w-full min-h-[44px] items-center justify-between rounded-md px-3 py-2.5 text-left font-body text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lookbook-ink)] focus-visible:ring-offset-2",
         active
           ? "lookbook-ink bg-[color-mix(in_srgb,var(--lookbook-ink)_10%,var(--lookbook-bg))]"
-          : "shop-catalog-muted hover:text-[var(--lookbook-ink)]",
+          : "shop-catalog-muted [@media(hover:hover)]:hover:text-[var(--lookbook-ink)]",
       ].join(" ")}
     >
       <span>{label}</span>

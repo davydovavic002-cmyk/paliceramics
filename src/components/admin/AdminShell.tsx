@@ -9,7 +9,6 @@ import {
   LogOut,
   Package,
 } from "lucide-react";
-import { AdminThemeToggle } from "./AdminThemeToggle";
 import { AdminSavedToast } from "./AdminSavedToast";
 import { downloadAdminBackup } from "@/lib/adminBackup";
 
@@ -31,7 +30,7 @@ const VIEW_META: Record<
   },
   site: {
     title: "Site",
-    subtitle: "Copy, FAQ, contacts, blocks.",
+    subtitle: "Texts of the homepage blocks, in page order.",
     icon: FileText,
   },
   inbox: {
@@ -57,7 +56,6 @@ export function AdminShell({
   onViewChange,
   unreadInbox,
   onLogout,
-  onResetDemo,
   children,
 }: AdminShellProps) {
   const meta = VIEW_META[view];
@@ -127,7 +125,7 @@ export function AdminShell({
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5">
-              <div className="admin-segmented md:hidden">
+              <div className="md:hidden"><div className="admin-segmented">
                 {([...PRIMARY_NAV, "inbox"] as AdminView[]).map((id) => (
                   <button
                     key={id}
@@ -143,29 +141,14 @@ export function AdminShell({
                       : VIEW_META[id].title.split(" ")[0]}
                   </button>
                 ))}
-              </div>
-              <AdminThemeToggle />
+              </div></div>
               <button
                 type="button"
                 onClick={downloadAdminBackup}
                 className="admin-toolbar-btn hidden sm:inline-block"
+                title="Download a copy of all site data"
               >
-                Export
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Reset all demo data to defaults? Unsaved changes will be lost."
-                    )
-                  ) {
-                    onResetDemo();
-                  }
-                }}
-                className="admin-toolbar-btn hidden sm:inline-block"
-              >
-                Reset
+                Download backup
               </button>
               <button
                 type="button"

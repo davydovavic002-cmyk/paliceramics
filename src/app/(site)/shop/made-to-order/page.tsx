@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CustomOrderDetailView } from "@/components/shop/CustomOrderDetailView";
+
+export const metadata: Metadata = {
+  title: "Na zamówienie — pali ceramics",
+};
 
 export default function MadeToOrderPage() {
   return (

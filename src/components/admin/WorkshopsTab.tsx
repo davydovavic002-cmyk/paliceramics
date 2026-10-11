@@ -3,6 +3,7 @@
 import { ToggleLeft, ToggleRight } from "lucide-react";
 import { useAdminData } from "@/context/AdminDataContext";
 import type { AdminWorkshopType } from "@/lib/adminTypes";
+import { SiteTextsAdminSection } from "./SiteTextsAdminSection";
 import { WorkshopCalendarAdmin } from "./WorkshopCalendarAdmin";
 import {
   WorkshopBookingCopyAdminSection,
@@ -17,6 +18,8 @@ export function WorkshopsTab() {
     setWorkshopFormatCopy,
     workshopBookingCopy,
     setWorkshopBookingCopy,
+    siteTexts,
+    setSiteTexts,
   } = useAdminData();
 
   const updateType = (id: string, patch: Partial<AdminWorkshopType>) => {
@@ -31,6 +34,12 @@ export function WorkshopsTab() {
 
   return (
     <div className="space-y-6">
+      <p className="text-[12px] text-admin-muted">
+        Sections follow the booking block on the homepage: headings → format → date → your details.
+      </p>
+
+      <SiteTextsAdminSection group="workshops" texts={siteTexts} onChange={setSiteTexts} />
+
       <section className="admin-section p-3 sm:p-4">
         <h2 className="text-[15px] font-semibold tracking-tight text-admin-heading">Workshop types</h2>
         <p className="mt-0.5 text-[12px] text-admin-muted">
@@ -117,9 +126,10 @@ export function WorkshopsTab() {
         onChange={setWorkshopFormatCopy}
       />
 
+      <WorkshopCalendarAdmin />
+
       <WorkshopBookingCopyAdminSection copy={workshopBookingCopy} onChange={setWorkshopBookingCopy} />
 
-      <WorkshopCalendarAdmin />
     </div>
   );
 }

@@ -13,6 +13,9 @@ const themeToken = (token: string) =>
   `color-mix(in srgb, var(${token}) calc(<alpha-value> * 100%), transparent)`;
 
 const config: Config = {
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {

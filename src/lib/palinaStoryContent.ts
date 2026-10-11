@@ -1,5 +1,11 @@
 import type { Language } from "@/types";
 
+/**
+ * Text fields support **bold** inline (rendered by PalinaStoryGallery).
+ * Block 1: lead (heading) + origin
+ * Block 2: brand + workshops (workshops opens with a bold sentence)
+ * Block 3: craft (opens with a bold sentence) + closing
+ */
 export type PalinaStoryCopy = {
   lead: string;
   origin: string;
@@ -13,46 +19,47 @@ export const palinaStoryCopy: Record<Language, PalinaStoryCopy> = {
   pl: {
     lead: "Mam na imię Palina i jestem twórczynią marki Pali Pali.",
     origin:
-      "Ceramika zaczęła się w 2021 — szukałam chwili spokoju i oderwania od pośpiechu. Przy kole odkryłam skupienie, uważność i radość tworzenia własnymi rękami.",
+      "Moja przygoda z ceramiką zaczęła się w 2021 roku, kiedy szukałam w swoim życiu chwili spokoju i sposobu na oderwanie się od codziennego pośpiechu. Wtedy po raz pierwszy usiadłam przy kole garncarskim i odkryłam, ile daje mi praca z gliną — skupienie, uważność i radość tworzenia własnymi rękami.",
     brand:
-      "W 2023 glina stała się częścią życia, w 2025 odeszłam z korporacji i stworzyłam markę. Wierzę, że kreatywność jest w każdym z nas — czasem trzeba tylko przestrzeni.",
+      "W 2023 roku ceramika stała się nieodłączną częścią mojego życia, a w 2025 roku podjęłam decyzję o odejściu z wieloletniej pracy w korporacji i stworzeniu własnej marki.",
     workshops:
-      "Przez warsztaty daję innym miejsce na eksperyment, zwolnienie tempa i radość z tworzenia.",
+      "**Głęboko wierzę, że kreatywność jest częścią każdego z nas.** Czasem potrzebujemy tylko odpowiedniej przestrzeni i chwili, żeby ją odkryć. Dlatego poprzez moje warsztaty chcę dawać innym przestrzeń do eksperymentowania, zwolnienia tempa i odkrycia na nowo radości płynącej z tworzenia.",
     craft:
-      "Każdy przedmiot powstaje ręcznie na kole. Inspiruję się prostotą, naturą i japońską estetyką — rzeczami, które kształtują codzienne rytuały.",
+      "**Każdy przedmiot, który tworzę, powstaje ręcznie na kole garncarskim.** Inspiruję się prostotą, naturą i japońską estetyką. Wierzę, że rzeczy, którymi otaczamy się każdego dnia, mają znaczenie — wpływają na nasze rytuały, nastrój i sposób, w jaki przeżywamy zwyczajne chwile.",
     closing:
-      "Tworzę naczynia, które zachęcają do zatrzymania się i zauważenia piękna w prostych chwilach.",
+      "Staram się tworzyć przedmioty, które towarzyszą codzienności i zachęcają do zatrzymania się — do zauważania piękna w prostych rzeczach.",
   },
+  // EN: working translation of the PL text — to be confirmed with the client.
   en: {
     lead: "My name is Palina, and I am the maker behind Pali Pali.",
     origin:
-      "Ceramics began in 2021 — I was looking for calm away from the rush. At the wheel I found focus, mindfulness, and the joy of making with my hands.",
+      "My adventure with ceramics began in 2021, when I was looking for a moment of calm and a way to step away from the daily rush. That was when I first sat down at the pottery wheel and discovered what working with clay gives me — focus, mindfulness, and the joy of making with my own hands.",
     brand:
-      "By 2023 clay was part of my life; in 2025 I left corporate work and built the brand. I believe creativity lives in all of us — we only need space.",
+      "In 2023 ceramics became an inseparable part of my life, and in 2025 I decided to leave many years of corporate work and create a brand of my own.",
     workshops:
-      "Through workshops I offer room to experiment, slow down, and reconnect with the joy of making.",
+      "**I deeply believe that creativity is part of each of us.** Sometimes we only need the right space and a moment to discover it. That is why, through my workshops, I want to give others room to experiment, slow down, and rediscover the joy of making.",
     craft:
-      "Every piece is wheel-thrown by me, inspired by simplicity, nature, and Japanese aesthetics — objects that shape everyday rituals.",
+      "**Every piece I make is wheel-thrown by hand.** I am inspired by simplicity, nature, and Japanese aesthetics. I believe the things we surround ourselves with every day matter — they shape our rituals, our mood, and the way we live ordinary moments.",
     closing:
-      "I make vessels that invite us to pause and notice beauty in simple things.",
+      "I try to make pieces that accompany everyday life and invite us to pause — to notice beauty in simple things.",
   },
 };
 
 export const palinaStoryImages = {
   japan: {
-    src: "/images/about/palina-japan.webp",
+    src: "/images/about/palina-japan.png",
     alt: { pl: "Palina w japońskim ogrodzie", en: "Palina in a Japanese courtyard" },
   },
   wheel: {
-    src: "/images/about/palina-wheel.webp",
+    src: "/images/about/palina-wheel.png",
     alt: { pl: "Palina przy kole garncarskim", en: "Palina at the pottery wheel" },
   },
   glaze: {
-    src: "/images/about/palina-glaze.webp",
+    src: "/images/about/palina-glaze.png",
     alt: { pl: "Szkliwione naczynia", en: "Glazed ceramics" },
   },
   studio: {
-    src: "/images/about/palina-studio.webp",
+    src: "/images/about/palina-studio.png",
     alt: { pl: "Pracownia — koło garncarskie", en: "Studio pottery wheel" },
   },
 } as const;

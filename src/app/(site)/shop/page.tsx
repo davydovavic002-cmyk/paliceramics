@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
 const ShopCatalogView = dynamic(
@@ -8,6 +9,10 @@ const ShopCatalogView = dynamic(
     ),
   }
 );
+
+export const metadata: Metadata = {
+  title: "Sklep — pali ceramics",
+};
 
 export default function ShopPage() {
   return <ShopCatalogView />;

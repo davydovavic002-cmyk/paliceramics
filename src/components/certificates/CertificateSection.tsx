@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Mail } from "lucide-react";
+import { Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFormKeyboardScroll } from "@/hooks/useFormKeyboardScroll";
 import { useAdminContent } from "@/hooks/useAdminContent";
@@ -20,7 +20,6 @@ import { CertificatePreview, CertificateTypePicker } from "./CertificatePreview"
 import { ConsentField } from "@/components/site/ConsentField";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 
-import { brandRectButtonClass } from "@/components/ui/BrandRectButton";
 import { useFormDraft } from "@/hooks/useFormDraft";
 
 const initialCertificateDraft: CertificateDraft = {
@@ -30,9 +29,11 @@ const initialCertificateDraft: CertificateDraft = {
   participantCount: 1,
 };
 
-/* square corners to match the type picker, participant toggles and submit button */
 const inputClass =
-  "w-full rounded-none border border-theme/20 bg-theme-elevated/50 px-4 py-2 font-body text-sm text-theme outline-none transition-colors focus:border-[#010a8b]";
+  "min-h-[44px] w-full rounded-full border border-theme/20 bg-theme-elevated/50 px-5 py-2.5 font-body text-base text-theme outline-none transition-colors focus:border-[#010a8b]";
+
+const submitClass =
+  "certificate-submit-btn inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[#010a8b] bg-[#010a8b] px-5 py-2.5 font-display text-[11px] uppercase tracking-[0.12em] text-[#ede8df] transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 disabled:opacity-50 sm:text-[11px]";
 
 export function CertificateSection() {
   const { language } = useLanguage();
@@ -147,7 +148,7 @@ export function CertificateSection() {
         aria-hidden
       />
 
-      <div className="section-inner !pt-8 sm:!pt-9 lg:!pt-10">
+      <div className="section-inner !pt-5 sm:!pt-6 lg:!pt-6">
         <header className="mx-auto max-w-2xl text-center">
           <MotionReveal>
             <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">
@@ -162,13 +163,18 @@ export function CertificateSection() {
           </MotionReveal>
         </header>
 
-        <div className="mx-auto mt-6 flex max-w-3xl gap-2.5 rounded-xl border border-[color-mix(in_srgb,var(--theme-accent)_20%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_35%,transparent)] px-3.5 py-2.5 lg:max-w-none">
-          <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-theme-muted" strokeWidth={1.5} />
-          <p className="font-body text-[11px] leading-snug text-theme-muted">{copy.flowNote}</p>
+        <div
+          role="note"
+          className="mx-auto mt-6 flex max-w-3xl items-start gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--theme-accent)_34%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_62%,transparent)] px-5 py-4 sm:px-6 sm:py-5"
+        >
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#010a8b]" strokeWidth={1.75} aria-hidden />
+          <p className="min-w-0 font-body text-base leading-relaxed text-theme sm:text-[17px]">
+            {copy.flowNote}
+          </p>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
-          <div className="certificate-preview-lazy mx-auto w-full max-w-[22rem] shrink-0 sm:max-w-[24rem] lg:mx-0 lg:max-w-[25rem] xl:max-w-[27rem]">
+        <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-center lg:gap-10 xl:gap-12">
+          <div className="certificate-preview-lazy mx-auto w-full min-w-0 shrink-0 lg:mx-0 lg:max-w-[38rem] xl:max-w-[44rem]">
             <CertificatePreview draft={draft} />
           </div>
 
@@ -196,7 +202,7 @@ export function CertificateSection() {
                 className="form-keyboard-safe space-y-3.5 pb-2"
               >
                 <div className="min-h-[6.75rem]">
-                  <p className="mb-1.5 font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <p className="mb-1.5 font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.typeLabel}
                   </p>
                   <CertificateTypePicker
@@ -207,7 +213,7 @@ export function CertificateSection() {
                 </div>
 
                 <div>
-                  <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <span className="mb-1 block font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.participants}
                   </span>
                   <div className="flex gap-2">
@@ -217,10 +223,10 @@ export function CertificateSection() {
                         type="button"
                         onClick={() => setDraft((prev) => ({ ...prev, participantCount: count }))}
                         className={[
-                          "flex-1 min-h-[44px] px-4 py-2.5 font-body text-[10px] tracking-[0.14em] transition-colors sm:text-[11px]",
+                          "certificate-chip flex-1 min-h-[44px] rounded-full px-4 py-2.5 font-body text-[11px] tracking-[0.14em] transition-colors sm:text-[11px]",
                           draft.participantCount === count
-                            ? "border border-[#010a8b] bg-[#010a8b] text-[#ede8df]"
-                            : "border border-[color-mix(in_srgb,#010a8b_35%,transparent)] bg-transparent text-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]",
+                            ? "certificate-chip--on border border-[#010a8b] bg-[#010a8b] text-[#ede8df]"
+                            : "border border-[color-mix(in_srgb,#010a8b_35%,transparent)] bg-transparent text-[#010a8b]",
                         ].join(" ")}
                       >
                         {count === 1 ? copy.onePerson : copy.twoPeople}
@@ -244,7 +250,7 @@ export function CertificateSection() {
                 </div>
 
                 <label className="block">
-                  <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <span className="mb-1 block font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.recipient}
                   </span>
                   <input
@@ -257,7 +263,7 @@ export function CertificateSection() {
                 </label>
 
                 <label className="block">
-                  <span className="mb-1 block font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <span className="mb-1 block font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {copy.buyerEmail}
                   </span>
                   <input
@@ -277,7 +283,7 @@ export function CertificateSection() {
 
                 <div className="space-y-2 pt-1">
                   {error ? <p className="text-xs text-red-400/90">{error}</p> : null}
-                  <button type="submit" disabled={submitting} className={`w-full ${brandRectButtonClass(true)}`}>
+                  <button type="submit" disabled={submitting} className={submitClass}>
                     {copy.submit}
                   </button>
                 </div>

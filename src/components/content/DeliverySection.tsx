@@ -4,66 +4,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-
-const headerCopy = {
-  eyebrow: { en: "Before you come", pl: "Przed wizytą" },
-  subtitle: {
-    en: "Stoneware travels carefully — essentials before you write or visit.",
-    pl: "Kamionina podróżuje ostrożnie — najważniejsze przed kontaktem.",
-  },
-  deliveryTitle: { en: "Pickup & shipping", pl: "Odbiór i wysyłka" },
-  deliveryLabel: { en: "How it reaches you", pl: "Jak trafia do ciebie" },
-  faqTitle: { en: "Questions & answers", pl: "Pytania i odpowiedzi" },
-  faqLabel: { en: "Common questions", pl: "Najczęstsze pytania" },
-};
-
-function BeigePanel({
-  label,
-  children,
-  id,
-}: {
-  label: string;
-  children: React.ReactNode;
-  id?: string;
-}) {
-  return (
-    <div
-      id={id}
-      className="delivery-faq-panel flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-[color-mix(in_srgb,var(--theme-border)_14%,transparent)] lg:min-h-[28rem]"
-    >
-      <div className="border-b border-[var(--delivery-faq-line)] px-6 py-4">
-        <p className="delivery-faq-ink font-body text-[10px] uppercase tracking-[0.28em]">{label}</p>
-      </div>
-      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-    </div>
-  );
-}
-
-function DeliveryRow({
-  num,
-  title,
-  body,
-  bordered,
-}: {
-  num: string;
-  title: string;
-  body: string;
-  bordered?: boolean;
-}) {
-  return (
-    <div className={bordered ? "delivery-faq-split-b" : undefined}>
-      <div className="px-6 py-6 sm:px-7 sm:py-7">
-        <p className="delivery-faq-muted font-body text-[10px] uppercase tracking-[0.28em]">{num}</p>
-        <h3 className="delivery-faq-ink mt-3 font-display text-[clamp(1.05rem,1.8vw,1.35rem)] leading-snug tracking-[0.04em]">
-          {title}
-        </h3>
-        <p className="delivery-faq-muted mt-3 font-body text-sm leading-relaxed">{body}</p>
-      </div>
-    </div>
-  );
-}
 
 function FaqPanel({
   items,
@@ -100,13 +43,13 @@ function FaqPanel({
               tabIndex={selected ? 0 : -1}
               onClick={() => onSelect(item.id)}
               className={[
-                "delivery-faq-split-b flex w-full gap-3 px-6 py-4 text-left transition-colors sm:px-5 sm:py-[1.125rem]",
-                selected ? "delivery-faq-active bg-white/70" : "hover:bg-white/35",
+                "delivery-faq-tab delivery-faq-split-b flex w-full min-h-[44px] gap-3 px-4 py-4 text-left transition-colors sm:px-5 sm:py-[1.125rem]",
+                selected ? "delivery-faq-active bg-white/70" : "",
               ].join(" ")}
             >
               <span
                 className={[
-                  "delivery-faq-muted shrink-0 font-body text-[10px] uppercase tracking-[0.24em]",
+                  "delivery-faq-muted shrink-0 font-body text-[11px] uppercase tracking-[0.24em]",
                   selected ? "delivery-faq-ink" : "",
                 ].join(" ")}
               >
@@ -146,7 +89,7 @@ function FaqPanel({
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 aria-hidden={!selected}
               >
-                <p className="delivery-faq-muted font-body text-[10px] uppercase tracking-[0.24em]">
+                <p className="delivery-faq-muted font-body text-[11px] uppercase tracking-[0.24em]">
                   {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
                 </p>
                 <h3 className="delivery-faq-ink mt-3 font-display text-[clamp(1.05rem,1.8vw,1.35rem)] leading-snug tracking-[0.04em]">
@@ -166,17 +109,14 @@ function FaqPanel({
 
 export function DeliverySection() {
   const { language } = useLanguage();
+  const { t } = useSiteTexts();
   const content = useSiteContent();
   const [activeFaqId, setActiveFaqId] = useState<string | null>(null);
 
-  const { delivery, faq } = content;
+  const { faq } = content;
   const header = {
-    eyebrow: pickBilingual(undefined, headerCopy.eyebrow, language),
-    subtitle: pickBilingual(undefined, headerCopy.subtitle, language),
-    deliveryTitle: pickBilingual(undefined, headerCopy.deliveryTitle, language),
-    deliveryLabel: pickBilingual(undefined, headerCopy.deliveryLabel, language),
-    faqTitle: pickBilingual(undefined, headerCopy.faqTitle, language),
-    faqLabel: pickBilingual(undefined, headerCopy.faqLabel, language),
+    faqTitle: t("faq.title"),
+    faqLabel: t("faq.label"),
   };
 
   const faqItems = faq.map((item) => ({
@@ -189,74 +129,34 @@ export function DeliverySection() {
 
   return (
     <section
-      id="delivery"
-      className="relative isolate scroll-mt-[var(--header-offset,5.5rem)] bg-theme-surface text-theme transition-colors duration-700"
+      id="faq"
+      className="relative isolate scroll-mt-[var(--header-offset,5.5rem)] bg-transparent text-theme transition-colors duration-700"
     >
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--theme-border)]/20 to-transparent"
+        id="delivery"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px scroll-mt-[var(--header-offset,5.5rem)]"
         aria-hidden
       />
 
-      <div className="section-inner-wide">
-        <header className="mx-auto max-w-2xl text-center">
-          <MotionReveal>
-            <p className="font-body text-[11px] uppercase tracking-[0.32em] text-theme-muted">
-              {header.eyebrow}
+      <div className="section-inner">
+        <MotionReveal>
+          <header className="mx-auto max-w-2xl text-center">
+            <p className="mb-3 text-center font-sans text-xs uppercase tracking-[0.25em] text-[#78716c] opacity-80 dark:text-stone-500 sm:text-sm">
+              {header.faqLabel}
             </p>
-            <p className="mt-4 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">
-              {header.subtitle}
-            </p>
-          </MotionReveal>
-        </header>
-
-        <MotionReveal className="delivery-split-grid mt-10 lg:mt-12">
-          <h2 className="delivery-split-grid__title delivery-split-grid__title--delivery min-h-[2.75rem] font-display text-[clamp(1.35rem,2.5vw,1.85rem)] leading-tight tracking-[0.06em] text-theme">
-            {header.deliveryTitle}
-          </h2>
-          {faqItems.length > 0 ? (
-            <h2 className="delivery-split-grid__title delivery-split-grid__title--faq min-h-[2.75rem] font-display text-[clamp(1.35rem,2.5vw,1.85rem)] leading-tight tracking-[0.06em] text-theme">
+            <h2 className="mb-6 break-words text-center font-display text-4xl font-normal text-[#292524] sm:mb-8 sm:text-5xl">
               {header.faqTitle}
             </h2>
-          ) : null}
-
-          <div className="delivery-split-grid__panel delivery-split-grid__panel--delivery flex min-w-0 flex-col">
-            <BeigePanel label={header.deliveryLabel}>
-              <DeliveryRow
-                num="01"
-                title={pickBilingual(delivery.pickupTitle, delivery.pickupTitle, language)}
-                body={pickBilingual(delivery.pickupBody, delivery.pickupBody, language)}
-                bordered
-              />
-              <DeliveryRow
-                num="02"
-                title={pickBilingual(delivery.shippingTitle, delivery.shippingTitle, language)}
-                body={pickBilingual(delivery.shippingBody, delivery.shippingBody, language)}
-                bordered
-              />
-              <DeliveryRow
-                num="03"
-                title={pickBilingual(
-                  delivery.internationalTitle,
-                  delivery.internationalTitle,
-                  language
-                )}
-                body={pickBilingual(
-                  delivery.internationalBody,
-                  delivery.internationalBody,
-                  language
-                )}
-              />
-            </BeigePanel>
-          </div>
-
-          {faqItems.length > 0 ? (
-            <div className="delivery-split-grid__panel delivery-split-grid__panel--faq flex min-w-0 flex-col" id="faq">
-              <BeigePanel label={header.faqLabel}>
-                <FaqPanel items={faqItems} activeId={activeFaq} onSelect={setActiveFaqId} />
-              </BeigePanel>
-            </div>
-          ) : null}
+          </header>
         </MotionReveal>
+
+        {faqItems.length > 0 ? (
+          <MotionReveal>
+            <div className="delivery-faq-panel flex w-full flex-col overflow-hidden rounded-[1.75rem] border border-[color-mix(in_srgb,var(--theme-border)_14%,transparent)]">
+              <FaqPanel items={faqItems} activeId={activeFaq} onSelect={setActiveFaqId} />
+            </div>
+          </MotionReveal>
+        ) : null}
       </div>
     </section>
   );

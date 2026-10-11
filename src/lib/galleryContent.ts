@@ -125,6 +125,8 @@ export const galleryItems: GalleryItem[] = [
       firing: { en: "Cone 10 · 1,285°C", pl: "Cone 10 · 1 285°C" },
       dimensions: { en: "Ø 8 cm · H 7 cm (×2)", pl: "Ø 8 cm · W 7 cm (×2)" },
     },
+    pricePln: 420,
+    priceUsd: 108,
   },
   {
     id: "004",
@@ -189,6 +191,8 @@ export const galleryItems: GalleryItem[] = [
       firing: { en: "Cone 10 · 1,285°C", pl: "Cone 10 · 1 285°C" },
       dimensions: { en: "Ø 10 cm · H 15 cm", pl: "Ø 10 cm · W 15 cm" },
     },
+    pricePln: 540,
+    priceUsd: 139,
   },
 ];
 

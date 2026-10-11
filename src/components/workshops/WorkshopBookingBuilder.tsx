@@ -243,17 +243,17 @@ export function WorkshopBookingBuilder() {
 
   const cardClass = (selected: boolean) =>
     [
-      "relative z-[1] cursor-pointer rounded-xl border p-4 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:p-[1.125rem]",
+      "relative z-[1] min-h-[44px] cursor-pointer rounded-xl border px-4 py-3 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:px-[1.125rem] sm:py-3.5",
       selected
         ? "border-[color-mix(in_srgb,var(--theme-accent)_40%,transparent)] bg-white shadow-[0_10px_28px_rgba(1,10,139,0.07)]"
-        : "border-[color-mix(in_srgb,var(--theme-border)_12%,transparent)] bg-white hover:border-[color-mix(in_srgb,var(--theme-border)_22%,transparent)]",
+        : "workshop-format-card border-[color-mix(in_srgb,var(--theme-border)_12%,transparent)] bg-white",
     ].join(" ");
 
   const btnPrimary =
-    "relative z-[1] cursor-pointer rounded-full border-2 border-[color-mix(in_srgb,var(--theme-accent)_50%,transparent)] bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.22em] text-theme transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35";
+    "relative z-[1] min-h-[44px] cursor-pointer rounded-full border-2 border-[color-mix(in_srgb,var(--theme-accent)_50%,transparent)] bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.22em] text-theme transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35";
 
   const btnSecondary =
-    "relative z-[1] cursor-pointer rounded-full border-2 border-theme/25 bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:border-theme/40";
+    "relative z-[1] min-h-[44px] cursor-pointer rounded-full border-2 border-theme/25 bg-white px-5 py-3.5 font-body text-[11px] uppercase tracking-[0.2em] text-theme-muted transition-colors hover:border-theme/40";
 
   const stepTitles = [copy.step1, copy.step2, copy.step3];
 
@@ -332,7 +332,7 @@ export function WorkshopBookingBuilder() {
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="mb-2 font-body text-[10px] uppercase tracking-[0.28em] text-theme-muted">
+            <p className="mb-2 font-body text-[11px] uppercase tracking-[0.28em] text-theme-muted">
               {copy.step1}
             </p>
             <h3 className="font-display text-xl tracking-[0.04em] text-theme sm:text-2xl">
@@ -354,7 +354,7 @@ export function WorkshopBookingBuilder() {
                       {mkFormat?.title[language] ??
                         pickBilingual(item.label, item.label, language)}
                     </p>
-                    <p className="mt-1 font-body text-xs leading-snug text-theme-muted">
+                    <p className="mt-1 font-body text-sm leading-relaxed text-theme-muted">
                       {mkFormat?.teaser[language] ??
                         pickBilingual(item.description, item.description, language)}
                     </p>
@@ -383,7 +383,7 @@ export function WorkshopBookingBuilder() {
                   className="overflow-hidden"
                 >
                   <div className="pt-3">
-                    <WorkshopFormatDetailsPanel format={selectedMkFormat} variant="balanced" />
+                    <WorkshopFormatDetailsPanel format={selectedMkFormat} />
                   </div>
                 </motion.div>
               ) : null}
@@ -408,7 +408,7 @@ export function WorkshopBookingBuilder() {
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="mb-2 font-body text-[10px] uppercase tracking-[0.28em] text-theme-muted">
+            <p className="mb-2 font-body text-[11px] uppercase tracking-[0.28em] text-theme-muted">
               {copy.step2}
             </p>
             <h3 className="font-display text-xl tracking-[0.04em] text-theme sm:text-2xl">
@@ -430,7 +430,7 @@ export function WorkshopBookingBuilder() {
                       {slot.day}, {slot.date}
                     </p>
                     <p className="mt-1 font-body text-sm text-theme-muted">{slot.time}</p>
-                    <p className="mt-2 font-body text-[10px] uppercase tracking-[0.14em] text-theme-muted">
+                    <p className="mt-2 font-body text-[11px] uppercase tracking-[0.14em] text-theme-muted">
                       {slot.spots} {copy.spots}
                     </p>
                   </button>
@@ -462,7 +462,7 @@ export function WorkshopBookingBuilder() {
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="mb-2 font-body text-[10px] uppercase tracking-[0.28em] text-theme-muted">
+            <p className="mb-2 font-body text-[11px] uppercase tracking-[0.28em] text-theme-muted">
               {copy.step3}
             </p>
             <h3 className="font-display text-xl tracking-[0.04em] text-theme sm:text-2xl">
@@ -470,13 +470,13 @@ export function WorkshopBookingBuilder() {
             </h3>
 
             <div className="mt-6 rounded-[2px] border border-theme/15 bg-white p-6">
-              <p className="font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+              <p className="font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                 {copy.summary}
               </p>
               {selectedType && selectedSlot ? (
                 <dl className="mt-4 space-y-3 text-sm">
                   <div>
-                    <dt className="text-[10px] uppercase tracking-[0.18em] text-theme-muted">
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-theme-muted">
                       {language === "pl" ? "Warsztat" : "Workshop"}
                     </dt>
                     <dd className="mt-1 font-display text-lg text-theme">
@@ -484,7 +484,7 @@ export function WorkshopBookingBuilder() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-[0.18em] text-theme-muted">
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-theme-muted">
                       {language === "pl" ? "Termin" : "Date"}
                     </dt>
                     <dd className="mt-1 font-body text-theme">
@@ -492,7 +492,7 @@ export function WorkshopBookingBuilder() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-[0.18em] text-theme-muted">
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-theme-muted">
                       PLN
                     </dt>
                     <dd className="mt-1 font-body text-theme">{selectedType.pricePln} PLN</dd>
@@ -515,21 +515,21 @@ export function WorkshopBookingBuilder() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={copy.name}
-                  className="w-full rounded-[2px] border border-theme/25 bg-white px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
+                  className="min-h-[44px] w-full rounded-full border border-theme/25 bg-white px-5 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
                 />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={copy.emailLabel}
-                  className="w-full rounded-[2px] border border-theme/25 bg-white px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
+                  className="min-h-[44px] w-full rounded-full border border-theme/25 bg-white px-5 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
                 />
-                <label className="flex cursor-pointer items-start gap-3 rounded-[2px] border border-theme/15 bg-white/80 px-3 py-3">
+                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-theme/15 bg-white/80 px-3 py-3">
                   <input
                     type="checkbox"
                     checked={hasVoucher}
                     onChange={(e) => setHasVoucher(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--theme-accent)]"
+                    className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--theme-accent)]"
                   />
                   <span className="font-body text-sm leading-snug text-theme">{copy.hasVoucher}</span>
                 </label>
@@ -539,9 +539,9 @@ export function WorkshopBookingBuilder() {
                       value={voucherNumber}
                       onChange={(e) => setVoucherNumber(e.target.value)}
                       placeholder={copy.voucherNumber}
-                      className="w-full rounded-[2px] border border-theme/25 bg-white px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
+                      className="min-h-[44px] w-full rounded-full border border-theme/25 bg-white px-5 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
                     />
-                    <p className="font-body text-xs leading-relaxed text-theme-muted">{copy.voucherBring}</p>
+                    <p className="font-body text-sm leading-relaxed text-theme-muted">{copy.voucherBring}</p>
                   </div>
                 ) : null}
                 <ConsentField checked={consent} onChange={setConsent} purpose="booking" />

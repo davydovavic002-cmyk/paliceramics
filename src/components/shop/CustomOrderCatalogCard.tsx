@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useLanguage } from "@/context/LanguageContext";
-import { pickBilingual } from "@/lib/adminTypes";
 import {
   customOrderCatalogCard,
   MADE_TO_ORDER_DETAIL_HREF,
@@ -21,13 +21,10 @@ export function CustomOrderCatalogCard() {
   const searchParams = useSearchParams();
   const returnTo = buildCurrentReturnTo(pathname, searchParams.toString());
   const href = appendReturnTo(MADE_TO_ORDER_DETAIL_HREF, returnTo);
-  const title = pickBilingual(customOrderCatalogCard.title, customOrderCatalogCard.title, language);
-  const subtitle = pickBilingual(
-    customOrderCatalogCard.subtitle,
-    customOrderCatalogCard.subtitle,
-    language
-  );
-  const priceLabel = language === "pl" ? "od 400 zł" : "from 400 PLN";
+  const { t } = useSiteTexts();
+  const title = t("mto.label");
+  const subtitle = t("mto.cardSubtitle");
+  const priceLabel = t("mto.stripPrice");
   const noLabel = "no";
   const sizePrefix = "size";
   const skuLabel = language === "pl" ? "ZAMÓW" : "CUSTOM";

@@ -1,5 +1,6 @@
 "use client";
 
+import type { AdminLegal, AdminSiteTexts } from "@/lib/siteTexts";
 import {
   createContext,
   useCallback,
@@ -95,6 +96,10 @@ interface AdminDataContextValue {
   setVoucherContent: (next: AdminVoucherContent) => void;
   workshopBookingCopy: AdminWorkshopBookingCopy;
   setWorkshopBookingCopy: (next: AdminWorkshopBookingCopy) => void;
+  siteTexts: AdminSiteTexts;
+  setSiteTexts: (next: AdminSiteTexts) => void;
+  legal: AdminLegal;
+  setLegal: (next: AdminLegal) => void;
   resetAll: () => void;
 }
 
@@ -468,6 +473,20 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       [flashSaved]
     );
 
+  const setSiteTexts = useCallback(
+    (next: AdminSiteTexts) => {
+      patchData((prev) => ({ ...prev, siteTexts: next }));
+    },
+    [patchData]
+  );
+
+  const setLegal = useCallback(
+    (next: AdminLegal) => {
+      patchData((prev) => ({ ...prev, legal: next }));
+    },
+    [patchData]
+  );
+
   const setPalinaStory = useCallback(
     (next: AdminPalinaStory) => {
       patchData((prev) => ({ ...prev, palinaStory: next }));
@@ -546,6 +565,10 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       setVoucherContent,
       workshopBookingCopy: data.workshopBookingCopy,
       setWorkshopBookingCopy,
+      siteTexts: data.siteTexts,
+      setSiteTexts,
+      legal: data.legal,
+      setLegal,
       resetAll,
     }),
     [
@@ -581,6 +604,8 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       setWorkshopFormatCopy,
       setVoucherContent,
       setWorkshopBookingCopy,
+      setSiteTexts,
+      setLegal,
       resetAll,
     ]
   );

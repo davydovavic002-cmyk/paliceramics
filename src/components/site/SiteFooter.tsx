@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { siteContent } from "@/lib/content";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { handleSectionClick } from "@/lib/scrollToSection";
 
@@ -95,42 +96,22 @@ export function SiteFooter() {
   const { language } = useLanguage();
   const content = useSiteContent();
 
-  const copy =
-    language === "pl"
-      ? {
-          studioTitle: "Z pracowni",
-          studioTagline:
-            "Powoli, jak w piecu — nowe prace, otwarte studio i notatki prosto z koła.",
-          studioCta: "Śledź na Instagramie",
-          mission:
-            "Kamionina toczone na kole dla niespiesznych kuchni. Ceny z VAT, bez kosztów wysyłki.",
-          menu: "Menu",
-          info: "Informacje",
-          contact: "Kontakt",
-          privacy: "Polityka prywatności",
-          terms: "Regulamin sklepu",
-          rights: "© Pali Ceramics · Warszawa",
-          instagram: "Instagram",
-          facebook: "Facebook",
-          email: "E-mail",
-        }
-      : {
-          studioTitle: "From the studio",
-          studioTagline:
-            "Slow as the kiln — new pieces, open-studio dates, and wheel-side notes.",
-          studioCta: "Follow on Instagram",
-          mission:
-            "Small-batch wheel stoneware for unhurried kitchens. All prices incl. VAT excl. shipping.",
-          menu: "Menu",
-          info: "Information",
-          contact: "Contact",
-          privacy: "Privacy policy",
-          terms: "Shop terms",
-          rights: "© Pali Ceramics · Warsaw",
-          instagram: "Instagram",
-          facebook: "Facebook",
-          email: "Email",
-        };
+  const { t, navItems } = useSiteTexts();
+  const copy = {
+    studioTitle: t("footer.studioTitle"),
+    studioTagline: t("footer.studioTagline"),
+    studioCta: t("footer.studioCta"),
+    mission: t("footer.mission"),
+    menu: t("footer.menu"),
+    info: t("footer.info"),
+    contact: t("menu.contact"),
+    privacy: t("footer.privacy"),
+    terms: t("footer.terms"),
+    rights: t("footer.rights"),
+    instagram: "Instagram",
+    facebook: "Facebook",
+    email: language === "pl" ? "E-mail" : "Email",
+  };
 
   const contacts = content?.contacts;
 
@@ -138,13 +119,13 @@ export function SiteFooter() {
     ? contactHref("instagram", contacts.instagram)
     : null;
 
-  const navLinks = siteContent.headerSections.map((item) => ({
+  const navLinks = navItems(siteContent.headerSections).map((item) => ({
     href: item.href.startsWith("#") ? `/${item.href}` : item.href,
     label: item.label[language],
   }));
 
   const shopLinks = [
-    { href: "/shop", label: language === "pl" ? "Katalog" : "Catalog" },
+    { href: "/shop", label: t("footer.catalog") },
     { href: "/#faq", label: "FAQ" },
     { href: "/regulamin", label: copy.terms },
     { href: "/privacy", label: copy.privacy },
@@ -163,10 +144,10 @@ export function SiteFooter() {
             </p>
             <nav
               aria-label={language === "pl" ? "Szybkie linki" : "Quick links"}
-              className="flex flex-wrap gap-x-4 gap-y-1 font-body text-[10px] uppercase tracking-[0.16em]"
+              className="flex flex-wrap gap-x-4 gap-y-1 font-body text-[11px] uppercase tracking-[0.16em]"
             >
               <Link href="/shop" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
-                {language === "pl" ? "Sklep" : "Shop"}
+                {t("menu.groupShop")}
               </Link>
               <Link href="/privacy" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
                 {copy.privacy}
@@ -182,7 +163,7 @@ export function SiteFooter() {
               href={instagramHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[44px] shrink-0 items-center gap-2 self-start py-3 font-body text-[10px] uppercase tracking-[0.22em] text-[var(--footer-ink)] transition-opacity hover:opacity-70 active:opacity-70 lg:self-end"
+              className="inline-flex min-h-[44px] shrink-0 items-center gap-2 self-start py-3 font-body text-[11px] uppercase tracking-[0.22em] text-[var(--footer-ink)] transition-opacity hover:opacity-70 active:opacity-70 lg:self-end"
             >
               {copy.studioCta}
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
@@ -200,7 +181,7 @@ export function SiteFooter() {
             </div>
 
             <div className={footerColClass(1, 5)}>
-              <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
+              <p className="footer-ink font-body text-[11px] uppercase tracking-[0.22em]">
                 {copy.info}
               </p>
               <ul className="footer-muted mt-4 space-y-1 font-body text-sm">
@@ -213,7 +194,7 @@ export function SiteFooter() {
             </div>
 
             <div className={footerColClass(2, 5)}>
-              <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
+              <p className="footer-ink font-body text-[11px] uppercase tracking-[0.22em]">
                 {copy.menu}
               </p>
               <ul className="mt-4 space-y-1 font-body text-sm">
@@ -226,8 +207,8 @@ export function SiteFooter() {
             </div>
 
             <div className={footerColClass(3, 5)}>
-              <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
-                {language === "pl" ? "Sklep" : "Shop"}
+              <p className="footer-ink font-body text-[11px] uppercase tracking-[0.22em]">
+                {t("menu.groupShop")}
               </p>
               <ul className="mt-4 space-y-1 font-body text-sm">
                 {shopLinks.map((link) => (
@@ -239,7 +220,7 @@ export function SiteFooter() {
             </div>
 
             <div className={footerColClass(4, 5)}>
-              <p className="footer-ink font-body text-[10px] uppercase tracking-[0.22em]">
+              <p className="footer-ink font-body text-[11px] uppercase tracking-[0.22em]">
                 {copy.contact}
               </p>
               <ul className="mt-4 space-y-1 font-body text-sm">
@@ -276,7 +257,7 @@ export function SiteFooter() {
           </div>
 
           <div className="footer-split-b border-t border-[var(--footer-line)] px-6 py-5 sm:px-8 lg:flex lg:justify-end lg:px-10">
-            <p className="footer-muted font-body text-[10px] uppercase tracking-[0.18em]">
+            <p className="footer-muted font-body text-[11px] uppercase tracking-[0.18em]">
               {copy.rights}
             </p>
           </div>

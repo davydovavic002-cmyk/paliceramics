@@ -29,10 +29,7 @@ export function AboutPhilosophySection() {
   const ActivePanel = tabPanels[activeTab];
 
   return (
-    <section
-      id="about"
-      className="relative isolate scroll-mt-28 bg-theme-surface text-theme transition-colors duration-700"
-    >
+    <section className="relative isolate scroll-mt-28 bg-theme-surface text-theme transition-colors duration-700">
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#EDE8DF]/20 to-transparent"
         aria-hidden

@@ -2,11 +2,10 @@
 
 import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { pickBilingual } from "@/lib/adminTypes";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import {
   customOrderContent,
   customOrderCatalogCard,
-  madeToOrderCategoryLabel,
 } from "@/lib/customOrderContent";
 import { ProductGallery } from "./ProductGallery";
 
@@ -25,34 +24,35 @@ interface CustomOrderPanelProps {
 
 export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
   const { language } = useLanguage();
+  const { t, paragraphs } = useSiteTexts();
 
   const copy =
     language === "pl"
       ? {
           eyebrow: "Na zamówienie",
-          about: "O zamówieniach",
-          contact: "Kontakt",
+          about: t("mto.about"),
+          contact: t("mto.contactHeading"),
           close: "Zamknij",
-          minBadge: "od 400 zł",
+          minBadge: t("mto.stripPrice"),
           email: "Email",
           instagram: "Instagram",
           facebook: "Facebook",
         }
       : {
           eyebrow: "Made to order",
-          about: "About custom orders",
-          contact: "Contact",
+          about: t("mto.about"),
+          contact: t("mto.contactHeading"),
           close: "Close",
-          minBadge: "from 400 PLN",
+          minBadge: t("mto.stripPrice"),
           email: "Email",
           instagram: "Instagram",
           facebook: "Facebook",
         };
 
-  const title = pickBilingual(customOrderContent.title, customOrderContent.title, language);
-  const subtitle = pickBilingual(customOrderContent.subtitle, customOrderContent.subtitle, language);
-  const eyebrow = pickBilingual(madeToOrderCategoryLabel, madeToOrderCategoryLabel, language);
-  const body = customOrderContent.body[language];
+  const title = t("mto.title");
+  const subtitle = t("mto.subtitle");
+  const eyebrow = t("mto.label");
+  const body = paragraphs("mto.body");
 
   const emailHref = contactHref("email", customOrderContent.email);
   const instagramHref = contactHref("instagram", customOrderContent.instagram);
@@ -92,10 +92,10 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
         <button
           type="button"
           onClick={onClose}
-          className="shop-product-close absolute right-3 top-3 z-30 hidden min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 md:inline-flex"
+          className="shop-product-close absolute right-2 top-2 z-30 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[#faf7f0]/85 p-2 text-[#010a6b] md:hidden transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4"
           aria-label={copy.close}
         >
-          <X className="h-6 w-6" strokeWidth={1.75} />
+          <X className="h-5 w-5" strokeWidth={2.25} />
         </button>
       ) : null}
 
@@ -109,23 +109,20 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
         </div>
 
         <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 md:rounded-none md:rounded-tr-[1.75rem] md:rounded-br-[1.75rem] md:border-b-0 md:border-l lg:px-8 lg:py-8">
-          {onClose ? (
-            <div className="flex items-start justify-end md:hidden">
+          <div className="flex items-center justify-between gap-3">
+            <p className="shop-product-collection-tag min-w-0 font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
+              {eyebrow}
+            </p>
+            {onClose ? (
               <button
                 type="button"
                 onClick={onClose}
-                className="shop-product-close -mr-1 -mt-1 inline-flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
+                className="shop-product-close -my-2.5 -mr-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#010a6b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] md:inline-flex"
                 aria-label={copy.close}
               >
-                <X className="h-6 w-6" strokeWidth={1.75} />
+                <X className="h-5 w-5" strokeWidth={2.25} />
               </button>
-            </div>
-          ) : null}
-
-          <div className="flex flex-wrap items-start justify-between gap-3 pr-0 lg:pr-12">
-            <p className="shop-product-collection-tag font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
-              {eyebrow}
-            </p>
+            ) : null}
           </div>
 
           <h1

@@ -11,6 +11,10 @@ const HakemeStrokes = dynamic(() => import("./HakemeStrokes").then((m) => m.Hake
   ssr: false,
 });
 
+const HeroBokeh = dynamic(() => import("./HeroBokeh").then((m) => m.HeroBokeh), {
+  ssr: false,
+});
+
 function HeroCopyLine({ children }: { children: string }) {
   return <span className="hero-copy-line">{children}</span>;
 }
@@ -42,8 +46,8 @@ function HeroSquareLink({
     <Link
       href={href}
       className={[
-        "hero-square-cta flex h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5",
-        "font-display text-[9px] font-normal tracking-[0.04em] text-[#f7f4ef] transition-opacity duration-300 hover:opacity-90 sm:text-[10px]",
+        "hero-square-cta hidden h-[min(22vw,88px)] w-[min(22vw,88px)] flex-col items-center justify-between px-1.5 pb-2.5 pt-2.5 md:inline-flex",
+        "font-display text-[11px] font-normal tracking-[0.04em] text-[#f7f4ef] transition-opacity duration-300 active:opacity-80 sm:text-[11px] [@media(hover:hover)]:hover:opacity-90",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7f4ef] focus-visible:ring-offset-2 focus-visible:ring-offset-[#353230]",
         variant === "filled"
           ? "bg-[#010A8B] text-[#f7f4ef]"
@@ -74,6 +78,8 @@ export function HeroDark() {
 
   return (
     <section className="hero-dark-band hero-viewport-height relative isolate flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230]">
+      <div className="hero-glow-layer" aria-hidden />
+      <HeroBokeh animate={showDriftingStrokes} />
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
       <div className="hero-copy-stack relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1800px] flex-col items-center justify-center overflow-x-clip px-5 pb-32 pt-12 sm:py-16 md:pb-16 lg:px-16">
@@ -121,7 +127,7 @@ export function HeroDark() {
           from the screen edge on wide monitors */}
       <motion.div
         key={`cta-${language}`}
-        className="pointer-events-auto absolute bottom-[max(5rem,env(safe-area-inset-bottom))] left-8 z-10 flex gap-2 sm:gap-2.5 md:bottom-[max(2rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-auto absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-8 z-10 hidden gap-2 md:flex md:gap-2.5"
         animate={fade}
       >
         <HeroSquareLink href="#collection" label={hero.ctaPrimary[language]} variant="filled" />

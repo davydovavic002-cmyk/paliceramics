@@ -73,7 +73,7 @@ export function WorkshopFormatVariantA({
         ))}
       </div>
       <div className="mt-2.5">
-        <WorkshopFormatDetailsPanel format={selected} variant="balanced" />
+        <WorkshopFormatDetailsPanel format={selected} />
       </div>
       <button
         type="button"
@@ -121,7 +121,7 @@ export function WorkshopFormatVariantB({
             );
           })}
         </div>
-        <WorkshopFormatDetailsPanel format={selected} variant="demo" />
+        <WorkshopFormatDetailsPanel format={selected} />
       </div>
       <button
         type="button"

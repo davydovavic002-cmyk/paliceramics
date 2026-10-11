@@ -153,7 +153,7 @@ export function ContactsSection() {
             <div className="flex gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-theme-muted" strokeWidth={1.5} />
               <div>
-                <p className="font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                <p className="font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                   {language === "pl" ? "Adres" : "Address"}
                 </p>
                 <p className="mt-1 font-body text-sm leading-relaxed text-theme sm:text-[15px]">
@@ -166,7 +166,7 @@ export function ContactsSection() {
               <div className="flex gap-3">
                 <Clock className="mt-0.5 h-4 w-4 shrink-0 text-theme-muted" strokeWidth={1.5} />
                 <div>
-                  <p className="font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <p className="font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {language === "pl" ? "Godziny" : "Hours"}
                   </p>
                   <p className="mt-1 font-body text-sm leading-relaxed text-theme sm:text-[15px]">
@@ -180,7 +180,7 @@ export function ContactsSection() {
               <div className="flex gap-3">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-theme-muted" strokeWidth={1.5} />
                 <div>
-                  <p className="font-body text-[10px] uppercase tracking-[0.22em] text-theme-muted">
+                  <p className="font-body text-[11px] uppercase tracking-[0.22em] text-theme-muted">
                     {language === "pl" ? "Kontakt" : "Reach us"}
                   </p>
                   <ul className="mt-2 space-y-2">
@@ -229,7 +229,7 @@ export function ContactsSection() {
                     <button
                       type="button"
                       onClick={acceptMaps}
-                      className="rounded-[2px] border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-2 font-body text-[10px] uppercase tracking-[0.18em] text-theme-btn"
+                      className="rounded-[2px] border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-2 font-body text-[11px] uppercase tracking-[0.18em] text-theme-btn"
                     >
                       {language === "pl" ? "Pokaż mapę" : "Show map"}
                     </button>

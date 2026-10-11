@@ -1,43 +1,42 @@
 "use client";
 
-import {
-  HelpCircle,
-  MapPin,
-  MessageSquareQuote,
-  Package,
-  Sparkles,
-  Type,
-} from "lucide-react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { BilingualField } from "./BilingualField";
 import { PalinaStoryAdminSection } from "./PalinaStoryAdminSection";
 import { VoucherContentAdminSection } from "./VoucherContentAdminSection";
+import { SiteTextsAdminSection } from "./SiteTextsAdminSection";
+import { LegalAdminSection } from "./LegalAdminSection";
 import type {
-  AdminAboutBlock,
   AdminFaqItem,
-  AdminReview,
 } from "@/lib/adminTypes";
+
+const BLOCKS = [
+  { id: "collections", label: "Collections" },
+  { id: "madeToOrder", label: "Made to order" },
+  { id: "vouchers", label: "Vouchers" },
+  { id: "about", label: "About me" },
+  { id: "faq", label: "Q&A" },
+  { id: "contacts", label: "Contacts" },
+  { id: "menuFooter", label: "Menu & footer" },
+  { id: "legal", label: "Legal" },
+];
 
 const inputCls = "admin-input w-full rounded-lg px-3 py-2 text-sm";
 
 export function SiteTab() {
   const {
-    siteCopy,
-    updateHeroTag,
     faq,
     setFaq,
-    reviews,
-    setReviews,
     contacts,
     updateContacts,
-    delivery,
-    updateDelivery,
-    aboutBlocks,
-    setAboutBlocks,
     palinaStory,
     setPalinaStory,
     voucherContent,
     setVoucherContent,
+    siteTexts,
+    setSiteTexts,
+    legal,
+    setLegal,
   } = useAdminData();
 
   const addFaq = () => {
@@ -51,92 +50,54 @@ export function SiteTab() {
     ]);
   };
 
-  const addReview = () => {
-    setReviews((prev) => [
-      ...prev,
-      {
-        id: `rev-${Date.now().toString(36)}`,
-        author: "Guest",
-        text: { en: "Review text…", pl: "Tekst opinii…" },
-        visible: true,
-      },
-    ]);
-  };
-
-  const addAboutBlock = () => {
-    setAboutBlocks((prev) => [
-      ...prev,
-      {
-        id: `about-${Date.now().toString(36)}`,
-        title: { en: "Block title", pl: "Tytuł bloku" },
-        body: { en: "Body text…", pl: "Treść…" },
-      },
-    ]);
-  };
-
   return (
     <div className="space-y-8">
-      <GroupHeading
-        title="Headlines"
-        detail="Hero tagline in admin. Section eyebrows/titles (Gallery, Workshops, About) come from code and stay in sync automatically."
-      />
+      <nav
+        className="sticky top-0 z-10 -mx-1 flex flex-wrap gap-1.5 rounded-xl border border-admin bg-admin-card-muted/90 px-2 py-2 backdrop-blur"
+        aria-label="Jump to a block of the page"
+      >
+        {BLOCKS.map((block, index) => (
+          <button
+            key={block.id}
+            type="button"
+            onClick={() =>
+              document.getElementById(`site-${block.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="admin-toolbar-btn"
+          >
+            {index + 1}. {block.label}
+          </button>
+        ))}
+      </nav>
 
+      <p className="text-[12px] text-admin-muted">
+        Blocks follow the order of the homepage, top to bottom. The Workshops block is in the Workshops tab; the hero (first screen) is edited in code.
+      </p>
+
+      <div id="site-collections" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="1. Collections" detail="Block under the hero. Collection tiles themselves are edited in the Catalog tab." />
+        <SiteTextsAdminSection group="collections" texts={siteTexts} onChange={setSiteTexts} />
+      </div>
+
+      <div id="site-madeToOrder" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="2. Made to order" detail="Strip under the collections and its own page." />
+        <SiteTextsAdminSection group="madeToOrder" texts={siteTexts} onChange={setSiteTexts} />
+      </div>
+
+      <div id="site-vouchers" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="3. Gift vouchers" detail="Voucher section — form texts and prices. The PDF layout stays fixed." />
+        <VoucherContentAdminSection content={voucherContent} onChange={setVoucherContent} />
+      </div>
+
+      <div id="site-about" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="4. About me" detail="Three cards with photos. Wrap a phrase in **double asterisks** to make it bold." />
+        <PalinaStoryAdminSection story={palinaStory} onChange={setPalinaStory} />
+      </div>
+
+      <div id="site-faq" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="5. Questions & answers" detail="Heading and the list of questions." />
+        <SiteTextsAdminSection group="faq" texts={siteTexts} onChange={setSiteTexts} />
       <section className="admin-section p-3 sm:p-4">
-        <div className="mb-5 flex items-center gap-2">
-          <Type className="h-4 w-4 text-admin-muted" strokeWidth={1.5} />
-          <div>
-            <h2 className="text-base font-semibold text-admin-heading">Hero tagline</h2>
-            <p className="text-sm text-admin-muted">
-              Short line under the logo on the homepage — EN and PL.
-            </p>
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-admin-input bg-admin-card-muted p-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="English">
-              <input
-                value={siteCopy.heroTag.en}
-                onChange={(e) => updateHeroTag("en", e.target.value)}
-                className={inputCls}
-              />
-            </Field>
-            <Field label="Polski">
-              <input
-                value={siteCopy.heroTag.pl}
-                onChange={(e) => updateHeroTag("pl", e.target.value)}
-                className={inputCls}
-              />
-            </Field>
-          </div>
-        </div>
-      </section>
-
-      <GroupHeading
-        title="About story"
-        detail="Editorial grid on #about — texts and photos (PL + EN)."
-      />
-
-      <PalinaStoryAdminSection story={palinaStory} onChange={setPalinaStory} />
-
-      <GroupHeading
-        title="Gift vouchers"
-        detail="Certificate section (#certificates) — form copy and prices. PDF layout stays fixed."
-      />
-
-      <VoucherContentAdminSection content={voucherContent} onChange={setVoucherContent} />
-
-      <GroupHeading
-        title="Page content"
-        detail="FAQ, reviews, delivery info, contacts, and about text blocks."
-      />
-
-      <section className="admin-section p-3 sm:p-4">
-        <SectionHeading
-          icon={<HelpCircle className="h-4 w-4" strokeWidth={1.5} />}
-          title="FAQ"
-          detail="Questions & answers — shown in the FAQ section on the homepage."
-        />
         <div className="mt-4 space-y-4">
           {faq.map((item, index) => (
             <FaqEditor
@@ -159,125 +120,11 @@ export function SiteTab() {
           </button>
         </div>
       </section>
+      </div>
 
+      <div id="site-contacts" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="6. Contacts" detail="Address, hours and links used on the site and in the footer." />
       <section className="admin-section p-3 sm:p-4">
-        <SectionHeading
-          icon={<MessageSquareQuote className="h-4 w-4" strokeWidth={1.5} />}
-          title="Reviews"
-          detail="Guest quotes — toggle visibility per card."
-        />
-        <div className="mt-4 space-y-4">
-          {reviews.map((item, index) => (
-            <ReviewEditor
-              key={item.id}
-              item={item}
-              onChange={(next) =>
-                setReviews((prev) => prev.map((r) => (r.id === item.id ? next : r)))
-              }
-              onRemove={() => setReviews((prev) => prev.filter((r) => r.id !== item.id))}
-              canRemove={reviews.length > 1}
-              index={index + 1}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={addReview}
-            className="rounded-lg border border-dashed border-admin-input px-4 py-2 text-sm text-admin-muted hover:border-admin-accent hover:text-admin-label"
-          >
-            + Add review
-          </button>
-        </div>
-      </section>
-
-      <section className="admin-section p-3 sm:p-4">
-        <SectionHeading
-          icon={<Package className="h-4 w-4" strokeWidth={1.5} />}
-          title="Delivery & pickup"
-          detail="Studio pickup, Poland shipping, and international orders."
-        />
-        <div className="mt-4 space-y-4">
-          <BilingualField
-            label="Pickup title"
-            en={delivery.pickupTitle.en}
-            pl={delivery.pickupTitle.pl}
-            onEn={(v) =>
-              updateDelivery({ pickupTitle: { ...delivery.pickupTitle, en: v } })
-            }
-            onPl={(v) =>
-              updateDelivery({ pickupTitle: { ...delivery.pickupTitle, pl: v } })
-            }
-          />
-          <BilingualField
-            label="Pickup body"
-            en={delivery.pickupBody.en}
-            pl={delivery.pickupBody.pl}
-            onEn={(v) =>
-              updateDelivery({ pickupBody: { ...delivery.pickupBody, en: v } })
-            }
-            onPl={(v) =>
-              updateDelivery({ pickupBody: { ...delivery.pickupBody, pl: v } })
-            }
-            multiline
-          />
-          <BilingualField
-            label="Shipping title"
-            en={delivery.shippingTitle.en}
-            pl={delivery.shippingTitle.pl}
-            onEn={(v) =>
-              updateDelivery({ shippingTitle: { ...delivery.shippingTitle, en: v } })
-            }
-            onPl={(v) =>
-              updateDelivery({ shippingTitle: { ...delivery.shippingTitle, pl: v } })
-            }
-          />
-          <BilingualField
-            label="Shipping body"
-            en={delivery.shippingBody.en}
-            pl={delivery.shippingBody.pl}
-            onEn={(v) =>
-              updateDelivery({ shippingBody: { ...delivery.shippingBody, en: v } })
-            }
-            onPl={(v) =>
-              updateDelivery({ shippingBody: { ...delivery.shippingBody, pl: v } })
-            }
-            multiline
-          />
-          <BilingualField
-            label="International shipping title"
-            en={delivery.internationalTitle.en}
-            pl={delivery.internationalTitle.pl}
-            onEn={(v) =>
-              updateDelivery({
-                internationalTitle: { ...delivery.internationalTitle, en: v },
-              })
-            }
-            onPl={(v) =>
-              updateDelivery({
-                internationalTitle: { ...delivery.internationalTitle, pl: v },
-              })
-            }
-          />
-          <BilingualField
-            label="International shipping body"
-            en={delivery.internationalBody.en}
-            pl={delivery.internationalBody.pl}
-            onEn={(v) =>
-              updateDelivery({ internationalBody: { ...delivery.internationalBody, en: v } })
-            }
-            onPl={(v) =>
-              updateDelivery({ internationalBody: { ...delivery.internationalBody, pl: v } })
-            }
-            multiline
-          />
-        </div>
-      </section>
-
-      <section className="admin-section p-3 sm:p-4">
-        <SectionHeading
-          icon={<MapPin className="h-4 w-4" strokeWidth={1.5} />}
-          title="Contacts"
-          detail="Address, hours, and links — map embed URL for Google Maps iframe."
-        />
         <div className="mt-4 space-y-4">
           <BilingualField
             label="Address"
@@ -335,37 +182,17 @@ export function SiteTab() {
           </div>
         </div>
       </section>
+      </div>
 
-      <section className="admin-section p-3 sm:p-4">
-        <SectionHeading
-          icon={<Sparkles className="h-4 w-4" strokeWidth={1.5} />}
-          title="About blocks"
-          detail="Short philosophy snippets below the scrapbook collage."
-        />
-        <div className="mt-4 space-y-4">
-          {aboutBlocks.map((item, index) => (
-            <AboutBlockEditor
-              key={item.id}
-              item={item}
-              onChange={(next) =>
-                setAboutBlocks((prev) => prev.map((b) => (b.id === item.id ? next : b)))
-              }
-              onRemove={() =>
-                setAboutBlocks((prev) => prev.filter((b) => b.id !== item.id))
-              }
-              canRemove={aboutBlocks.length > 1}
-              index={index + 1}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={addAboutBlock}
-            className="rounded-lg border border-dashed border-admin-input px-4 py-2 text-sm text-admin-muted hover:border-admin-accent hover:text-admin-label"
-          >
-            + Add block
-          </button>
-        </div>
-      </section>
+      <div id="site-menuFooter" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="7. Menu & footer" detail="Labels of the menu and the texts at the bottom of every page." />
+        <SiteTextsAdminSection group="menuFooter" texts={siteTexts} onChange={setSiteTexts} />
+      </div>
+
+      <div id="site-legal" className="scroll-mt-16 space-y-4">
+        <GroupHeading title="8. Legal pages" detail="Privacy policy and shop terms (linked from the footer)." />
+        <LegalAdminSection legal={legal} onChange={setLegal} />
+      </div>
     </div>
   );
 }
@@ -375,26 +202,6 @@ function GroupHeading({ title, detail }: { title: string; detail: string }) {
     <div className="border-b border-admin pb-2">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-admin-label">{title}</h2>
       <p className="mt-0.5 text-sm text-admin-muted">{detail}</p>
-    </div>
-  );
-}
-
-function SectionHeading({
-  icon,
-  title,
-  detail,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  detail: string;
-}) {
-  return (
-    <div className="flex items-start gap-2">
-      <span className="mt-0.5 text-admin-muted">{icon}</span>
-      <div>
-        <h2 className="text-base font-semibold text-admin-heading">{title}</h2>
-        <p className="text-sm text-admin-muted">{detail}</p>
-      </div>
     </div>
   );
 }
@@ -449,152 +256,11 @@ function FaqEditor({
   );
 }
 
-function ReviewEditor({
-  item,
-  onChange,
-  onRemove,
-  canRemove,
-  index,
-}: {
-  item: AdminReview;
-  onChange: (next: AdminReview) => void;
-  onRemove: () => void;
-  canRemove: boolean;
-  index: number;
-}) {
-  return (
-    <details className="group relative rounded-lg border border-admin-input bg-admin-card-muted">
-      {canRemove ? (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="absolute right-3 top-3 z-10 text-xs text-admin-dim hover:text-red-400"
-        >
-          Remove
-        </button>
-      ) : null}
-      <summary className="cursor-pointer list-none px-4 py-3 pr-16 text-sm font-medium text-admin-label marker:content-none [&::-webkit-details-marker]:hidden">
-        <span>
-          #{index} {item.author}
-          {!item.visible ? (
-            <span className="ml-2 text-xs text-admin-dim">(hidden)</span>
-          ) : null}
-        </span>
-      </summary>
-      <div className="space-y-4 border-t border-admin-input px-4 py-4">
-        <Field label="Author">
-          <input
-            value={item.author}
-            onChange={(e) => onChange({ ...item, author: e.target.value })}
-            className={inputCls}
-          />
-        </Field>
-        <BilingualField
-          label="Quote"
-          en={item.text.en}
-          pl={item.text.pl}
-          onEn={(v) => onChange({ ...item, text: { ...item.text, en: v } })}
-          onPl={(v) => onChange({ ...item, text: { ...item.text, pl: v } })}
-          multiline
-        />
-        <Toggle
-          label="Visible on site"
-          checked={item.visible}
-          onChange={(visible) => onChange({ ...item, visible })}
-        />
-      </div>
-    </details>
-  );
-}
-
-function AboutBlockEditor({
-  item,
-  onChange,
-  onRemove,
-  canRemove,
-  index,
-}: {
-  item: AdminAboutBlock;
-  onChange: (next: AdminAboutBlock) => void;
-  onRemove: () => void;
-  canRemove: boolean;
-  index: number;
-}) {
-  return (
-    <details className="group relative rounded-lg border border-admin-input bg-admin-card-muted">
-      {canRemove ? (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="absolute right-3 top-3 z-10 text-xs text-admin-dim hover:text-red-400"
-        >
-          Remove
-        </button>
-      ) : null}
-      <summary className="cursor-pointer list-none px-4 py-3 pr-16 text-sm font-medium text-admin-label marker:content-none [&::-webkit-details-marker]:hidden">
-        <span>
-          Block {index}: {item.title.en || item.title.pl}
-        </span>
-      </summary>
-      <div className="space-y-4 border-t border-admin-input px-4 py-4">
-        <BilingualField
-          label="Title"
-          en={item.title.en}
-          pl={item.title.pl}
-          onEn={(v) => onChange({ ...item, title: { ...item.title, en: v } })}
-          onPl={(v) => onChange({ ...item, title: { ...item.title, pl: v } })}
-        />
-        <BilingualField
-          label="Body"
-          en={item.body.en}
-          pl={item.body.pl}
-          onEn={(v) => onChange({ ...item, body: { ...item.body, en: v } })}
-          onPl={(v) => onChange({ ...item, body: { ...item.body, pl: v } })}
-          multiline
-        />
-      </div>
-    </details>
-  );
-}
-
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1 block text-xs text-admin-faint">{label}</span>
       {children}
     </label>
-  );
-}
-
-function Toggle({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={[
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-        checked
-          ? "border-[color:var(--admin-success-border)] bg-[color:var(--admin-success-bg)] text-[color:var(--admin-success-text)]"
-          : "border-admin-input text-admin-muted hover:border-admin-accent",
-      ].join(" ")}
-    >
-      <span
-        className={[
-          "h-2 w-2 rounded-full",
-          checked ? "bg-[color:var(--admin-success-text)]" : "bg-admin-dim",
-        ].join(" ")}
-      />
-      {label}
-    </button>
   );
 }

@@ -113,25 +113,28 @@ export type ProductPieceType = {
   name: Bilingual;
 };
 
-/** Form / piece type — separate from glaze collection */
-export const productPieceTypes: ProductPieceType[] = [
-  {
-    id: "bowls",
-    name: { pl: "Miski i misy", en: "Bowls & dishes" },
-  },
+/** Shop “Rodzaj ceramiki” — maps 1:1 onto existing pieceTypeId values. */
+export const ceramicKindFilters: ProductPieceType[] = [
   {
     id: "cups",
-    name: { pl: "Kubki i filiżanki", en: "Cups & mugs" },
+    name: { pl: "Kubki i czarki", en: "Cups & mugs" },
+  },
+  {
+    id: "bowls",
+    name: { pl: "Talerze i miski", en: "Plates & bowls" },
   },
   {
     id: "vases",
-    name: { pl: "Wazy i naczynia", en: "Vases & vessels" },
+    name: { pl: "Wazony i dekoracje", en: "Vases & decor" },
   },
   {
     id: "sets",
-    name: { pl: "Zestawy na stół", en: "Table sets" },
+    name: { pl: "Zestawy", en: "Sets" },
   },
 ];
+
+/** Form / piece type — separate from glaze collection */
+export const productPieceTypes: ProductPieceType[] = ceramicKindFilters;
 
 export const productPieceTypeById: Record<string, ProductPieceTypeId> = {
   "001": "bowls",

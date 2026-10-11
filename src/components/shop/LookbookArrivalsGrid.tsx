@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useLanguage } from "@/context/LanguageContext";
-import { pickSectionCopy } from "@/lib/adminTypes";
-import { galleryHeader } from "@/lib/galleryContent";
 import { collectionToLookbook, getLookbookCollections } from "@/lib/catalogConfig";
 import { useShopCatalog } from "@/hooks/useShopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
@@ -12,7 +11,6 @@ import { LookbookCollectionCover } from "./LookbookCollectionCover";
 import { MadeToOrderStrip } from "./MadeToOrderStrip";
 
 function collectionDividerClass(index: number) {
-  /* last row (2, 3) has no bottom edge — MadeToOrderStrip draws the single shared rule */
   if (index === 0) return "lookbook-split-r lookbook-split-b";
   if (index === 1) return "lookbook-split-b";
   if (index === 2) return "lookbook-split-r";
@@ -26,22 +24,14 @@ export function LookbookArrivalsGrid() {
     () => getLookbookCollections(collections).map((collection) => collectionToLookbook(collection)),
     [collections]
   );
-  const header = pickSectionCopy(undefined, galleryHeader, language);
 
-  const copy =
-    language === "pl"
-      ? {
-          title: "Kolekcje",
-          seeAll: "Zobacz wszystkie",
-          headline: "Nie tylko talerz, nie tylko filiżanka",
-          cta: "Zobacz katalog",
-        }
-      : {
-          title: "Collections",
-          seeAll: "See all",
-          headline: "Not just a plate, not just a cup",
-          cta: "View catalog",
-        };
+  const { t } = useSiteTexts();
+  const copy = {
+    title: t("collections.title"),
+    seeAll: language === "pl" ? "Zobacz wszystkie" : "See all",
+    headline: t("collections.headline"),
+    cta: t("collections.cta"),
+  };
 
   return (
     <div className="w-full pb-0">
@@ -56,16 +46,16 @@ export function LookbookArrivalsGrid() {
           <div className="lookbook-grid lookbook-collections-grid grid grid-cols-2 gap-0 lg:grid-cols-3 lg:grid-rows-2">
             <div className="col-span-2 flex min-h-[220px] flex-col justify-start gap-5 p-5 sm:gap-6 sm:p-6 lg:col-span-1 lg:row-span-2 lg:min-h-0 lg:justify-between lg:p-8 lookbook-split-r lookbook-split-b lg:border-b-0">
               <div>
-                <p className="lookbook-ink font-display text-[clamp(1.25rem,2.5vw,1.75rem)] uppercase leading-snug tracking-[0.05em]">
+                <p className="lookbook-ink break-words font-display text-[clamp(1.25rem,2.5vw,1.75rem)] uppercase leading-snug tracking-[0.05em]">
                   {copy.headline}
                 </p>
                 <p className="lookbook-section-muted mt-3 max-w-md font-body text-sm leading-relaxed sm:mt-4 sm:text-[15px]">
-                  {header.subtitle}
+                  {t("collections.subtitle")}
                 </p>
               </div>
               <Link
                 href="/shop"
-                className="inline-flex min-h-[44px] w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[10px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90 active:opacity-80"
+                className="inline-flex min-h-[44px] w-fit items-center justify-center bg-[var(--brand-blue)] px-6 py-3 font-body text-[11px] uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-90 active:opacity-80"
               >
                 {copy.cta}
               </Link>

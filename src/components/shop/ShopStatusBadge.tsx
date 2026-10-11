@@ -22,7 +22,7 @@ export function ShopStatusBadge({
     return (
       <span
         className={[
-          "inline-flex items-center rounded-[2px] border px-2 py-0.5 font-body text-[8px] uppercase tracking-[0.16em] sm:text-[9px]",
+          "inline-flex items-center rounded-[2px] border px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.16em]",
           light
             ? "border-[color-mix(in_srgb,var(--theme-text)_16%,transparent)] bg-[color-mix(in_srgb,var(--theme-text)_5%,transparent)] text-theme-muted"
             : "border-[#EDE8DF]/12 bg-[#2a2826]/85 text-[#E8E8E8]/45",
@@ -39,7 +39,7 @@ export function ShopStatusBadge({
     return (
       <span
         className={[
-          "inline-flex items-center rounded-[2px] border px-2 py-0.5 font-body text-[8px] uppercase tracking-[0.16em] sm:text-[9px]",
+          "inline-flex items-center rounded-[2px] border px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.16em]",
           light
             ? "border-[color-mix(in_srgb,var(--theme-text)_16%,transparent)] bg-[color-mix(in_srgb,var(--theme-text)_5%,transparent)] text-theme-muted"
             : "border-[#EDE8DF]/15 bg-[#2a2826]/85 text-[#E8E8E8]/55",
@@ -55,7 +55,7 @@ export function ShopStatusBadge({
   return (
     <span
       className={[
-        "inline-flex items-center gap-1.5 rounded-[2px] border px-2 py-0.5 font-body text-[8px] uppercase tracking-[0.16em] sm:text-[9px]",
+        "inline-flex items-center gap-1.5 rounded-[2px] border px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.16em]",
         light ? "" : "backdrop-blur-md",
         light
           ? status === "available"

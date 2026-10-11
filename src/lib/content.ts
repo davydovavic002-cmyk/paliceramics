@@ -21,7 +21,7 @@ export const siteContent: SiteContent = {
     { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
     { id: "certificates", href: "#certificates", label: { en: "Gift card", pl: "Voucher" } },
     { id: "about", href: "#about", label: { en: "About me", pl: "O mnie" } },
-    { id: "delivery", href: "#delivery", label: { en: "Delivery", pl: "Dostawa" } },
+    { id: "delivery", href: "#faq", label: { en: "Delivery", pl: "Dostawa" } },
     { id: "contact", href: "#contact", label: { en: "Contact", pl: "Kontakt" } },
   ],
   hero: {

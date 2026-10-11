@@ -14,11 +14,15 @@ import type {
   AdminWorkshopFormatCopy,
 } from "@/lib/adminContentSeeds";
 
+import type { AdminLegal, AdminSiteTexts } from "@/lib/siteTexts";
+
 export type AdminContentData = {
   palinaStory: AdminPalinaStory;
   workshopFormatCopy: AdminWorkshopFormatCopy[];
   voucherContent: AdminVoucherContent;
   workshopBookingCopy: AdminWorkshopBookingCopy;
+  siteTexts: AdminSiteTexts;
+  legal: AdminLegal;
 };
 
 function buildAdminContent(data: AdminPersistedData): AdminContentData {
@@ -27,6 +31,8 @@ function buildAdminContent(data: AdminPersistedData): AdminContentData {
     workshopFormatCopy: data.workshopFormatCopy,
     voucherContent: data.voucherContent,
     workshopBookingCopy: data.workshopBookingCopy,
+    siteTexts: data.siteTexts,
+    legal: data.legal,
   };
 }
 

@@ -75,8 +75,8 @@ export function ConsentField({ checked, onChange, purpose, tone = "default" }: C
         onChange={(e) => onChange(e.target.checked)}
         className={
           light
-            ? "mt-1 h-3.5 w-3.5 shrink-0 rounded-[2px] border border-[color-mix(in_srgb,var(--delivery-faq-ink)_35%,transparent)] accent-[var(--delivery-faq-ink)]"
-            : "mt-1 h-3.5 w-3.5 shrink-0 rounded-[2px] accent-[var(--theme-accent)]"
+            ? "mt-0.5 h-5 w-5 shrink-0 md:mt-1 md:h-4 md:w-4 rounded-[2px] border border-[color-mix(in_srgb,var(--delivery-faq-ink)_35%,transparent)] accent-[var(--delivery-faq-ink)]"
+            : "mt-0.5 h-5 w-5 shrink-0 md:mt-1 md:h-4 md:w-4 rounded-[2px] accent-[var(--theme-accent)]"
         }
         required
       />

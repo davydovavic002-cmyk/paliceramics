@@ -188,22 +188,67 @@ function migratePalinaSectionLabel(
   return merged;
 }
 
+/**
+ * Previous default texts of the "About me" bento (the shortened version).
+ * A stored value that still equals one of these was never edited by hand,
+ * so it is upgraded to the current seed; manual edits are left alone.
+ */
+const LEGACY_PALINA_STORY: Record<
+  "origin" | "brand" | "workshops" | "craft" | "closing",
+  Bilingual
+> = {
+  origin: {
+    pl: "Ceramika zaczęła się w 2021 — szukałam chwili spokoju i oderwania od pośpiechu. Przy kole odkryłam skupienie, uważność i radość tworzenia własnymi rękami.",
+    en: "Ceramics began in 2021 — I was looking for calm away from the rush. At the wheel I found focus, mindfulness, and the joy of making with my hands.",
+  },
+  brand: {
+    pl: "W 2023 glina stała się częścią życia, w 2025 odeszłam z korporacji i stworzyłam markę. Wierzę, że kreatywność jest w każdym z nas — czasem trzeba tylko przestrzeni.",
+    en: "By 2023 clay was part of my life; in 2025 I left corporate work and built the brand. I believe creativity lives in all of us — we only need space.",
+  },
+  workshops: {
+    pl: "Przez warsztaty daję innym miejsce na eksperyment, zwolnienie tempa i radość z tworzenia.",
+    en: "Through workshops I offer room to experiment, slow down, and reconnect with the joy of making.",
+  },
+  craft: {
+    pl: "Każdy przedmiot powstaje ręcznie na kole. Inspiruję się prostotą, naturą i japońską estetyką — rzeczami, które kształtują codzienne rytuały.",
+    en: "Every piece is wheel-thrown by me, inspired by simplicity, nature, and Japanese aesthetics — objects that shape everyday rituals.",
+  },
+  closing: {
+    pl: "Tworzę naczynia, które zachęcają do zatrzymania się i zauważenia piękna w prostych chwilach.",
+    en: "I make vessels that invite us to pause and notice beauty in simple things.",
+  },
+};
+
+function migratePalinaStoryText(
+  stored: Bilingual | undefined,
+  seed: Bilingual,
+  legacy: Bilingual
+): Bilingual {
+  const merged = { ...mergeBilingualField(stored, seed) };
+  if (merged.pl.trim() === legacy.pl) merged.pl = seed.pl;
+  if (merged.en.trim() === legacy.en) merged.en = seed.en;
+  return merged;
+}
+
 export function normalizePalinaStory(stored: AdminPalinaStory | undefined): AdminPalinaStory {
   const seed = seedPalinaStory();
   if (!stored?.lead?.en) return seed;
   return {
     sectionLabel: migratePalinaSectionLabel(stored.sectionLabel, seed.sectionLabel),
     lead: mergeBilingualField(stored.lead, seed.lead),
-    origin: mergeBilingualField(stored.origin, seed.origin),
-    brand: mergeBilingualField(stored.brand, seed.brand),
-    workshops: mergeBilingualField(stored.workshops, seed.workshops),
-    craft: mergeBilingualField(stored.craft, seed.craft),
-    closing: mergeBilingualField(stored.closing, seed.closing),
+    origin: migratePalinaStoryText(stored.origin, seed.origin, LEGACY_PALINA_STORY.origin),
+    brand: migratePalinaStoryText(stored.brand, seed.brand, LEGACY_PALINA_STORY.brand),
+    workshops: migratePalinaStoryText(stored.workshops, seed.workshops, LEGACY_PALINA_STORY.workshops),
+    craft: migratePalinaStoryText(stored.craft, seed.craft, LEGACY_PALINA_STORY.craft),
+    closing: migratePalinaStoryText(stored.closing, seed.closing, LEGACY_PALINA_STORY.closing),
     images: seed.images.map((fallback) => {
       const hit = stored.images?.find((img) => img.id === fallback.id);
       return {
         id: fallback.id,
-        src: hit?.src?.trim() ? hit.src : fallback.src,
+        src:
+          hit?.src?.trim() && !/\/images\/about\/palina-[a-z]+\.webp$/.test(hit.src)
+            ? hit.src
+            : fallback.src,
         alt: mergeBilingualField(hit?.alt, fallback.alt),
       };
     }),

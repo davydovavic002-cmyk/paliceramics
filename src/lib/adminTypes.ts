@@ -262,6 +262,14 @@ export type {
   AdminWorkshopFormatCopy,
 } from "@/lib/adminContentSeeds";
 
+import {
+  normalizeLegal,
+  normalizeSiteTexts,
+  seedLegal,
+  type AdminLegal,
+  type AdminSiteTexts,
+} from "@/lib/siteTexts";
+
 export type AdminPersistedData = {
   /** @deprecated migrated to collections */
   categories?: AdminCategoryItem[];
@@ -281,6 +289,8 @@ export type AdminPersistedData = {
   workshopFormatCopy: AdminWorkshopFormatCopy[];
   voucherContent: AdminVoucherContent;
   workshopBookingCopy: AdminWorkshopBookingCopy;
+  siteTexts: AdminSiteTexts;
+  legal: AdminLegal;
 };
 
 export const ADMIN_DEMO_PASSWORD = "pali";
@@ -659,6 +669,8 @@ export function seedAdminData(): AdminPersistedData {
     workshopFormatCopy: seedWorkshopFormatCopy(),
     voucherContent: seedVoucherContent(),
     workshopBookingCopy: seedWorkshopBookingCopy(),
+    siteTexts: {},
+    legal: seedLegal(),
   };
 }
 
@@ -792,6 +804,8 @@ export function normalizeAdminData(data: AdminPersistedData): AdminPersistedData
     workshopFormatCopy: normalizeWorkshopFormatCopy(data.workshopFormatCopy),
     voucherContent: normalizeVoucherContent(data.voucherContent),
     workshopBookingCopy: normalizeWorkshopBookingCopy(data.workshopBookingCopy),
+    siteTexts: normalizeSiteTexts(data.siteTexts),
+    legal: normalizeLegal(data.legal),
   };
 }
 

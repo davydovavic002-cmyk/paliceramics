@@ -348,17 +348,8 @@ export function ProductsTab() {
             <div className="flex min-h-[280px] flex-col items-center justify-center text-center">
               <p className="text-sm font-medium text-admin-heading">Select a collection or piece</p>
               <p className="mt-1 max-w-xs text-sm text-admin-muted">
-                Open a collection tile to see its pieces, or click the title to edit cover and
-                names.
+                Open a collection to see its pieces, or click a piece to edit it. Use “Add piece” at the top to create a new one.
               </p>
-              <button
-                type="button"
-                onClick={() => openAdd()}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-admin-input px-4 py-2 text-sm text-admin-label hover:border-admin-accent"
-              >
-                <Plus className="h-4 w-4" />
-                Add piece
-              </button>
             </div>
           )}
         </section>
@@ -433,7 +424,7 @@ function ProductAddForm({
         />
       </Field>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Field label="Price (PLN)">
           <input
             type="number"
@@ -452,6 +443,21 @@ function ProductAddForm({
             className="admin-input w-full rounded-lg px-3.5 py-2.5 text-sm"
           />
         </Field>
+        <Field label="Status">
+          <select
+            value={form.status === "made-to-order" ? "sold" : form.status}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, status: e.target.value as AdminProduct["status"] }))
+            }
+            className="admin-input w-full rounded-lg px-3.5 py-2.5 text-sm"
+          >
+            {adminCatalogStatuses.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </Field>
       </div>
 
       <ProductCatalogFields
@@ -461,24 +467,11 @@ function ProductAddForm({
         onPieceTypeId={(id) => setForm((f) => ({ ...f, pieceTypeId: id }))}
       />
 
-      <Field label="Status">
-        <div className="flex flex-wrap gap-2">
-          {adminCatalogStatuses.map((s) => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => setForm((f) => ({ ...f, status: s.value }))}
-              className={[
-                "rounded-md border px-2.5 py-1.5 text-xs font-medium",
-                form.status === s.value
-                  ? "border-admin-accent bg-admin-accent-soft text-admin"
-                  : "border-admin-input text-admin-muted",
-              ].join(" ")}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
+      <Field label="Photos">
+        <ProductPhotoUpload
+          photos={form.photos}
+          onChange={(photos) => setForm((f) => ({ ...f, photos }))}
+        />
       </Field>
 
       <BilingualField
@@ -490,13 +483,6 @@ function ProductAddForm({
         multiline
         rows={3}
       />
-
-      <Field label="Photos">
-        <ProductPhotoUpload
-          photos={form.photos}
-          onChange={(photos) => setForm((f) => ({ ...f, photos }))}
-        />
-      </Field>
 
       <button
         type="submit"

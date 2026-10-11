@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 
 /** Matches Tailwind `lg` — phones and small tablets. */
 export function useCompactViewport(breakpointPx = 1023) {
-  const [compact, setCompact] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia(`(max-width: ${breakpointPx}px)`).matches;
-  });
+  /* Always start `false` so the first client render matches the server HTML;
+     the effect below switches it on right after hydration. */
+  const [compact, setCompact] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: ${breakpointPx}px)`);

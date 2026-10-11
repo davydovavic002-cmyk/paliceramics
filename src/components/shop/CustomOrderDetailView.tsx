@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useLanguage } from "@/context/LanguageContext";
-import { pickBilingual } from "@/lib/adminTypes";
 import { useProductPageScrollTop } from "@/hooks/useProductPageScrollTop";
 import {
-  customOrderContent,
-  madeToOrderCategoryLabel,
   MADE_TO_ORDER_SHOP_HREF,
 } from "@/lib/customOrderContent";
 import {
@@ -25,6 +23,7 @@ export function CustomOrderDetailView() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
+  const { t } = useSiteTexts();
   const returnToParam = searchParams.get("returnTo");
   const fromLookbook = isHomeLookbookReturn(returnToParam);
   const backHref = resolveBackHref(decodeReturnTo(returnToParam), MADE_TO_ORDER_SHOP_HREF);
@@ -59,12 +58,8 @@ export function CustomOrderDetailView() {
     return () => window.removeEventListener("keydown", onKey);
   }, [closePanel]);
 
-  const collectionLabel = pickBilingual(
-    madeToOrderCategoryLabel,
-    madeToOrderCategoryLabel,
-    language
-  );
-  const title = pickBilingual(customOrderContent.title, customOrderContent.title, language);
+  const collectionLabel = t("mto.label");
+  const title = t("mto.title");
 
   return (
     <div className="shop-catalog-page shop-product-page shop-made-to-order-page min-h-0 overflow-x-clip pb-10 pt-[var(--header-offset,5.5rem)] sm:pb-14">

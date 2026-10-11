@@ -2,27 +2,26 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
-import { pickSectionCopy } from "@/lib/adminTypes";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { handleSectionClick } from "@/lib/scrollToSection";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-import { workshopsHeader } from "@/lib/workshopsContent";
 import { WorkshopBookingBuilder } from "./WorkshopBookingBuilder";
 import { WorkshopPotteryPattern } from "./WorkshopPotteryPattern";
 
 export function WorkshopsBookingSection() {
-  const { language } = useLanguage();
-  const header = pickSectionCopy(undefined, workshopsHeader, language);
+  const { t } = useSiteTexts();
+  const header = {
+    eyebrow: t("workshops.eyebrow"),
+    title: t("workshops.title"),
+    subtitle: t("workshops.subtitle"),
+  };
 
-  const giftLink =
-    language === "pl"
-      ? { label: "Voucher na warsztat", hint: "Podaruj sesję" }
-      : { label: "Workshop gift card", hint: "Give a session" };
+  const giftLink = { label: t("workshops.giftLabel"), hint: t("workshops.giftHint") };
 
   return (
     <section
       id="workshops"
-      className="relative isolate scroll-mt-28 bg-theme-surface text-theme transition-colors duration-700"
+      className="relative isolate scroll-mt-28 bg-transparent text-theme transition-colors duration-700"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--theme-border)]/20 to-transparent"
@@ -56,7 +55,7 @@ export function WorkshopsBookingSection() {
           </header>
 
           <div className="pointer-events-auto relative z-20 mt-8 sm:mt-10">
-            <div className="workshops-booking-panel relative overflow-hidden rounded-[1.75rem] border border-[color-mix(in_srgb,var(--theme-border)_16%,transparent)] px-4 py-6 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:px-6 sm:py-8 lg:px-8 lg:py-9">
+            <div className="workshops-booking-panel relative overflow-hidden rounded-[1.75rem] border border-[color-mix(in_srgb,var(--theme-border)_16%,transparent)] px-4 py-6 shadow-[0_10px_28px_rgba(0,0,0,0.07)] sm:px-6 sm:py-8 lg:px-8 lg:py-9">
               <WorkshopPotteryPattern />
               <div className="relative z-[1]">
                 <WorkshopBookingBuilder />

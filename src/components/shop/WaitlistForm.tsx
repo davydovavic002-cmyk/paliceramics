@@ -10,6 +10,7 @@ interface WaitlistFormProps {
   sku: string;
   productTitle: string;
   variant?: "default" | "product" | "panel";
+  intent?: "waitlist" | "similar";
   onSuccess?: () => void;
 }
 
@@ -17,6 +18,7 @@ export function WaitlistForm({
   sku,
   productTitle,
   variant = "default",
+  intent = "waitlist",
   onSuccess,
 }: WaitlistFormProps) {
   const { language } = useLanguage();
@@ -30,24 +32,44 @@ export function WaitlistForm({
 
   const copy =
     language === "pl"
-      ? {
-          title: "Lista oczekujących",
-          hint: "Powiadomimy Cię, gdy ten egzemplarz wróci do sklepu.",
-          email: "Email",
-          submit: "Dołącz do listy",
-          success: "Zapisano zgłoszenie. Odpiszemy w ciągu 24–48 godzin.",
-          errEmail: "Podaj poprawny email.",
-          errConsent: "Zaznacz zgodę, aby kontynuować.",
-        }
-      : {
-          title: "Waitlist",
-          hint: "We will notify you when this piece is back in stock.",
-          email: "Email",
-          submit: "Join waitlist",
-          success: "Request saved. We'll reply within 24–48 hours.",
-          errEmail: "Please enter a valid email.",
-          errConsent: "Please accept the consent to continue.",
-        };
+      ? intent === "similar"
+        ? {
+            title: "Zapytaj o podobne",
+            hint: "Ta praca jest sprzedana. Napisz, jeśli szukasz podobnej formy — odezwiemy się.",
+            email: "Email",
+            submit: "Wyślij zapytanie",
+            success: "Zapisano zgłoszenie. Odpiszemy w ciągu 24–48 godzin.",
+            errEmail: "Podaj poprawny email.",
+            errConsent: "Zaznacz zgodę, aby kontynuować.",
+          }
+        : {
+            title: "Lista oczekujących",
+            hint: "Powiadomimy Cię, gdy ten egzemplarz wróci do sklepu.",
+            email: "Email",
+            submit: "Dołącz do listy",
+            success: "Zapisano zgłoszenie. Odpiszemy w ciągu 24–48 godzin.",
+            errEmail: "Podaj poprawny email.",
+            errConsent: "Zaznacz zgodę, aby kontynuować.",
+          }
+      : intent === "similar"
+        ? {
+            title: "Ask about similar",
+            hint: "This piece has sold. Tell us if you are looking for a similar form — we will get back to you.",
+            email: "Email",
+            submit: "Send request",
+            success: "Request saved. We'll reply within 24–48 hours.",
+            errEmail: "Please enter a valid email.",
+            errConsent: "Please accept the consent to continue.",
+          }
+        : {
+            title: "Waitlist",
+            hint: "We will notify you when this piece is back in stock.",
+            email: "Email",
+            submit: "Join waitlist",
+            success: "Request saved. We'll reply within 24–48 hours.",
+            errEmail: "Please enter a valid email.",
+            errConsent: "Please accept the consent to continue.",
+          };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,7 +157,7 @@ export function WaitlistForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={copy.email}
-            className="w-full rounded-full border border-[color-mix(in_srgb,#010a8b_14%,transparent)] bg-white px-4 py-2.5 font-body text-sm delivery-faq-ink outline-none placeholder:text-[color-mix(in_srgb,#010a8b_32%,#4a4a55)] focus:border-[#010a8b]"
+            className="min-h-[44px] w-full rounded-full border border-[color-mix(in_srgb,#010a8b_14%,transparent)] bg-white px-4 py-2.5 font-body text-sm delivery-faq-ink outline-none placeholder:text-[color-mix(in_srgb,#010a8b_32%,#4a4a55)] focus:border-[#010a8b]"
           />
         </label>
 
@@ -150,7 +172,7 @@ export function WaitlistForm({
         <button
           type="submit"
           disabled={submitting}
-          className="shop-waitlist-btn mt-4 inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 font-body text-[10px] uppercase tracking-[0.2em] disabled:opacity-60"
+          className="shop-waitlist-btn mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-full px-5 py-2.5 font-body text-[10px] uppercase tracking-[0.2em] disabled:opacity-60"
         >
           {copy.submit}
         </button>
@@ -169,14 +191,14 @@ export function WaitlistForm({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder={copy.email}
-        className="w-full rounded-[2px] border border-theme/25 bg-theme-elevated/50 px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
+        className="min-h-[44px] w-full rounded-[2px] border border-theme/25 bg-theme-elevated/50 px-3 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
       />
       <ConsentField checked={consent} onChange={setConsent} purpose="waitlist" />
       {error ? <p className="text-xs text-red-400/90">{error}</p> : null}
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-[2px] border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.2em] text-theme-btn transition-colors hover:bg-[var(--theme-accent-hover)] disabled:opacity-60"
+        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[2px] border border-[color-mix(in_srgb,var(--theme-accent)_45%,transparent)] bg-[var(--theme-btn-primary)] px-4 py-2.5 font-body text-[10px] uppercase tracking-[0.2em] text-theme-btn transition-colors hover:bg-[var(--theme-accent-hover)] disabled:opacity-60"
       >
         {copy.submit}
       </button>

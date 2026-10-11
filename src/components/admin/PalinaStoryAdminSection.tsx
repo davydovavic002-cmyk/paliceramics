@@ -8,9 +8,9 @@ import { BilingualField } from "./BilingualField";
 import type { AdminPalinaStory, AdminPalinaStoryImageId } from "@/lib/adminContentSeeds";
 
 const IMAGE_LABELS: Record<AdminPalinaStoryImageId, string> = {
-  japan: "Hero (large cell)",
+  japan: "Street portrait",
   wheel: "Wheel photo",
-  glaze: "Glaze photo",
+  glaze: "Ceramics photo",
   studio: "Studio photo",
 };
 
@@ -28,7 +28,7 @@ export function PalinaStoryAdminSection({
       <div>
         <h2 className="text-[15px] font-semibold tracking-tight text-admin-heading">Palina story</h2>
         <p className="mt-0.5 text-[12px] text-admin-muted">
-          About section (#about) — texts and photos shown in the editorial grid.
+          About section (#about) — texts and photos. Wrap text in **double asterisks** to make it bold.
         </p>
       </div>
 
@@ -63,7 +63,7 @@ export function PalinaStoryAdminSection({
 
       <div className="space-y-3">
         <p className="text-[11px] uppercase tracking-wider text-admin-dim">Photos</p>
-        {story.images.map((image) => (
+        {story.images.filter((image) => image.id !== "studio").map((image) => (
           <StoryImageEditor
             key={image.id}
             image={image}

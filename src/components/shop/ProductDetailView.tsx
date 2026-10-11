@@ -48,6 +48,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
           notFound: "Nie znaleziono produktu.",
           backToShop: "Wróć do sklepu",
           close: "Zamknij",
+          soldPlaque: "Wyprzedane",
         }
       : {
           home: "Home",
@@ -57,6 +58,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
           notFound: "Product not found.",
           backToShop: "Back to shop",
           close: "Close",
+          soldPlaque: "Sold",
         };
 
   const closeProduct = useCallback(() => {
@@ -65,7 +67,9 @@ export function ProductDetailView({ sku }: { sku: string }) {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeProduct();
+      if (event.key !== "Escape") return;
+      if (document.querySelector(".product-gallery-lightbox")) return;
+      closeProduct();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -90,7 +94,9 @@ export function ProductDetailView({ sku }: { sku: string }) {
   const collectionLabel = getCollectionLabel(product.categoryId, language);
   const description = t(product.description, language);
   const outOfStock = isOutOfStock(product);
-  const showPurchase = product.status !== "sold" && !outOfStock;
+  const sold = product.status === "sold";
+  const unavailable = sold || outOfStock;
+  const showPurchase = !unavailable;
   const sizeLabel = t(product.specs.dimensions, language);
   const pieceTypeName = pieceTypes.find((type) => type.id === product.pieceTypeId);
   const specSubtitle = [
@@ -103,17 +109,17 @@ export function ProductDetailView({ sku }: { sku: string }) {
   return (
       <div className="shop-catalog-page shop-product-page min-h-0 overflow-x-clip pb-[calc(2.5rem+var(--cookie-banner-offset)+var(--keyboard-inset))] pt-[var(--header-offset,5.5rem)] sm:pb-14">
       <div className="mx-auto max-w-[1024px] px-4 sm:px-6">
-        <nav className="hidden font-body text-[10px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
+        <nav className="hidden font-body text-[11px] uppercase tracking-[0.18em] shop-catalog-muted sm:block">
           <Link
             href="/"
             scroll={false}
             onClick={() => clearShopCatalogReturnState()}
-            className="transition-opacity hover:text-[var(--lookbook-ink)]"
+            className="transition-opacity [@media(hover:hover)]:hover:text-[var(--lookbook-ink)]"
           >
             {copy.home}
           </Link>
           <span className="mx-2 opacity-40">/</span>
-          <Link href={backHref} scroll={false} className="transition-opacity hover:text-[var(--lookbook-ink)]">
+          <Link href={backHref} scroll={false} className="transition-opacity [@media(hover:hover)]:hover:text-[var(--lookbook-ink)]">
             {copy.products}
           </Link>
           <span className="mx-2 opacity-40">/</span>
@@ -130,10 +136,10 @@ export function ProductDetailView({ sku }: { sku: string }) {
           <button
             type="button"
             onClick={closeProduct}
-            className="shop-product-close absolute right-3 top-3 z-30 hidden min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4 md:inline-flex"
+            className="shop-product-close absolute right-2 top-2 z-30 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[#faf7f0]/85 p-2 text-[#010a6b] md:hidden transition-opacity [@media(hover:hover)]:hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2 sm:right-4 sm:top-4"
             aria-label={copy.close}
           >
-            <X className="h-6 w-6" strokeWidth={1.75} />
+            <X className="h-5 w-5" strokeWidth={2.25} />
           </button>
           {/* columns stretch to the row height on purpose: with items-start the shorter column
               stopped early and the sheet's own gradient (which ends warm) showed through as a
@@ -144,23 +150,23 @@ export function ProductDetailView({ sku }: { sku: string }) {
             </div>
 
             <div className="shop-product-info-zone delivery-faq-split-b flex min-h-0 flex-col overflow-visible rounded-b-2xl border-[var(--delivery-faq-line)] px-4 py-5 font-inter sm:px-6 sm:py-6 md:rounded-none md:rounded-tr-[1.75rem] md:rounded-br-[1.75rem] md:border-b-0 md:border-l lg:px-8 lg:py-8">
-              <div className="flex items-start justify-end md:hidden">
-                <button
-                  type="button"
-                  onClick={closeProduct}
-                  className="shop-product-close -mr-1 -mt-1 inline-flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-[#010a8b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] focus-visible:ring-offset-2"
-                  aria-label={copy.close}
-                >
-                  <X className="h-6 w-6" strokeWidth={1.75} />
-                </button>
-              </div>
-              <div className="flex flex-wrap items-start justify-between gap-3 pr-0 lg:pr-12">
-                <p className="shop-product-collection-tag font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
+              <div className="flex items-center justify-between gap-3">
+                <p className="shop-product-collection-tag min-w-0 font-inter text-[11px] uppercase tracking-[0.18em] text-theme-muted">
                   {collectionLabel}
                 </p>
-                <p className="shop-product-sku font-inter text-[10px] uppercase tracking-[0.18em] text-theme-muted">
-                  {product.sku}
-                </p>
+                <div className="flex shrink-0 items-center gap-3">
+                  <p className="shop-product-sku font-inter text-[11px] uppercase tracking-[0.18em] text-theme-muted">
+                    {product.sku}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={closeProduct}
+                    className="shop-product-close -my-2.5 -mr-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#010a6b] transition-opacity hover:opacity-65 active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#010a8b] md:inline-flex"
+                    aria-label={copy.close}
+                  >
+                    <X className="h-5 w-5" strokeWidth={2.25} />
+                  </button>
+                </div>
               </div>
 
               <h1
@@ -177,7 +183,12 @@ export function ProductDetailView({ sku }: { sku: string }) {
 
               <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 {product.pricePln > 0 ? (
-                  <p className="font-inter text-base font-medium tabular-nums tracking-tight text-theme">
+                  <p
+                    className={[
+                      "font-inter text-base font-medium tabular-nums tracking-tight",
+                      unavailable ? "text-stone-500 line-through opacity-60" : "text-theme",
+                    ].join(" ")}
+                  >
                     PLN {product.pricePln}
                   </p>
                 ) : (
@@ -208,7 +219,21 @@ export function ProductDetailView({ sku }: { sku: string }) {
                           pricePln={product.pricePln}
                         />
                       ) : (
-                        <ProductWaitlistMenu sku={product.sku} productTitle={title} />
+                        <>
+                          {sold ? (
+                            <div
+                              aria-disabled="true"
+                              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_16%,transparent)] bg-[color-mix(in_srgb,#faf7f0_80%,transparent)] px-4 py-3 font-body text-[11px] uppercase tracking-[0.16em] text-stone-500 opacity-60"
+                            >
+                              {copy.soldPlaque}
+                            </div>
+                          ) : null}
+                          <ProductWaitlistMenu
+                            sku={product.sku}
+                            productTitle={title}
+                            intent={sold ? "similar" : "waitlist"}
+                          />
+                        </>
                       )}
                     </>
                   }

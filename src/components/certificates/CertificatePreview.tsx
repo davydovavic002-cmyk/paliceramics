@@ -144,10 +144,10 @@ export function CertificatePreview({ draft, purchaseDate = null }: CertificatePr
 
 function voucherPickerBtn(active: boolean) {
   return [
-    "flex min-h-[44px] flex-1 flex-col items-start justify-center px-3 py-2.5 text-left transition-colors sm:min-w-[11rem] sm:px-4",
+    "certificate-chip flex min-h-[44px] flex-1 flex-col items-start justify-center rounded-xl px-3 py-2.5 text-left transition-colors sm:min-w-[11rem] sm:px-4",
     active
-      ? "border border-[#010a8b] bg-[#010a8b] text-[#ede8df]"
-      : "border border-[color-mix(in_srgb,#010a8b_35%,transparent)] bg-transparent text-[#010a8b] hover:bg-[color-mix(in_srgb,#010a8b_6%,transparent)]",
+      ? "certificate-chip--on border border-[#010a8b] bg-[#010a8b] text-[#ede8df]"
+      : "border border-[color-mix(in_srgb,#010a8b_35%,transparent)] bg-transparent text-[#010a8b]",
   ].join(" ");
 }
 
@@ -198,7 +198,7 @@ export function CertificateTypePicker({
             <span className="block font-display text-[13px] tracking-[0.03em] sm:text-sm">
               {meta.label[language]}
             </span>
-            <span className="mt-0.5 block font-body text-[9px] tracking-[0.08em] opacity-80 sm:text-[10px]">
+            <span className="mt-0.5 block font-body text-[11px] tracking-[0.08em] opacity-80 sm:text-[11px]">
               {language === "pl" ? meta.detailPl : meta.detailEn} ·{" "}
               {formatNominalPln(price, language)}
               {peopleNote}

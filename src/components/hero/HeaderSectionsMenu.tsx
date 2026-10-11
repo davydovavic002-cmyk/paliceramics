@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGrid } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { siteContent } from "@/lib/content";
 import { handleSectionClick } from "@/lib/scrollToSection";
 import type { NavItem } from "@/types";
@@ -66,7 +67,8 @@ export function HeaderSectionsMenu({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const { headerSections } = siteContent;
+  const { navItems } = useSiteTexts();
+  const headerSections = navItems(siteContent.headerSections);
 
   useEffect(() => {
     if (!open) return;

@@ -79,7 +79,7 @@ export function HeaderMenuOverlay({
       aria-modal="true"
       aria-label={language === "pl" ? "Menu" : "Menu"}
     >
-      <nav className="flex min-h-full w-full flex-col items-center justify-start px-6 pb-10 pt-[var(--header-offset)] text-center sm:justify-center">
+      <nav className="flex min-h-full w-full flex-col items-center justify-start px-6 pb-10 pt-[calc(var(--header-offset)+2rem)] text-center sm:justify-center">
         <div className="flex flex-col items-center gap-6 sm:gap-8 md:gap-10">
           {categories.map((category) => (
             <div key={category.id}>
