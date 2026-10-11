@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { LegalBackLink } from "@/components/site/LegalBackLink";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdminContent } from "@/hooks/useAdminContent";
 
@@ -16,13 +15,10 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-[100dvh] bg-theme-surface pt-[var(--header-offset,5.5rem)] text-theme transition-colors duration-700">
       <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16 lg:px-16">
-        <Link
-          href="/"
+        <LegalBackLink
+          label={back}
           className="inline-flex min-h-[44px] items-center gap-2 font-body text-[11px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
-          {back}
-        </Link>
+        />
 
         <motion.header
           className="mt-8"
