@@ -74,7 +74,7 @@ export function HeaderMenuOverlay({
 }) {
   return (
     <div
-      className="header-menu-overlay fixed inset-0 z-40 h-[100dvh] w-full overflow-x-hidden overflow-y-auto bg-[#F5F2EC] font-sans text-theme"
+      className="header-menu-overlay fixed inset-0 z-[60] h-[100dvh] w-full overflow-x-hidden overflow-y-auto bg-[#F5F2EC] font-sans text-theme"
       role="dialog"
       aria-modal="true"
       aria-label={language === "pl" ? "Menu" : "Menu"}

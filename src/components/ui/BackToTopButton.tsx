@@ -19,7 +19,7 @@ export function BackToTopButton({ threshold = 480 }: { threshold?: number }) {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-5 right-5 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_25%,transparent)] bg-[color-mix(in_srgb,#faf7f0_94%,transparent)] text-[#010a8b] shadow-md backdrop-blur-sm transition-opacity hover:opacity-90"
+      className="fixed bottom-5 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-[color-mix(in_srgb,#010a8b_25%,transparent)] bg-[color-mix(in_srgb,#faf7f0_94%,transparent)] text-[#010a8b] shadow-md backdrop-blur-sm transition-opacity hover:opacity-90"
       aria-label="Back to top"
     >
       <ArrowUp className="h-5 w-5" strokeWidth={1.5} />

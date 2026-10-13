@@ -692,7 +692,7 @@ html[data-cookie-banner="open"] main {
 .header-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 60;
   width: 100%;
   height: 100dvh;
   overflow-x: hidden;
@@ -839,7 +839,9 @@ html[data-cookie-banner="open"] main {
   /* exact height, not min-height: the hero must never push past a single screen */
   .hero-viewport-height {
     height: 100vh;
-    height: 100dvh;
+    /* svh, not dvh: dvh changes while the mobile address bar collapses during scroll,
+       which resized the hero and made the whole page (and the bokeh canvas) jump. */
+    height: 100svh;
   }
 
   .skip-to-content {

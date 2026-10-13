@@ -77,12 +77,12 @@ export function HeroDark() {
   const headlineLines = hero.heroHeadlineLines.en;
 
   return (
-    <section className="hero-dark-band hero-viewport-height relative isolate flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230]">
+    <section className="hero-dark-band hero-viewport-height relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden overflow-x-clip bg-[#353230]">
       <div className="hero-glow-layer" aria-hidden />
       <HeroBokeh animate={showDriftingStrokes} />
       {showDriftingStrokes ? <HakemeStrokes /> : null}
 
-      <div className="hero-copy-stack relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1800px] flex-col items-center justify-center overflow-x-clip px-5 pb-32 pt-12 sm:py-16 md:pb-16 lg:px-16">
+      <div className="hero-copy-stack relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1800px] flex-col items-center justify-center overflow-x-clip px-5 pb-32 pt-12 sm:py-16 md:pb-16 lg:px-16">
         <h1 className="sr-only">Pali ceramics</h1>
 
         <div className="hero-copy-column flex w-full flex-col items-center text-center">
