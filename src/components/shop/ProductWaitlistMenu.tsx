@@ -38,8 +38,21 @@ export function ProductWaitlistMenu({
     const onPointerDown = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const onOtherOpen = (event: Event) => {
+      if ((event as CustomEvent<string>).detail !== "waitlist") setOpen(false);
+    };
+    window.dispatchEvent(new CustomEvent("pali:product-menu-open", { detail: "waitlist" }));
     document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pali:product-menu-open", onOtherOpen);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pali:product-menu-open", onOtherOpen);
+    };
   }, [open]);
 
   const menuMotion = getMenuPanelProps(motionLevel);

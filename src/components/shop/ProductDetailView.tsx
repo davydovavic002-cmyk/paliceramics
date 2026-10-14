@@ -144,7 +144,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
           {/* columns stretch to the row height on purpose: with items-start the shorter column
               stopped early and the sheet's own gradient (which ends warm) showed through as a
               mismatched strip under the info panel */}
-          <div className="shop-product-sheet-inner grid min-w-0 grid-cols-1 rounded-2xl sm:rounded-[1.75rem] md:grid-cols-[minmax(0,29rem)_minmax(0,1fr)]">
+          <div className="shop-product-sheet-inner grid min-w-0 grid-cols-1 rounded-2xl sm:rounded-[1.75rem] md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
             <div className="shop-product-gallery-zone shop-product-gallery-zone-standard flex min-h-0 flex-col overflow-visible rounded-t-2xl sm:rounded-t-[1.75rem] md:rounded-l-[1.75rem] md:rounded-tr-none">
               <ProductGallery images={product.images} title={title} />
             </div>

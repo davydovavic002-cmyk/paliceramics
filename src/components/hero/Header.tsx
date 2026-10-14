@@ -243,6 +243,11 @@ export function Header() {
 
   const closeMenu = () => setOpen(false);
 
+  /* Any route change (link, browser back/forward) also closes the open menu. */
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   return (
     <>
     <header
@@ -266,7 +271,7 @@ export function Header() {
         >
           {heroOverlay ? (
             <>
-              <HeaderBrandLogo className="lg:hidden" />
+              <HeaderBrandLogo className="lg:hidden" onClick={closeMenu} />
               <nav
                 className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 lg:flex xl:gap-10"
                 aria-label="Main navigation"
@@ -278,13 +283,14 @@ export function Header() {
                       language={language}
                       fade={fade}
                       heroOverlay={heroOverlay}
+                      onNavigate={closeMenu}
                     />
                   </motion.div>
                 ))}
               </nav>
             </>
           ) : (
-            <HeaderBrandLogo />
+            <HeaderBrandLogo onClick={closeMenu} />
           )}
 
           {!heroOverlay ? (
@@ -299,6 +305,7 @@ export function Header() {
                     language={language}
                     fade={fade}
                     heroOverlay={heroOverlay}
+                    onNavigate={closeMenu}
                   />
                 </motion.div>
               ))}

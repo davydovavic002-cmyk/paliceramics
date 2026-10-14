@@ -963,9 +963,21 @@ html[data-cookie-banner="open"] main {
      pieces. Photos are fitted inside (object-contain), never cropped. */
   .shop-product-gallery-well-standard {
     width: 100%;
-    max-width: 27rem;
+    max-width: 25rem;
     margin-inline: auto;
     aspect-ratio: 4 / 5;
+  }
+
+  /* Tablet / desktop: the frame never grows taller than the screen allows, so the
+     photo and the price + buy button are visible together without scrolling. */
+  @media (min-width: 768px) {
+    .shop-product-gallery-well-standard {
+      max-width: clamp(
+        15rem,
+        calc((100svh - var(--header-offset, 5.5rem) - 11rem) * 0.8),
+        25rem
+      );
+    }
   }
 
   .shop-product-gallery-zone-standard {
@@ -1703,7 +1715,7 @@ html[data-cookie-banner="open"] main {
     }
 
     .about-bento-text2 .about-bento-body {
-      padding-right: 29%;
+      padding-right: 26%;
     }
 
     .about-bento-text3 .about-bento-body {
@@ -1723,6 +1735,15 @@ html[data-cookie-banner="open"] main {
 
     .about-bento-photo {
       aspect-ratio: auto;
+    }
+  }
+
+  /* Tablet landscape (1100-1439): the block is only ~1100-1400px wide, but the English
+     text is longer than the Polish one. A smaller type size keeps it inside its cell. */
+  @media (min-width: 1100px) and (max-width: 1439px) {
+    .about-bento {
+      --bento-fs: clamp(11px, calc(var(--bw) * 0.0086), 12.5px);
+      --bento-lead: clamp(14px, calc(var(--bw) * 0.0112), 17px);
     }
   }
 

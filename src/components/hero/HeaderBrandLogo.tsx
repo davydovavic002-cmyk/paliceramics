@@ -4,10 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { images } from "@/lib/images";
 
-export function HeaderBrandLogo({ className = "" }: { className?: string }) {
+export function HeaderBrandLogo({
+  className = "",
+  onClick,
+}: {
+  className?: string;
+  onClick?: () => void;
+}) {
   return (
     <Link
       href="/"
+      onClick={onClick}
       className={["header-brand-logo relative inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center", className].join(" ")}
       aria-label="Pali ceramics"
     >

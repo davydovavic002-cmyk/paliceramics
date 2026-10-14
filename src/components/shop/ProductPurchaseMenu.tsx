@@ -156,13 +156,25 @@ export function ProductPurchaseMenu({
       }
     };
 
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const onOtherOpen = (event: Event) => {
+      if ((event as CustomEvent<string>).detail !== "buy") setOpen(false);
+    };
+
+    window.dispatchEvent(new CustomEvent("pali:product-menu-open", { detail: "buy" }));
     const timer = window.setTimeout(() => {
       document.addEventListener("click", onClickOutside);
     }, 0);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pali:product-menu-open", onOtherOpen);
 
     return () => {
       window.clearTimeout(timer);
       document.removeEventListener("click", onClickOutside);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pali:product-menu-open", onOtherOpen);
     };
   }, [open]);
 

@@ -78,6 +78,11 @@ export function HeaderMenuOverlay({
       role="dialog"
       aria-modal="true"
       aria-label={language === "pl" ? "Menu" : "Menu"}
+      onClick={(event) => {
+        /* Safety net: whatever kind of link was pressed (page, section, hash), the menu
+           must never stay open on top of the place the visitor just chose. */
+        if ((event.target as Element).closest("a[href]")) onClose();
+      }}
     >
       <nav className="flex min-h-full w-full flex-col items-center justify-start px-6 pb-10 pt-[calc(var(--header-offset)+2rem)] text-center sm:justify-center">
         <div className="flex flex-col items-center gap-6 sm:gap-8 md:gap-10">

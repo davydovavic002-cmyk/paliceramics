@@ -546,7 +546,7 @@ export function ProductGallery({
           compact
             ? "aspect-[4/3] max-h-[min(48vw,16rem)] w-full max-w-[17.5rem] mx-auto lg:max-h-none lg:max-w-none lg:aspect-square"
             : customOrder
-              ? "mx-auto aspect-[4/5] max-w-[27rem]"
+              ? "mx-auto aspect-[4/5] max-w-[25rem]"
               : "shop-product-gallery-well-standard",
         ].join(" ")}
         tabIndex={hasMultiple ? 0 : undefined}
@@ -622,7 +622,7 @@ export function ProductGallery({
               ? "mt-1 flex w-full min-w-0 max-w-[17.5rem] gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:gap-2.5 mx-auto lg:mt-1 lg:max-w-none"
               : customOrder
                 ? "mt-3 grid w-full grid-cols-5 gap-2"
-                : "mt-1 flex max-w-[min(100%,27rem)] gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:mt-1.5 sm:gap-2.5",
+                : "mt-1 flex max-w-[min(100%,25rem)] gap-2 overflow-x-auto overscroll-x-contain p-3 scroll-px-3 sm:mt-1.5 sm:gap-2.5",
           ].join(" ")}
         >
           {projectImages.map((src, index) => (
