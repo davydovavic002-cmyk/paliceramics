@@ -108,7 +108,7 @@ export const SITE_TEXT_DEFS: SiteTextDef[] = [
   { key: "menu.groupInfo", group: "menuFooter", label: "Menu group — info", pl: "Informacje", en: "Info" },
   { key: "menu.collection", group: "menuFooter", label: "Menu — collection", pl: "Kolekcja", en: "Collection" },
   { key: "menu.shop", group: "menuFooter", label: "Menu — shop", pl: "Sklep", en: "Shop" },
-  { key: "menu.customOrder", group: "menuFooter", label: "Menu — custom order (top bar)", pl: "Zamówienia indywidualne", en: "Custom order" },
+  { key: "menu.customOrder", group: "menuFooter", label: "Menu — custom order (top bar)", pl: "Na zamówienie", en: "Custom order" },
   { key: "menu.workshops", group: "menuFooter", label: "Menu — workshops", pl: "Warsztaty", en: "Workshops" },
   { key: "menu.certificates", group: "menuFooter", label: "Menu — voucher", pl: "Voucher", en: "Gift card" },
   { key: "menu.about", group: "menuFooter", label: "Menu — about me", pl: "O mnie", en: "About me" },

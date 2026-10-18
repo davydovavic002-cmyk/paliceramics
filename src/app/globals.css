@@ -2092,3 +2092,14 @@ label {
     opacity: 0.7;
   }
 }
+
+
+/* iOS Safari zooms the whole page when a field with text under 16px gets focus, and that zoom
+   is what made the booking and voucher forms jump. 16px on touch widths stops it. */
+@media (max-width: 1023px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}

@@ -13,7 +13,7 @@ export const siteContent: SiteContent = {
     {
       id: "customOrder",
       href: "/shop/made-to-order",
-      label: { en: "Custom order", pl: "Zamówienia indywidualne" },
+      label: { en: "Custom order", pl: "Na zamówienie" },
     },
     { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
     { id: "about", href: "#about", label: { en: "About me", pl: "O mnie" } },

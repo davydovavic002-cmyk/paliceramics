@@ -18,9 +18,20 @@ export function useFormKeyboardScroll<T extends HTMLElement>() {
       const field = target.closest(FOCUSABLE);
       if (!(field instanceof HTMLElement)) return;
 
+      /* Wait for the keyboard, then move the page only as far as needed. A smooth
+         "center" scroll fought with iOS's own scrolling and made the screen jump. */
       window.setTimeout(() => {
-        field.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
-      }, 320);
+        const vv = window.visualViewport;
+        const viewHeight = vv ? vv.height : window.innerHeight;
+        const rect = field.getBoundingClientRect();
+        const topLimit = 96;
+        const bottomLimit = viewHeight - 24;
+        if (rect.top < topLimit) {
+          window.scrollBy({ top: rect.top - topLimit, behavior: "auto" });
+        } else if (rect.bottom > bottomLimit) {
+          window.scrollBy({ top: rect.bottom - bottomLimit, behavior: "auto" });
+        }
+      }, 400);
     };
 
     const onFocusIn = (event: FocusEvent) => scrollFocused(event.target);
