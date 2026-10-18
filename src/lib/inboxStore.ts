@@ -29,7 +29,7 @@ export type InboxRecord = {
 const MAX_RECORDS = 5000;
 const inboxFile = () => path.join(dataDir(), "inbox.json");
 
-async function useDatabase(): Promise<boolean> {
+async function databaseAvailable(): Promise<boolean> {
   return isDatabaseConfigured() && (await isDatabaseReachable());
 }
 
@@ -74,7 +74,7 @@ async function findSlot(slotId: string): Promise<SlotInfo | null> {
 export async function persistInbox(
   message: InboxSubmitBody
 ): Promise<{ id: string; voucherCode: string | null }> {
-  if (await useDatabase()) return persistDbInbox(message);
+  if (await databaseAvailable()) return persistDbInbox(message);
 
   if (JSON.stringify(message.payload).length > 8000) {
     throw new InboxPersistError("PAYLOAD_TOO_LARGE");
@@ -122,7 +122,7 @@ export async function persistInbox(
 }
 
 export async function listInbox(): Promise<InboxRecord[]> {
-  if (await useDatabase()) {
+  if (await databaseAvailable()) {
     const rows = await listDbInbox();
     return rows.map((m) => ({
       id: m.id,
@@ -141,7 +141,7 @@ export async function updateInbox(
   id: string,
   patch: { read?: boolean; status?: string }
 ): Promise<InboxRecord | null> {
-  if (await useDatabase()) {
+  if (await databaseAvailable()) {
     const m = await updateDbInbox(id, patch);
     return {
       id: m.id,
