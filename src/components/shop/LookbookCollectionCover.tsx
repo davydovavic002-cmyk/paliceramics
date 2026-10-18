@@ -11,6 +11,7 @@ import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { isDataImageUrl } from "@/lib/productImageUpload";
 import { resolvePublicImageUrl } from "@/lib/productImages";
 import { images } from "@/lib/images";
+import { RichText } from "@/components/ui/RichText";
 
 interface LookbookCollectionCoverProps {
   collection: LookbookCollection;
@@ -52,42 +53,37 @@ export function LookbookCollectionCover({
         className,
       ].join(" ")}
     >
-      <div className="lookbook-cover__lift relative flex flex-1 flex-col">
+      <div data-cover-media className="lookbook-cover__media pointer-events-none absolute inset-0 z-0">
+        <Image
+          src={imageSrc}
+          alt={name}
+          fill
+          priority={imagePriority}
+          fetchPriority={imagePriority ? "high" : undefined}
+          unoptimized={isDataImageUrl(imageSrc)}
+          sizes="(min-width: 1024px) 34vw, 50vw"
+          quality={imagePriority ? 78 : 72}
+          onError={() => {
+            const fallback = seed?.image ?? images.accentBowl;
+            if (imageSrc !== fallback) setImageSrc(fallback);
+          }}
+          className="object-cover object-center"
+        />
+      </div>
+
+      <div className="lookbook-cover__lift relative z-10 flex flex-1 flex-col">
         <div className="pointer-events-none absolute left-5 top-4 z-10 sm:left-6 sm:top-5">
           <span className="lookbook-section-muted font-body text-[10px] uppercase tracking-[0.28em]">
             {String(index + 1).padStart(2, "0")}
           </span>
         </div>
 
-        <div className="flex justify-center px-4 pb-1 pt-9 sm:px-5 sm:pt-10">
-          <div
-            data-cover-media
-            className="lookbook-cover__media relative h-[88px] w-full max-w-[9.5rem] sm:h-[96px] sm:max-w-[10.5rem] lg:h-[92px] lg:max-w-[9rem]"
-          >
-            <Image
-              src={imageSrc}
-              alt={name}
-              fill
-              priority={imagePriority}
-              fetchPriority={imagePriority ? "high" : undefined}
-              unoptimized={isDataImageUrl(imageSrc)}
-              sizes="168px"
-              quality={imagePriority ? 78 : 72}
-              onError={() => {
-                const fallback = seed?.image ?? images.accentBowl;
-                if (imageSrc !== fallback) setImageSrc(fallback);
-              }}
-              className="object-contain object-center"
-            />
-          </div>
-        </div>
-
-        <div className="relative z-10 px-5 pb-4 pt-1 sm:px-6 sm:pb-5">
+        <div className="relative z-10 mt-auto px-5 pb-4 pt-14 sm:px-6 sm:pb-5 sm:pt-16">
           <h3 className="lookbook-ink break-words font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em]">
             {name}
           </h3>
           <p className="lookbook-section-muted mt-1 font-body text-[11px] leading-snug tracking-[0.04em] sm:text-xs">
-            {subtitle}
+            <RichText text={subtitle} />
           </p>
         </div>
       </div>

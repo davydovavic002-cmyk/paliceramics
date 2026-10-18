@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -17,6 +17,7 @@ import {
 } from "@/lib/contentResolve";
 import { WorkshopFormatDetailsPanel } from "./WorkshopFormatDetailsPanel";
 import { ConsentField } from "@/components/site/ConsentField";
+import { RichText } from "@/components/ui/RichText";
 
 type BookingDraft = {
   step: number;
@@ -39,6 +40,7 @@ const initialBookingDraft: BookingDraft = {
 };
 
 export function WorkshopBookingBuilder() {
+  const rootRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
   const { workshopTypes, slots } = useWorkshopData();
   const { workshopFormatCopy, workshopBookingCopy } = useAdminContent();
@@ -190,6 +192,26 @@ export function WorkshopBookingBuilder() {
           spots: "spots",
         };
 
+  /* Steps have different heights; when the old step unmounts the page shrinks and the browser
+     clamps the scroll position, which used to land the visitor on the voucher section below. */
+  const keepBuilderInView = () => {
+    const el = rootRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    const offset = 88;
+    if (top < offset) {
+      window.scrollTo({ top: window.scrollY + top - offset, behavior: "auto" });
+    }
+  };
+
+  /* the form is swapped for the confirmation text, which is shorter — same clamping problem */
+  useEffect(() => {
+    if (!sent) return;
+    const id = window.requestAnimationFrame(keepBuilderInView);
+    return () => window.cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sent]);
+
   const submitBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -274,7 +296,7 @@ export function WorkshopBookingBuilder() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div ref={rootRef} className="mx-auto max-w-2xl">
       {/* role="list" is explicit because Tailwind's preflight strips list-style, which drops
           the implicit list role in Safari and would swallow the aria-label */}
       <ol
@@ -323,7 +345,7 @@ export function WorkshopBookingBuilder() {
         })}
       </ol>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" onExitComplete={keepBuilderInView}>
         {step === 1 ? (
           <motion.div
             key="step1"
@@ -503,7 +525,7 @@ export function WorkshopBookingBuilder() {
 
             {sent ? (
               <p className="mt-6 rounded-lg border border-[color-mix(in_srgb,var(--theme-accent)_25%,transparent)] bg-white px-4 py-4 font-body text-sm leading-relaxed text-theme">
-                {copy.sent}
+                <RichText text={copy.sent} />
               </p>
             ) : (
               <form
@@ -541,7 +563,7 @@ export function WorkshopBookingBuilder() {
                       placeholder={copy.voucherNumber}
                       className="min-h-[44px] w-full rounded-full border border-theme/25 bg-white px-5 py-2.5 font-body text-sm text-theme outline-none focus:border-[var(--theme-accent)]"
                     />
-                    <p className="font-body text-sm leading-relaxed text-theme-muted">{copy.voucherBring}</p>
+                    <p className="font-body text-sm leading-relaxed text-theme-muted"><RichText text={copy.voucherBring} /></p>
                   </div>
                 ) : null}
                 <ConsentField checked={consent} onChange={setConsent} purpose="booking" />

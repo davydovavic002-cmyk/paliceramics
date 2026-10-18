@@ -1,6 +1,7 @@
 "use client";
 
 import { BilingualField } from "./BilingualField";
+import { RichTextarea } from "./RichTextarea";
 import type { AdminWorkshopFormatCopy } from "@/lib/adminContentSeeds";
 
 function paragraphsToText(paragraphs: string[]) {
@@ -100,16 +101,16 @@ function ParagraphField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="block">
+    <div className="block">
       <span className="mb-1 block text-[10px] uppercase tracking-wider text-admin-dim">{label}</span>
-      <textarea
+      <RichTextarea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange}
         rows={8}
         className="admin-input w-full rounded-lg px-3 py-2 text-[12px] leading-relaxed"
-        placeholder="One paragraph per blank line"
+        placeholder="Enter = new line, blank line = new paragraph"
       />
-    </label>
+    </div>
   );
 }
 

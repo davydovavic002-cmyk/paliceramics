@@ -7,10 +7,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { canonicalCollectionId, slugifyCatalogId } from "@/lib/catalogConfig";
+import { fetchServerInbox, pushContent, setAdminPending } from "@/lib/contentSync";
 import {
   ADMIN_UPDATE_EVENT,
   loadAdminData,
@@ -109,22 +111,137 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AdminPersistedData>(seedAdminData);
   const [hydrated, setHydrated] = useState(false);
   const [savedHint, setSavedHint] = useState("");
+  const dataRef = useRef(data);
+  dataRef.current = data;
+  const serverRef = useRef(false);
+  const lastPushedRef = useRef<string | null>(null);
+  const hintTimerRef = useRef<number | undefined>(undefined);
+  const pushTimerRef = useRef<number | undefined>(undefined);
+  const pushSeqRef = useRef(0);
+
+  const showHint = useCallback((text: string, ms: number) => {
+    setSavedHint(text);
+    window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => setSavedHint(""), ms);
+  }, []);
 
   useEffect(() => {
-    const loaded = loadAdminData();
-    setData(normalizeAdminData(loaded ?? seedAdminData()));
-    setHydrated(true);
-  }, []);
+    let cancelled = false;
+    (async () => {
+      let server = false;
+      let remote: AdminPersistedData | null = null;
+      try {
+        const session = (await (
+          await fetch("/api/admin/session", { cache: "no-store" })
+        ).json()) as { authed?: boolean; contentServer?: boolean };
+        if (session.authed && session.contentServer) {
+          const res = await fetch("/api/admin/content", { cache: "no-store" });
+          const json = (await res.json()) as { ok?: boolean; data?: AdminPersistedData | null };
+          if (res.ok && json.ok) {
+            server = true;
+            remote = json.data ?? null;
+          }
+        }
+      } catch {
+        server = false;
+      }
+      if (cancelled) return;
+
+      const local = loadAdminData();
+      // Server copy wins; customer messages stay local (they never go to the public file).
+      const serverInbox = server ? await fetchServerInbox() : null;
+      if (cancelled) return;
+      const inbox = serverInbox ?? local?.inbox ?? [];
+      const base = remote ? { ...remote, inbox } : { ...(local ?? seedAdminData()), inbox };
+      serverRef.current = server;
+      lastPushedRef.current = remote ? JSON.stringify(remote) : null;
+      setData(normalizeAdminData(base));
+      setHydrated(true);
+      if (!server) {
+        showHint("Server unavailable — changes are saved only in this browser", 6000);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showHint]);
 
   useEffect(() => {
     if (!hydrated) return;
     saveAdminData(data);
-  }, [data, hydrated]);
+    if (!serverRef.current) return;
+
+    const { inbox: _inbox, ...publicPart } = data;
+    void _inbox;
+    const snapshot = JSON.stringify({ ...publicPart, inbox: [] });
+    if (snapshot === lastPushedRef.current) return;
+
+    setAdminPending(true);
+    window.clearTimeout(pushTimerRef.current);
+    pushTimerRef.current = window.setTimeout(async () => {
+      const seq = ++pushSeqRef.current;
+      const result = await pushContent(data);
+      if (seq !== pushSeqRef.current) return;
+      if (!result.ok) {
+        showHint(
+          result.error === "SESSION_EXPIRED"
+            ? "Session expired — NOT saved on the server. Log in again."
+            : "NOT saved on the server — check the connection, then edit again",
+          9000
+        );
+        return;
+      }
+      lastPushedRef.current = JSON.stringify({ ...result.data, inbox: [] });
+      setAdminPending(false);
+      showHint("Saved on the server — visible on all devices", 2800);
+      if (result.changed) {
+        // photos were moved from the browser into files; swap the heavy copies out
+        setData((prev) => (prev === data ? { ...result.data, inbox: prev.inbox } : prev));
+      }
+    }, 700);
+  }, [data, hydrated, showHint]);
+
+  const refreshInbox = useCallback(async () => {
+    if (!serverRef.current) return;
+    const fresh = await fetchServerInbox();
+    if (!fresh) return;
+    setData((prev) =>
+      JSON.stringify(prev.inbox) === JSON.stringify(fresh)
+        ? prev
+        : normalizeAdminData({ ...prev, inbox: fresh })
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const tick = () => void refreshInbox();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    const timer = window.setInterval(tick, 30000);
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pali-inbox-changed", tick);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pali-inbox-changed", tick);
+    };
+  }, [hydrated, refreshInbox]);
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(pushTimerRef.current);
+      window.clearTimeout(hintTimerRef.current);
+    };
+  }, []);
 
   const flashSaved = useCallback(() => {
-    setSavedHint("Saved — changes appear on the site in this browser");
-    window.setTimeout(() => setSavedHint(""), 2400);
-  }, []);
+    if (serverRef.current) {
+      showHint("Saving…", 2400);
+    } else {
+      showHint("Saved — only in this browser", 2400);
+    }
+  }, [showHint]);
 
   const patchData = useCallback(
     (updater: (prev: AdminPersistedData) => AdminPersistedData) => {
@@ -398,25 +515,38 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     flashSaved();
   }, [flashSaved]);
 
+  const patchServerInbox = useCallback((id: string, read: boolean) => {
+    if (!serverRef.current) return;
+    void fetch("/api/admin/inbox", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, read }),
+    });
+  }, []);
+
   const markInboxRead = useCallback(
     (id: string) => {
       patchData((prev) => ({
         ...prev,
         inbox: prev.inbox.map((m) => (m.id === id ? { ...m, read: true } : m)),
       }));
+      patchServerInbox(id, true);
     },
-    [patchData]
+    [patchData, patchServerInbox]
   );
 
   const toggleInboxRead = useCallback(
     (id: string) => {
+      const current = dataRef.current.inbox.find((m) => m.id === id);
       patchData((prev) => ({
         ...prev,
         inbox: prev.inbox.map((m) => (m.id === id ? { ...m, read: !m.read } : m)),
       }));
+      if (current) patchServerInbox(id, !current.read);
     },
-    [patchData]
+    [patchData, patchServerInbox]
   );
+
 
   const setFaq: React.Dispatch<React.SetStateAction<AdminFaqItem[]>> = useCallback(
     (action) => {

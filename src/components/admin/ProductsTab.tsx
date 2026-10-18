@@ -13,6 +13,7 @@ import {
 import { getCollectionLabelFromList, getPieceTypeLabelFromList } from "@/lib/catalogConfig";
 import { CollectionEditor } from "./CollectionEditor";
 import { PieceTypesPanel } from "./PieceTypesPanel";
+import { ProductOrderPanel } from "./ProductOrderPanel";
 import {
   ProductsInventoryPanel,
   type InventorySelection,
@@ -142,6 +143,36 @@ export function ProductsTab() {
           : p
       )
     );
+  };
+
+  /* Reorders the shop's "Rekomendowane" sorting: the catalog uses the order of this very
+     array, so we swap/move the piece among the products shown in the shop (made-to-order
+     items are skipped) and leave the others where they are. */
+  const moveProduct = (id: string, direction: "up" | "down" | "top") => {
+    setProducts((prev) => {
+      const shopIdx = prev
+        .map((product, index) => (product.status !== "made-to-order" ? index : -1))
+        .filter((index) => index !== -1);
+      const pos = shopIdx.findIndex((index) => prev[index].id === id);
+      if (pos === -1) return prev;
+      const next = [...prev];
+      if (direction === "top") {
+        if (pos === 0) return prev;
+        const moved = prev[shopIdx[pos]];
+        const order = shopIdx.map((index) => prev[index]).filter((product) => product.id !== id);
+        order.unshift(moved);
+        shopIdx.forEach((index, i) => {
+          next[index] = order[i];
+        });
+        return next;
+      }
+      const target = direction === "up" ? pos - 1 : pos + 1;
+      if (target < 0 || target >= shopIdx.length) return prev;
+      const a = shopIdx[pos];
+      const b = shopIdx[target];
+      [next[a], next[b]] = [next[b], next[a]];
+      return next;
+    });
   };
 
   const removeProduct = (id: string) => {
@@ -291,6 +322,11 @@ export function ProductsTab() {
             }}
             onAddProductToCollection={(collectionId) => openAdd(collectionId)}
             statusLabel={productStatusLabel}
+          />
+          <ProductOrderPanel
+            products={catalogProducts}
+            statusLabel={productStatusLabel}
+            onMove={moveProduct}
           />
           <PieceTypesPanel
             pieceTypes={pieceTypes}

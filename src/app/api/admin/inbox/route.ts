@@ -1,42 +1,37 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth";
-import { isDatabaseConfigured } from "@/lib/db";
-import { listInboxMessages, updateInboxMessage } from "@/lib/inboxDb";
+import { listInbox, updateInbox } from "@/lib/inboxStore";
 
-export async function GET() {
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "Database not configured" }, { status: 503 });
-  }
+export const dynamic = "force-dynamic";
 
+async function authorized(): Promise<boolean> {
   try {
     await requireAdminSession();
+    return true;
   } catch {
+    return false;
+  }
+}
+
+export async function GET() {
+  if (!(await authorized())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const messages = await listInboxMessages();
-  return NextResponse.json({
-    ok: true,
-    messages: messages.map((m) => ({
-      id: m.id,
-      type: m.type,
-      createdAt: m.createdAt.toISOString(),
-      read: m.read,
-      status: m.status,
-      voucherCode: m.voucherCode,
-      payload: m.payload as Record<string, string>,
-    })),
-  });
+  try {
+    const messages = await listInbox();
+    return NextResponse.json(
+      { ok: true, messages },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    console.error("[admin/inbox]", error);
+    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: Request) {
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "Database not configured" }, { status: 503 });
-  }
-
-  try {
-    await requireAdminSession();
-  } catch {
+  if (!(await authorized())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -51,10 +46,12 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ ok: false, error: "Missing id" }, { status: 400 });
   }
 
-  const updated = await updateInboxMessage(body.id, {
-    read: body.read,
-    status: body.status,
-  });
-
-  return NextResponse.json({ ok: true, message: updated });
+  try {
+    const updated = await updateInbox(body.id, { read: body.read, status: body.status });
+    if (!updated) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true, message: updated });
+  } catch (error) {
+    console.error("[admin/inbox]", error);
+    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+  }
 }

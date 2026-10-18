@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/auth";
-import { isDatabaseReachable } from "@/lib/db";
+import { getAdminSession, isSessionConfigured } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  if (!(await isDatabaseReachable())) {
-    return NextResponse.json({ ok: true, authed: false, mode: "demo" });
-  }
-
   const session = await getAdminSession();
   return NextResponse.json({
     ok: true,
     authed: Boolean(session),
-    mode: "server",
+    /** "server" = inbox + content live on the server (database or files). */
+    mode: isSessionConfigured() ? "server" : "demo",
+    /** Admin content is saved in files on the server (works without a database). */
+    contentServer: isSessionConfigured(),
   });
 }

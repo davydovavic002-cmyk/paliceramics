@@ -10,6 +10,11 @@ export const siteContent: SiteContent = {
   nav: [
     { id: "collection", href: "#collection", label: { en: "Collection", pl: "Kolekcja" } },
     { id: "shop", href: "/shop", label: { en: "Shop", pl: "Sklep" } },
+    {
+      id: "customOrder",
+      href: "/shop/made-to-order",
+      label: { en: "Custom order", pl: "Zamówienia indywidualne" },
+    },
     { id: "workshops", href: "#workshops", label: { en: "Workshops", pl: "Warsztaty" } },
     { id: "about", href: "#about", label: { en: "About me", pl: "O mnie" } },
   ],

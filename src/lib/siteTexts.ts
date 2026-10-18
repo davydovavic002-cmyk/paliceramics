@@ -108,6 +108,7 @@ export const SITE_TEXT_DEFS: SiteTextDef[] = [
   { key: "menu.groupInfo", group: "menuFooter", label: "Menu group — info", pl: "Informacje", en: "Info" },
   { key: "menu.collection", group: "menuFooter", label: "Menu — collection", pl: "Kolekcja", en: "Collection" },
   { key: "menu.shop", group: "menuFooter", label: "Menu — shop", pl: "Sklep", en: "Shop" },
+  { key: "menu.customOrder", group: "menuFooter", label: "Menu — custom order (top bar)", pl: "Zamówienia indywidualne", en: "Custom order" },
   { key: "menu.workshops", group: "menuFooter", label: "Menu — workshops", pl: "Warsztaty", en: "Workshops" },
   { key: "menu.certificates", group: "menuFooter", label: "Menu — voucher", pl: "Voucher", en: "Gift card" },
   { key: "menu.about", group: "menuFooter", label: "Menu — about me", pl: "O mnie", en: "About me" },
@@ -136,6 +137,7 @@ export const SITE_TEXT_DEFS: SiteTextDef[] = [
   { key: "footer.catalog", group: "menuFooter", label: "Footer — catalog link", pl: "Katalog", en: "Catalog" },
   { key: "footer.privacy", group: "menuFooter", label: "Footer — privacy link", pl: "Polityka prywatności", en: "Privacy policy" },
   { key: "footer.terms", group: "menuFooter", label: "Footer — terms link", pl: "Regulamin sklepu", en: "Shop terms" },
+  { key: "footer.workshopTerms", group: "menuFooter", label: "Footer — workshop terms link", pl: "Regulamin warsztatów", en: "Workshop terms" },
   { key: "footer.rights", group: "menuFooter", label: "Footer — copyright line", pl: "© Pali Ceramics · Warszawa", en: "© Pali Ceramics · Warsaw" },
 ];
 
@@ -180,7 +182,7 @@ export type LegalDoc = {
   sections: LegalSection[];
 };
 
-export type AdminLegal = { privacy: LegalDoc; terms: LegalDoc };
+export type AdminLegal = { privacy: LegalDoc; terms: LegalDoc; workshopTerms: LegalDoc };
 
 function cloneSections(
   sections: { title: { pl: string; en: string }; body: { pl: string[]; en: string[] } }[]
@@ -204,6 +206,12 @@ export function seedLegal(): AdminLegal {
       updated: { ...termsMeta.updated },
       intro: { ...termsMeta.intro },
       sections: cloneSections(termsSections),
+    },
+    workshopTerms: {
+      title: { pl: "Regulamin warsztatów", en: "Workshop terms" },
+      updated: { pl: "", en: "" },
+      intro: { pl: "", en: "" },
+      sections: [],
     },
   };
 }
@@ -246,5 +254,6 @@ export function normalizeLegal(raw: unknown): AdminLegal {
   return {
     privacy: normalizeLegalDoc(o.privacy, seed.privacy),
     terms: normalizeLegalDoc(o.terms, seed.terms),
+    workshopTerms: normalizeLegalDoc(o.workshopTerms, seed.workshopTerms),
   };
 }

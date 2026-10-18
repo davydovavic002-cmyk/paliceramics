@@ -18,8 +18,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   useEffect(() => {
     fetch("/api/admin/session")
       .then((res) => res.json())
-      .then((data: { mode?: string; authed?: boolean }) => {
-        setServerMode(data.mode === "server");
+      .then((data: { mode?: string; authed?: boolean; contentServer?: boolean }) => {
+        setServerMode(data.mode === "server" || Boolean(data.contentServer));
         if (data.authed) onLogin();
       })
       .catch(() => setServerMode(false));
@@ -106,7 +106,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
           {serverMode === false ? (
             <p className="mt-4 text-center text-xs text-admin-dim">
-              Demo mode — connect PostgreSQL for server auth.
+              Demo mode — changes are saved only in this browser.
             </p>
           ) : null}
         </form>

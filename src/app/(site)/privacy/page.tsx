@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { LegalBackLink } from "@/components/site/LegalBackLink";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdminContent } from "@/hooks/useAdminContent";
+import { RichText } from "@/components/ui/RichText";
 
 export default function PrivacyPage() {
   const { language } = useLanguage();
@@ -52,7 +53,7 @@ export default function PrivacyPage() {
                     key={`${index}-${pIdx}`}
                     className="font-body text-sm leading-relaxed text-theme-muted"
                   >
-                    {paragraph}
+                    <RichText text={paragraph} />
                   </li>
                 ))}
               </ul>

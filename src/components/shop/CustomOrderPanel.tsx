@@ -8,6 +8,7 @@ import {
   customOrderCatalogCard,
 } from "@/lib/customOrderContent";
 import { ProductGallery } from "./ProductGallery";
+import { RichText } from "@/components/ui/RichText";
 
 function contactHref(kind: "email" | "instagram" | "facebook", value: string): string {
   const trimmed = value.trim();
@@ -151,7 +152,7 @@ export function CustomOrderPanel({ onClose }: CustomOrderPanelProps) {
                   key={paragraph.slice(0, 28)}
                   className="max-w-prose font-inter text-sm font-normal leading-relaxed text-theme"
                 >
-                  {paragraph}
+                  <RichText text={paragraph} />
                 </p>
               ))}
             </div>

@@ -7,6 +7,7 @@ import { handleSectionClick } from "@/lib/scrollToSection";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { WorkshopBookingBuilder } from "./WorkshopBookingBuilder";
 import { WorkshopPotteryPattern } from "./WorkshopPotteryPattern";
+import { RichText } from "@/components/ui/RichText";
 
 export function WorkshopsBookingSection() {
   const { t } = useSiteTexts();
@@ -38,7 +39,7 @@ export function WorkshopsBookingSection() {
               {header.title}
             </h2>
             <p className="mt-3 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">
-              {header.subtitle}
+              <RichText text={header.subtitle} />
             </p>
 
             <div className="pointer-events-auto mt-5">

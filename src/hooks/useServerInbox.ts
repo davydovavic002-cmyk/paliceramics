@@ -69,6 +69,7 @@ export function useServerInbox(enabled: boolean) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, read }),
     });
+    window.dispatchEvent(new Event("pali-inbox-changed"));
   };
 
   const setStatus = async (id: string, status: string) => {
@@ -81,6 +82,7 @@ export function useServerInbox(enabled: boolean) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, status, read: true }),
     });
+    window.dispatchEvent(new Event("pali-inbox-changed"));
   };
 
   return { messages, loading, serverMode, toggleRead, setStatus };

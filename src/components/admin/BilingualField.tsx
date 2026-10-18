@@ -1,13 +1,15 @@
 "use client";
 
+import { RichTextarea } from "./RichTextarea";
+
 const inputCls = "admin-input w-full rounded-xl px-3 py-2 text-[13px]";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
+    <div className="block">
       <span className="mb-1 block text-[11px] text-admin-muted">{label}</span>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -28,27 +30,25 @@ export function BilingualField({
   multiline?: boolean;
   rows?: number;
 }) {
-  const Tag = multiline ? "textarea" : "input";
+  const fieldCls = `${inputCls} ${multiline ? "min-h-[4.5rem] resize-y" : ""}`;
 
   return (
     <div>
       <p className="mb-2 text-[11px] font-medium tracking-tight text-admin-label">{label}</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="English">
-          <Tag
-            value={en}
-            onChange={(e) => onEn(e.target.value)}
-            rows={multiline ? rows : undefined}
-            className={`${inputCls} ${multiline ? "min-h-[4.5rem] resize-y" : ""}`}
-          />
+          {multiline ? (
+            <RichTextarea value={en} onChange={onEn} rows={rows} className={fieldCls} />
+          ) : (
+            <input value={en} onChange={(e) => onEn(e.target.value)} className={fieldCls} />
+          )}
         </Field>
         <Field label="Polski">
-          <Tag
-            value={pl}
-            onChange={(e) => onPl(e.target.value)}
-            rows={multiline ? rows : undefined}
-            className={`${inputCls} ${multiline ? "min-h-[4.5rem] resize-y" : ""}`}
-          />
+          {multiline ? (
+            <RichTextarea value={pl} onChange={onPl} rows={rows} className={fieldCls} />
+          ) : (
+            <input value={pl} onChange={(e) => onPl(e.target.value)} className={fieldCls} />
+          )}
         </Field>
       </div>
     </div>

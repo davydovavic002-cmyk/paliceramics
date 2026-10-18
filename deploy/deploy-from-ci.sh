@@ -30,7 +30,7 @@ if [[ ! -f .env.local ]]; then
   cat > .env.local <<EOF
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL="${SITE_URL:-https://pali.neostudio.space}"
-NEXT_PUBLIC_USE_INBOX_API="false"
+NEXT_PUBLIC_USE_INBOX_API="true"
 SESSION_SECRET="${SESSION_SECRET}"
 EOF
 fi

@@ -21,6 +21,7 @@ import { ConsentField } from "@/components/site/ConsentField";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 
 import { useFormDraft } from "@/hooks/useFormDraft";
+import { RichText } from "@/components/ui/RichText";
 
 const initialCertificateDraft: CertificateDraft = {
   type: "workshop-once",
@@ -158,7 +159,7 @@ export function CertificateSection() {
               {copy.title}
             </h2>
             <p className="mt-3 font-body text-sm leading-relaxed tracking-[0.04em] text-theme-muted sm:text-[15px]">
-              {copy.subtitle}
+              <RichText text={copy.subtitle} />
             </p>
           </MotionReveal>
         </header>
@@ -169,7 +170,7 @@ export function CertificateSection() {
         >
           <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#010a8b]" strokeWidth={1.75} aria-hidden />
           <p className="min-w-0 font-body text-base leading-relaxed text-theme sm:text-[17px]">
-            {copy.flowNote}
+            <RichText text={copy.flowNote} />
           </p>
         </div>
 
@@ -181,7 +182,7 @@ export function CertificateSection() {
           <div className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">
             {sent ? (
               <div className="space-y-4 rounded-2xl border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] p-5">
-                <p className="font-body text-sm leading-relaxed text-theme">{copy.success}</p>
+                <p className="font-body text-sm leading-relaxed text-theme"><RichText text={copy.success} /></p>
                 <button
                   type="button"
                   onClick={() => {
@@ -234,7 +235,7 @@ export function CertificateSection() {
                     ))}
                   </div>
                   <p className="mt-1.5 font-body text-[11px] leading-snug text-theme-muted lg:hidden">
-                    {copy.participantsHint}
+                    <RichText text={copy.participantsHint} />
                   </p>
                   <p className="mt-1.5 font-body text-sm text-theme">
                     {language === "pl" ? "Nominał:" : "Nominal:"}{" "}

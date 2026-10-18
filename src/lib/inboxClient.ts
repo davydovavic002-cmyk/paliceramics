@@ -14,7 +14,8 @@ export type InboxSubmitResult = {
   error?: string;
 };
 
-const useApi = process.env.NEXT_PUBLIC_USE_INBOX_API === "true";
+/** On by default; set NEXT_PUBLIC_USE_INBOX_API="false" at build time to keep demo-only storage. */
+const useApi = process.env.NEXT_PUBLIC_USE_INBOX_API !== "false";
 
 export async function submitInboxMessage(
   type: InboxMessageType,

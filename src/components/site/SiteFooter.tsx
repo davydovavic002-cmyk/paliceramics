@@ -7,6 +7,7 @@ import { siteContent } from "@/lib/content";
 import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { handleSectionClick } from "@/lib/scrollToSection";
+import { RichText } from "@/components/ui/RichText";
 
 function contactHref(
   kind: "email" | "instagram" | "facebook" | "whatsapp",
@@ -107,6 +108,7 @@ export function SiteFooter() {
     contact: t("menu.contact"),
     privacy: t("footer.privacy"),
     terms: t("footer.terms"),
+    workshopTerms: t("footer.workshopTerms"),
     rights: t("footer.rights"),
     instagram: "Instagram",
     facebook: "Facebook",
@@ -128,6 +130,7 @@ export function SiteFooter() {
     { href: "/shop", label: t("footer.catalog") },
     { href: "/#faq", label: "FAQ" },
     { href: "/regulamin", label: copy.terms },
+    { href: "/regulamin-warsztatow", label: copy.workshopTerms },
     { href: "/privacy", label: copy.privacy },
   ];
 
@@ -140,7 +143,7 @@ export function SiteFooter() {
               {copy.studioTitle}
             </p>
             <p className="footer-ink max-w-xl font-display text-[clamp(1.1rem,2.2vw,1.5rem)] italic leading-snug tracking-[0.03em]">
-              {copy.studioTagline}
+              <RichText text={copy.studioTagline} />
             </p>
             <nav
               aria-label={language === "pl" ? "Szybkie linki" : "Quick links"}
@@ -154,6 +157,9 @@ export function SiteFooter() {
               </Link>
               <Link href="/regulamin" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
                 {copy.terms}
+              </Link>
+              <Link href="/regulamin-warsztatow" className="inline-flex min-h-[44px] items-center py-2 text-[var(--footer-ink)]/80 transition-opacity hover:text-[var(--footer-ink)] active:opacity-70">
+                {copy.workshopTerms}
               </Link>
             </nav>
           </div>
@@ -177,7 +183,7 @@ export function SiteFooter() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
             <div className={footerColClass(0, 5)}>
               <p className="footer-ink font-display text-lg tracking-[0.06em]">Pali Ceramics</p>
-              <p className="footer-muted mt-4 font-body text-sm leading-relaxed">{copy.mission}</p>
+              <p className="footer-muted mt-4 font-body text-sm leading-relaxed"><RichText text={copy.mission} /></p>
             </div>
 
             <div className={footerColClass(1, 5)}>

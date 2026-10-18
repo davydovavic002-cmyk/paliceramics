@@ -6,23 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAdminContent } from "@/hooks/useAdminContent";
 import { palinaStoryForLanguage } from "@/lib/contentResolve";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-
-/** Renders **bold** segments inline. */
-function Rich({ text }: { text: string }) {
-  return (
-    <>
-      {text.split("**").map((part, i) =>
-        i % 2 === 1 ? (
-          <strong key={i} className="font-bold">
-            {part}
-          </strong>
-        ) : (
-          <span key={i}>{part}</span>
-        )
-      )}
-    </>
-  );
-}
+import { RichText } from "@/components/ui/RichText";
 
 const BENTO_P =
   "text-[length:var(--bento-fs,13px)] leading-[1.25] text-[#010a8b]";
@@ -196,8 +180,8 @@ export function PalinaStoryGallery() {
       objectPosition: "center center",
       body: (
         <>
-          <h3>{copy.lead}</h3>
-          <p>{copy.origin}</p>
+          <h3><RichText text={copy.lead} /></h3>
+          <p><RichText text={copy.origin} /></p>
         </>
       ),
     },
@@ -207,9 +191,9 @@ export function PalinaStoryGallery() {
       objectPosition: "center 20%",
       body: (
         <>
-          <p>{copy.brand}</p>
+          <p><RichText text={copy.brand} /></p>
           <p>
-            <Rich text={copy.workshops} />
+            <RichText text={copy.workshops} />
           </p>
         </>
       ),
@@ -221,9 +205,9 @@ export function PalinaStoryGallery() {
       body: (
         <>
           <p>
-            <Rich text={copy.craft} />
+            <RichText text={copy.craft} />
           </p>
-          <p>{copy.closing}</p>
+          <p><RichText text={copy.closing} /></p>
         </>
       ),
     },
@@ -235,9 +219,11 @@ export function PalinaStoryGallery() {
       <div className="about-bento">
         <BentoText number="1." areaClass="about-bento-text1">
           <h3 className="text-[length:var(--bento-lead,16px)] font-normal leading-[1.25] text-[#010a8b]">
-            {copy.lead}
+            <RichText text={copy.lead} />
           </h3>
-          <p className={`mt-[1.4em] ${BENTO_P}`}>{copy.origin}</p>
+          <p className={`mt-[1.4em] ${BENTO_P}`}>
+            <RichText text={copy.origin} />
+          </p>
         </BentoText>
 
         <BentoPhoto
@@ -250,9 +236,11 @@ export function PalinaStoryGallery() {
         />
 
         <BentoText number="2." areaClass="about-bento-text2">
-          <p className={BENTO_P}>{copy.brand}</p>
+          <p className={BENTO_P}>
+            <RichText text={copy.brand} />
+          </p>
           <p className={`mt-[1.4em] ${BENTO_P}`}>
-            <Rich text={copy.workshops} />
+            <RichText text={copy.workshops} />
           </p>
         </BentoText>
 
@@ -267,9 +255,11 @@ export function PalinaStoryGallery() {
 
         <BentoText number="3." areaClass="about-bento-text3">
           <p className={BENTO_P}>
-            <Rich text={copy.craft} />
+            <RichText text={copy.craft} />
           </p>
-          <p className={`mt-[1.4em] ${BENTO_P}`}>{copy.closing}</p>
+          <p className={`mt-[1.4em] ${BENTO_P}`}>
+            <RichText text={copy.closing} />
+          </p>
         </BentoText>
 
         <BentoPhoto

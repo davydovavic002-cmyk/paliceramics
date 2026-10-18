@@ -134,7 +134,7 @@ export function LegalAdminSection({
       <div>
         <h2 className="text-[15px] font-semibold tracking-tight text-admin-heading">Legal pages</h2>
         <p className="mt-0.5 text-[12px] text-admin-muted">
-          Privacy policy (/privacy) and shop terms (/regulamin). Open a section to edit its text.
+          Privacy policy (/privacy), shop terms (/regulamin) and workshop terms (/regulamin-warsztatow). Open a section to edit its text.
         </p>
       </div>
       <DocEditor
@@ -148,6 +148,12 @@ export function LegalAdminSection({
         doc={legal.terms}
         onChange={(next) => onChange({ ...legal, terms: next })}
         onReset={() => onChange({ ...legal, terms: seedLegal().terms })}
+      />
+      <DocEditor
+        label="Workshop terms (Regulamin warsztatów)"
+        doc={legal.workshopTerms}
+        onChange={(next) => onChange({ ...legal, workshopTerms: next })}
+        onReset={() => onChange({ ...legal, workshopTerms: seedLegal().workshopTerms })}
       />
     </section>
   );

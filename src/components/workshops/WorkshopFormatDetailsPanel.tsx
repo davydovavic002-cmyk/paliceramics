@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/context/LanguageContext";
 import type { WorkshopMkCopyBlock } from "@/lib/workshopMkCopy";
+import { RichText } from "@/components/ui/RichText";
 
 type WorkshopFormatDetailsPanelProps = {
   format: WorkshopMkCopyBlock;
@@ -28,9 +29,9 @@ export function WorkshopFormatDetailsPanel({
           {format.paragraphs[language].map((paragraph) => (
             <p
               key={paragraph.slice(0, 40)}
-              className="font-body text-base leading-relaxed text-theme sm:text-[17px]"
+              className="whitespace-pre-line font-body text-base leading-relaxed text-theme sm:text-[17px]"
             >
-              {paragraph}
+              <RichText text={paragraph} />
             </p>
           ))}
         </div>

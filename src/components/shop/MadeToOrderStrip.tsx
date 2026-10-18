@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
+import { RichText } from "@/components/ui/RichText";
 
 export function MadeToOrderStrip() {
   const { t } = useSiteTexts();
@@ -30,7 +31,7 @@ export function MadeToOrderStrip() {
             {name}
           </h3>
           <p className="made-to-order-card__muted mt-1 max-w-xl font-body text-xs leading-relaxed sm:text-sm">
-            {detail}
+            <RichText text={detail} />
           </p>
         </div>
 

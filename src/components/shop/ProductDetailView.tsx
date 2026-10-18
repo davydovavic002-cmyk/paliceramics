@@ -25,6 +25,7 @@ import { ProductPurchaseMenu } from "./ProductPurchaseMenu";
 import { ProductWaitlistMenu } from "./ProductWaitlistMenu";
 import { ProductMobileBackBar } from "./ProductMobileBackBar";
 import { ShopStatusBadge } from "./ShopStatusBadge";
+import { RichText } from "@/components/ui/RichText";
 
 export function ProductDetailView({ sku }: { sku: string }) {
   const router = useRouter();
@@ -205,7 +206,7 @@ export function ProductDetailView({ sku }: { sku: string }) {
               <div className="mt-4">
                 <p className="shop-product-section-label font-inter">{copy.about}</p>
                 <p className="mt-2 max-w-prose font-inter text-sm font-normal leading-relaxed text-theme">
-                  {description}
+                  <RichText text={description} />
                 </p>
                 <ProductDetailNotes
                   product={product}

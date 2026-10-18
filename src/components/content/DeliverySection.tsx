@@ -7,6 +7,7 @@ import { pickBilingual } from "@/lib/adminTypes";
 import { useSiteTexts } from "@/hooks/useSiteTexts";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { MotionReveal } from "@/components/ui/MotionReveal";
+import { RichText } from "@/components/ui/RichText";
 
 function FaqPanel({
   items,
@@ -96,7 +97,7 @@ function FaqPanel({
                   {item.title}
                 </h3>
                 <p className="delivery-faq-muted mt-3 whitespace-pre-line font-body text-sm leading-relaxed">
-                  {item.body}
+                  <RichText text={item.body} />
                 </p>
               </motion.div>
             );

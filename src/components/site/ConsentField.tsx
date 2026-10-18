@@ -29,6 +29,10 @@ export function ConsentField({ checked, onChange, purpose, tone = "default" }: C
             <Link href="/regulamin" className={linkClass}>
               regulamin sklepu
             </Link>{" "}
+            oraz{" "}
+            <Link href="/regulamin-warsztatow" className={linkClass}>
+              regulamin warsztatów
+            </Link>{" "}
             i wyrażam zgodę na kontakt w sprawie rezerwacji warsztatu. Zapoznałem/am się z{" "}
           </>
         ) : (
@@ -52,8 +56,16 @@ export function ConsentField({ checked, onChange, purpose, tone = "default" }: C
         I accept the{" "}
         <Link href="/regulamin" className={linkClass}>
           shop terms
-        </Link>{" "}
-        and agree to be contacted about{" "}
+        </Link>
+        {purpose === "booking" ? (
+          <>
+            {" "}and{" "}
+            <Link href="/regulamin-warsztatow" className={linkClass}>
+              workshop terms
+            </Link>
+          </>
+        ) : null}
+        {purpose === "booking" ? ", and agree" : " and agree"} to be contacted about{" "}
         {purpose === "booking"
           ? "my workshop booking"
           : purpose === "waitlist"

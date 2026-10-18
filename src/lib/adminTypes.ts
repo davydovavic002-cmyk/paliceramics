@@ -849,10 +849,17 @@ export function addInboxMessage(
   return entry;
 }
 
-export function saveAdminData(data: AdminPersistedData) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(ADMIN_DATA_KEY, JSON.stringify(data));
+/** Returns false when the browser storage is full or blocked (e.g. big embedded photos). */
+export function saveAdminData(data: AdminPersistedData): boolean {
+  if (typeof window === "undefined") return false;
+  let stored = true;
+  try {
+    localStorage.setItem(ADMIN_DATA_KEY, JSON.stringify(data));
+  } catch {
+    stored = false;
+  }
   window.dispatchEvent(new Event(ADMIN_UPDATE_EVENT));
+  return stored;
 }
 
 export function pickBilingual(

@@ -9,6 +9,7 @@ import { useShopCatalog } from "@/hooks/useShopCatalog";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { LookbookCollectionCover } from "./LookbookCollectionCover";
 import { MadeToOrderStrip } from "./MadeToOrderStrip";
+import { RichText } from "@/components/ui/RichText";
 
 function collectionDividerClass(index: number) {
   if (index === 0) return "lookbook-split-r lookbook-split-b";
@@ -50,7 +51,7 @@ export function LookbookArrivalsGrid() {
                   {copy.headline}
                 </p>
                 <p className="lookbook-section-muted mt-3 max-w-md font-body text-sm leading-relaxed sm:mt-4 sm:text-[15px]">
-                  {t("collections.subtitle")}
+                  <RichText text={t("collections.subtitle")} />
                 </p>
               </div>
               <Link

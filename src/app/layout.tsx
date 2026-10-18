@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { DemoControlsProvider } from "@/context/DemoControlsContext";
 import { CookieConsentProvider } from "@/context/CookieConsentContext";
+import { ServerContentSync } from "@/components/site/ServerContentSync";
+import { NavigationProgress } from "@/components/site/NavigationProgress";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,7 +32,11 @@ export default function RootLayout({
         />
         <LanguageProvider>
           <CookieConsentProvider>
-            <DemoControlsProvider>{children}</DemoControlsProvider>
+            <DemoControlsProvider>
+              <ServerContentSync />
+              <NavigationProgress />
+              {children}
+            </DemoControlsProvider>
           </CookieConsentProvider>
         </LanguageProvider>
       </body>

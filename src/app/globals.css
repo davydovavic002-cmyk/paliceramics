@@ -505,7 +505,7 @@ html[data-cookie-banner="open"] main {
 @media (min-width: 1024px) {
   .hero-copy-headline,
   .hero-copy-subline {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -561,8 +561,8 @@ html[data-cookie-banner="open"] main {
   height: 50px;
   width: 50px;
   background-color: var(--hero-copy);
-  -webkit-mask-image: url("/images/brand/pali-logo-circle.png");
-  mask-image: url("/images/brand/pali-logo-circle.png");
+  -webkit-mask-image: url("/images/brand/pali-logo-circle.webp");
+  mask-image: url("/images/brand/pali-logo-circle.webp");
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -2067,5 +2067,28 @@ html[data-cookie-banner="open"] main {
   .lookbook-cover:hover .lookbook-cover__media,
   .made-to-order-card:hover .made-to-order-card__arrow {
     transform: none;
+  }
+}
+
+
+/* Instant tap feedback: no 300 ms double-tap delay, no grey iOS flash, and a visible pressed
+   state on touch screens so a slow page never looks like a dead tap. */
+a,
+button,
+[role="button"],
+summary,
+select,
+input[type="checkbox"],
+input[type="radio"],
+label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) {
+  a:active,
+  button:not(:disabled):active,
+  [role="button"]:active {
+    opacity: 0.7;
   }
 }

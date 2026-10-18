@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { pickBilingual } from "@/lib/adminTypes";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useCookieConsent } from "@/context/CookieConsentContext";
+import { RichText } from "@/components/ui/RichText";
 
 const headerCopy = {
   eyebrow: { en: "Contact", pl: "Kontakt" },
@@ -157,7 +158,7 @@ export function ContactsSection() {
                   {language === "pl" ? "Adres" : "Address"}
                 </p>
                 <p className="mt-1 font-body text-sm leading-relaxed text-theme sm:text-[15px]">
-                  {address}
+                  <RichText text={address} />
                 </p>
               </div>
             </div>

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { isDatabaseConfigured } from "@/lib/db";
-import { InboxPersistError, persistInboxMessage } from "@/lib/inboxDb";
+import { InboxPersistError } from "@/lib/inboxDb";
+import { persistInbox } from "@/lib/inboxStore";
 import { validateInboxSubmit } from "@/lib/inboxServer";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -16,17 +18,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
   }
 
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "Database not configured" }, { status: 503 });
-  }
-
   try {
-    const result = await persistInboxMessage(message);
+    const result = await persistInbox(message);
     return NextResponse.json({
       ok: true,
       id: result.id,
       voucherCode: result.voucherCode,
-      mode: "database",
+      mode: "server",
     });
   } catch (error) {
     if (error instanceof InboxPersistError) {

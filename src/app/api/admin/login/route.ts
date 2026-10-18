@@ -1,10 +1,25 @@
 import { NextResponse } from "next/server";
-import { loginAdmin } from "@/lib/auth";
-import { isDatabaseReachable } from "@/lib/db";
+import { isSessionConfigured, loginAdmin } from "@/lib/auth";
+
+/** Simple in-memory brute-force guard: 8 attempts / 10 min per IP. */
+const attempts = new Map<string, { count: number; resetAt: number }>();
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_ATTEMPTS = 8;
+
+function clientKey(request: Request): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+}
 
 export async function POST(request: Request) {
-  if (!(await isDatabaseReachable())) {
-    return NextResponse.json({ ok: false, error: "Database unavailable" }, { status: 503 });
+  if (!isSessionConfigured()) {
+    return NextResponse.json({ ok: false, error: "Session not configured" }, { status: 503 });
+  }
+
+  const key = clientKey(request);
+  const now = Date.now();
+  const entry = attempts.get(key);
+  if (entry && entry.resetAt > now && entry.count >= MAX_ATTEMPTS) {
+    return NextResponse.json({ ok: false, error: "Too many attempts" }, { status: 429 });
   }
 
   let body: { password?: string };
@@ -21,8 +36,11 @@ export async function POST(request: Request) {
 
   const ok = await loginAdmin(password);
   if (!ok) {
+    const current = entry && entry.resetAt > now ? entry : { count: 0, resetAt: now + WINDOW_MS };
+    attempts.set(key, { count: current.count + 1, resetAt: current.resetAt });
     return NextResponse.json({ ok: false, error: "Invalid credentials" }, { status: 401 });
   }
 
+  attempts.delete(key);
   return NextResponse.json({ ok: true });
 }

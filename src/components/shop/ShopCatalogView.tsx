@@ -51,10 +51,13 @@ function sortProducts(
   const indexOf = (product: ShopProduct) => sourceOrder.get(product.sku) ?? 0;
   switch (sort) {
     case "newest":
+      /* New SKUs are numbered upward (PALI-007 after PALI-006), so the SKU number is the
+         reliable "age". Pieces added in the admin are put at the START of the list, so the
+         list position can't be used for it. Equal numbers fall back to list order. */
       return list.sort((a, b) => {
-        const byOrder = indexOf(b) - indexOf(a);
-        if (byOrder !== 0) return byOrder;
-        return skuSortNumber(b.sku) - skuSortNumber(a.sku);
+        const bySku = skuSortNumber(b.sku) - skuSortNumber(a.sku);
+        if (bySku !== 0) return bySku;
+        return indexOf(a) - indexOf(b);
       });
     case "price-asc":
       return list.sort((a, b) => a.pricePln - b.pricePln);
