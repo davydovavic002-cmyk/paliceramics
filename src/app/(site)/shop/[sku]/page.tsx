@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { readContent } from "@/lib/contentStore";
+import { normalizeProductSku, productPhotos, type AdminProduct } from "@/lib/adminTypes";
 import { ProductDetailView } from "@/components/shop/ProductDetailView";
 
 function ProductDetailSkeleton() {
@@ -27,15 +29,6 @@ function ProductDetailSkeleton() {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ sku: string }>;
-}): Promise<Metadata> {
-  const { sku } = await params;
-  return { title: `${decodeURIComponent(sku)} — Sklep — pali ceramics` };
-}
-
 export default async function ProductPage({
   params,
 }: {
@@ -47,4 +40,33 @@ export default async function ProductPage({
       <ProductDetailView sku={decodeURIComponent(sku)} />
     </Suspense>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ sku: string }>;
+}): Promise<Metadata> {
+  const { sku } = await params;
+  const wanted = normalizeProductSku(decodeURIComponent(sku));
+  const stored = await readContent();
+  const products = Array.isArray(stored?.data?.products)
+    ? (stored.data.products as AdminProduct[])
+    : [];
+  const product = products.find((p) => normalizeProductSku(p.sku) === wanted);
+  if (!product) return {};
+
+  const title = `${product.title} — pali ceramics`;
+  const description = (product.description?.pl || product.description?.en || "")
+    .replace(/[*_#>-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
+  const photo = productPhotos(product)[0];
+  const images = photo && !photo.startsWith("data:") ? [photo] : undefined;
+  return {
+    title,
+    ...(description ? { description } : {}),
+    openGraph: { title, ...(description ? { description } : {}), ...(images ? { images } : {}) },
+  };
 }

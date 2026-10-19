@@ -63,7 +63,7 @@ export function LookbookArrivalsGrid() {
             </div>
 
             {shopCollections.map((collection, index) => (
-              <div key={collection.id} className={`min-h-[168px] lg:min-h-0 ${collectionDividerClass(index)}`}>
+              <div key={collection.id} className={`relative aspect-[4/3] ${collectionDividerClass(index)}`}>
                 <LookbookCollectionCover
                   collection={collection}
                   index={index}

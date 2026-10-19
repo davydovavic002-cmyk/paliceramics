@@ -19,6 +19,12 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
+const FALLBACK: LanguageContextValue = {
+  language: "pl",
+  setLanguage: () => {},
+  isTransitioning: false,
+};
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("pl");
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -48,6 +54,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage() {
   const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage requires LanguageProvider");
-  return ctx;
+  // Outside the provider (error/404 shells, rare edge renders) fall back to Polish
+  // instead of crashing the whole page.
+  return ctx ?? FALLBACK;
 }

@@ -1,17 +1,34 @@
 import type { Metadata, Viewport } from "next";
+import { ImageRetry } from "@/components/site/ImageRetry";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { DemoControlsProvider } from "@/context/DemoControlsContext";
 import { CookieConsentProvider } from "@/context/CookieConsentContext";
 import { ServerContentSync } from "@/components/site/ServerContentSync";
 import { NavigationProgress } from "@/components/site/NavigationProgress";
+import { siteOrigin } from "@/lib/siteOrigin";
 import { loadServerSnapshotScript } from "@/lib/serverSnapshot";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "pali ceramics",
-  description: "Quiet handcrafted ceramics — Japandi atelier",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://paliceramics.com"),
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await siteOrigin();
+  const description =
+    "Ręcznie robiona ceramika i warsztaty ceramiczne w Warszawie. Pali Pali: naczynia, ceramika na zamówienie i vouchery.";
+  return {
+    metadataBase: new URL(origin),
+    title: "pali ceramics — ręcznie robiona ceramika",
+    description,
+    applicationName: "Pali Pali",
+    openGraph: {
+      type: "website",
+      siteName: "Pali Pali",
+      locale: "pl_PL",
+      title: "pali ceramics — ręcznie robiona ceramika",
+      description,
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: "Pali Pali — ceramika" }],
+    },
+    twitter: { card: "summary_large_image", images: ["/og.png"] },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -40,6 +57,7 @@ export default async function RootLayout({
             <DemoControlsProvider>
               <ServerContentSync />
               <NavigationProgress />
+              <ImageRetry />
               {children}
             </DemoControlsProvider>
           </CookieConsentProvider>

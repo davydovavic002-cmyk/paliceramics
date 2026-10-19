@@ -139,7 +139,7 @@ export function CatalogProductCard({
         onClick={onOpenProduct}
         className={["group flex h-full w-full flex-col text-left", linkFocus, className].join(" ")}
       >
-        <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden sm:aspect-square">
+        <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden !border-0 !shadow-none">
           {!imageLoaded ? (
             <div
               className="absolute inset-0 animate-pulse bg-[color-mix(in_srgb,var(--lookbook-ink)_8%,var(--lookbook-bg))]"
@@ -155,11 +155,11 @@ export function CatalogProductCard({
             loading={imagePriority ? "eager" : "lazy"}
             quality={imagePriority ? 62 : 52}
             unoptimized={unoptimizedImage}
-            sizes="(max-width: 768px) 180px, (max-width: 1280px) 220px, 180px"
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 25vw"
             onLoad={() => setImageLoaded(true)}
             onLoadingComplete={() => setImageLoaded(true)}
             className={[
-              "object-contain object-center p-3 sm:p-5",
+              "object-cover object-center",
               "transition-transform duration-500 ease-out",
               hoverScale,
             ].join(" ")}

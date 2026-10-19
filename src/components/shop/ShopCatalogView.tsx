@@ -687,7 +687,7 @@ function ShopCatalogContent() {
                           </h2>
                         </header>
                       ) : null}
-                      <div className="grid grid-cols-1 gap-x-4 gap-y-6 min-[380px]:grid-cols-2 sm:gap-x-4 sm:gap-y-8 lg:grid-cols-3 lg:gap-x-5 xl:grid-cols-4 xl:gap-x-6">
+                      <div className="grid grid-cols-1 gap-x-4 gap-y-6 min-[380px]:grid-cols-2 sm:gap-x-4 sm:gap-y-8 lg:grid-cols-3 lg:gap-x-5 xl:gap-x-8">
                         {group.products.map((product) => {
                           const index = cardIndex++;
                           return (
@@ -716,7 +716,7 @@ function ShopCatalogContent() {
                       )}
                     </h2>
                   </header>
-                  <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 xl:grid-cols-4 xl:gap-x-6">
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 xl:gap-x-8">
                     <MotionReveal key="custom-order" delay={0} y={14}>
                       <CustomOrderCatalogCard />
                     </MotionReveal>

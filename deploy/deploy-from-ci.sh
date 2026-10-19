@@ -73,15 +73,20 @@ curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vn
 
 unzip -q "${TMP_DIR}/artifact.zip" -d "${TMP_DIR}/artifact"
 
-echo "==> Install .next from CI"
-pm2 stop pali 2>/dev/null || true
-rm -rf .next
-tar -xzf "${TMP_DIR}/artifact/next-build.tar.gz" -C "$APP_DIR"
+echo "==> Unpack CI build next to the live one (site stays up while this runs)"
+INCOMING="${TMP_DIR}/incoming"
+mkdir -p "$INCOMING"
+tar -xzf "${TMP_DIR}/artifact/next-build.tar.gz" -C "$INCOMING"
 
-if [[ ! -f .next/BUILD_ID ]]; then
-  echo "Invalid artifact — .next/BUILD_ID missing."
+if [[ ! -f "$INCOMING/.next/BUILD_ID" ]]; then
+  echo "Invalid artifact — .next/BUILD_ID missing. The live site was not touched."
   exit 1
 fi
+
+echo "==> Swap (a few seconds of downtime)"
+pm2 stop pali 2>/dev/null || true
+rm -rf .next
+mv "$INCOMING/.next" .next
 
 echo "==> PM2"
 if pm2 describe pali >/dev/null 2>&1; then
