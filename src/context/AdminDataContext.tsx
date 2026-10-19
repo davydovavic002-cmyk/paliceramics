@@ -186,8 +186,8 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
         showHint(
           result.error === "SESSION_EXPIRED"
             ? "Session expired — NOT saved on the server. Log in again."
-            : "NOT saved on the server — check the connection, then edit again",
-          9000
+            : `NOT saved on the server (${result.error}) — check the connection, then edit again`,
+          20000
         );
         return;
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFormKeyboardScroll } from "@/hooks/useFormKeyboardScroll";
@@ -56,6 +56,23 @@ export function CertificateSection() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const formRef = useFormKeyboardScroll<HTMLFormElement>();
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  /* The form collapses into a short confirmation; without this the section below slides up
+     into view and it looks like the page jumped to "About". */
+  useEffect(() => {
+    if (!sent) return;
+    const id = window.requestAnimationFrame(() => {
+      const el = resultRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      const offset = 96;
+      if (top < offset || top > window.innerHeight * 0.6) {
+        window.scrollTo({ top: window.scrollY + top - offset, behavior: "auto" });
+      }
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [sent]);
 
   useEffect(() => {
     if (!hydrated || sent) return;
@@ -179,7 +196,7 @@ export function CertificateSection() {
             <CertificatePreview draft={draft} />
           </div>
 
-          <div className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">
+          <div ref={resultRef} className="mx-auto w-full max-w-[28rem] lg:mx-0 lg:max-w-none">
             {sent ? (
               <div className="space-y-4 rounded-2xl border border-[color-mix(in_srgb,var(--theme-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--theme-surface-accent)_40%,transparent)] p-5">
                 <p className="font-body text-sm leading-relaxed text-theme"><RichText text={copy.success} /></p>

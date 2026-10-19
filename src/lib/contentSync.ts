@@ -48,7 +48,7 @@ export async function uploadDataUrl(dataUrl: string): Promise<string> {
     body: blob,
   });
   const json = (await res.json().catch(() => null)) as { ok?: boolean; url?: string } | null;
-  if (!res.ok || !json?.ok || !json.url) throw new Error("UPLOAD_FAILED");
+  if (!res.ok || !json?.ok || !json.url) throw new Error(`UPLOAD_${res.status}`);
 
   uploadedCache.set(dataUrl, json.url);
   return json.url;

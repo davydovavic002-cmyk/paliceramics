@@ -1,7 +1,7 @@
 const MAX_DIMENSION = 1400;
 const JPEG_QUALITY = 0.82;
 /** ~900 KB binary — stays under nginx's default 1 MB upload limit. */
-const MAX_BYTES = 1_200_000;
+const MAX_BYTES = 900_000;
 
 export type ProcessedProductImage = {
   imageUrl: string;
@@ -46,7 +46,7 @@ async function compressToDataUrl(file: File): Promise<string> {
 
   let quality = JPEG_QUALITY;
   let dataUrl = canvasToJpeg(canvas, quality);
-  while (dataUrl.length > MAX_BYTES && quality > 0.5) {
+  while (dataUrl.length > MAX_BYTES && quality > 0.4) {
     quality -= 0.08;
     dataUrl = canvasToJpeg(canvas, quality);
   }
