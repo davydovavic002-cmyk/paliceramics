@@ -140,7 +140,7 @@ export function CatalogProductCard({
         onClick={onOpenProduct}
         className={["group flex h-full w-full flex-col text-left", linkFocus, className].join(" ")}
       >
-        <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden !border-0 !shadow-none">
+        <div className="shop-card-image relative aspect-[4/5] w-full overflow-hidden sm:aspect-square !border-0 !shadow-none">
           {!imageLoaded ? (
             <div
               className="absolute inset-0 animate-pulse bg-[color-mix(in_srgb,var(--lookbook-ink)_8%,var(--lookbook-bg))]"

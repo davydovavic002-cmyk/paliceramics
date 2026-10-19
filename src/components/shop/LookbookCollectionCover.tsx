@@ -73,16 +73,16 @@ export function LookbookCollectionCover({
 
       <div className="lookbook-cover__lift relative z-10 flex flex-1 flex-col">
         <div className="pointer-events-none absolute left-5 top-4 z-10 sm:left-6 sm:top-5">
-          <span className="lookbook-section-muted font-body text-[10px] uppercase tracking-[0.28em]">
+          <span className="font-body text-[10px] uppercase tracking-[0.28em] text-[#faf7f0] [text-shadow:0_1px_6px_rgba(0,0,0,0.55)]">
             {String(index + 1).padStart(2, "0")}
           </span>
         </div>
 
-        <div className="relative z-10 mt-auto px-5 pb-4 pt-14 sm:px-6 sm:pb-5 sm:pt-16">
-          <h3 className="lookbook-ink break-words font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em]">
+        <div className="relative z-10 mt-auto bg-gradient-to-t from-[rgba(18,16,14,0.82)] via-[rgba(18,16,14,0.55)] to-transparent px-5 pb-4 pt-14 sm:px-6 sm:pb-5 sm:pt-16">
+          <h3 className="break-words text-[#faf7f0] font-display text-[clamp(0.95rem,1.8vw,1.15rem)] uppercase leading-snug tracking-[0.05em]">
             {name}
           </h3>
-          <p className="lookbook-section-muted mt-1 font-body text-[11px] leading-snug tracking-[0.04em] sm:text-xs">
+          <p className="mt-1 font-body text-[#faf7f0]/90 text-[11px] leading-snug tracking-[0.04em] sm:text-xs">
             <RichText text={subtitle} />
           </p>
         </div>
