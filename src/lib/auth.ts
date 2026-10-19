@@ -88,14 +88,19 @@ function digest(value: string): Buffer {
 
 /**
  * Password for file mode (no database). Set ADMIN_PASSWORD on the VPS;
- * until then the old demo password "pali" keeps working.
+ * Without it the demo password "pali" works only outside production.
  */
-function filePassword(): string {
-  return process.env.ADMIN_PASSWORD?.trim() || "pali";
+function filePassword(): string | null {
+  const configured = process.env.ADMIN_PASSWORD?.trim();
+  if (configured) return configured;
+  // In production there is no default password: set ADMIN_PASSWORD in .env.local.
+  return process.env.NODE_ENV === "production" ? null : "pali";
 }
 
 async function loginWithFilePassword(password: string): Promise<boolean> {
-  if (!timingSafeEqual(digest(password), digest(filePassword()))) return false;
+  const expected = filePassword();
+  if (!expected) return false;
+  if (!timingSafeEqual(digest(password), digest(expected))) return false;
   await createAdminSession(FILE_ADMIN_ID);
   return true;
 }

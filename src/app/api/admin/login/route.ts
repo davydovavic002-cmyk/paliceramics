@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isSessionConfigured, loginAdmin } from "@/lib/auth";
+import { clientIp } from "@/lib/clientIp";
 
 /** Simple in-memory brute-force guard: 8 attempts / 10 min per IP. */
 const attempts = new Map<string, { count: number; resetAt: number }>();
@@ -7,7 +8,7 @@ const WINDOW_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS = 8;
 
 function clientKey(request: Request): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  return clientIp(request);
 }
 
 export async function POST(request: Request) {

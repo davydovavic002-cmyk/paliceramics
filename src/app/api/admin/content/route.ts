@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth";
-import { MAX_CONTENT_BYTES, publicContent, readContent, writeContent } from "@/lib/contentStore";
+import {
+  ContentConflictError,
+  MAX_CONTENT_BYTES,
+  publicContent,
+  readContent,
+  writeContentChecked,
+} from "@/lib/contentStore";
 
 export const dynamic = "force-dynamic";
 
@@ -51,9 +57,21 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const stored = await writeContent(publicContent(body));
+    // The admin sends the version it last saw; if someone saved since, refuse instead of overwriting.
+    const header = request.headers.get("x-base-updated-at");
+    const stored = await writeContentChecked(
+      publicContent(body),
+      header === null ? undefined : header
+    );
     return NextResponse.json({ ok: true, updatedAt: stored.updatedAt });
   } catch (error) {
+    if (error instanceof ContentConflictError) {
+      const current = await readContent();
+      return NextResponse.json(
+        { ok: false, error: "CONFLICT", updatedAt: current?.updatedAt ?? null },
+        { status: 409 }
+      );
+    }
     console.error("[content]", error);
     return NextResponse.json({ ok: false, error: "Write failed" }, { status: 500 });
   }

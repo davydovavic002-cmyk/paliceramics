@@ -39,7 +39,7 @@ import {
   type AdminWorkshopFormatCopy,
 } from "@/lib/adminTypes";
 
-export type AdminSaveState = "idle" | "pending" | "saving" | "saved" | "error";
+export type AdminSaveState = "idle" | "pending" | "saving" | "saved" | "error" | "conflict";
 
 interface AdminDataContextValue {
   data: AdminPersistedData;
@@ -126,6 +126,9 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
   const hintTimerRef = useRef<number | undefined>(undefined);
   const pushTimerRef = useRef<number | undefined>(undefined);
   const pushSeqRef = useRef(0);
+  /** version of the content file this admin last saw or saved (for conflict detection) */
+  const serverUpdatedAtRef = useRef<string | null>(null);
+  const pushChainRef = useRef<Promise<void>>(Promise.resolve());
 
   const showHint = useCallback((text: string, ms: number) => {
     setSavedHint(text);
@@ -138,16 +141,22 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     (async () => {
       let server = false;
       let remote: AdminPersistedData | null = null;
+      let remoteUpdatedAt: string | null = null;
       try {
         const session = (await (
           await fetch("/api/admin/session", { cache: "no-store" })
         ).json()) as { authed?: boolean; contentServer?: boolean };
         if (session.authed && session.contentServer) {
           const res = await fetch("/api/admin/content", { cache: "no-store" });
-          const json = (await res.json()) as { ok?: boolean; data?: AdminPersistedData | null };
+          const json = (await res.json()) as {
+            ok?: boolean;
+            data?: AdminPersistedData | null;
+            updatedAt?: string | null;
+          };
           if (res.ok && json.ok) {
             server = true;
             remote = json.data ?? null;
+            remoteUpdatedAt = json.updatedAt ?? null;
           }
         }
       } catch {
@@ -162,6 +171,7 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       const inbox = serverInbox ?? local?.inbox ?? [];
       const base = remote ? { ...remote, inbox } : { ...(local ?? seedAdminData()), inbox };
       serverRef.current = server;
+      serverUpdatedAtRef.current = remoteUpdatedAt;
       lastPushedRef.current = remote ? JSON.stringify(remote) : null;
       setData(normalizeAdminData(base));
       setHydrated(true);
@@ -175,30 +185,45 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
   }, [showHint]);
 
   const doPush = useCallback(
-    async (payload: AdminPersistedData) => {
-      const seq = ++pushSeqRef.current;
-      setSaveState("saving");
-      const result = await pushContent(payload);
-      if (seq !== pushSeqRef.current) return;
-      if (!result.ok) {
-        setSaveState("error");
-        showHint(
-          result.error === "SESSION_EXPIRED"
-            ? "Session expired — NOT saved on the server. Log in again."
-            : `NOT saved on the server (${result.error}) — check the connection, then edit again`,
-          20000
-        );
-        return;
-      }
-      lastPushedRef.current = JSON.stringify({ ...result.data, inbox: [] });
-      setAdminPending(false);
-      setSaveState("saved");
-      setSavedAt(Date.now());
-      showHint("Saved on the server — visible on all devices", 2800);
-      if (result.changed) {
-        // photos were moved from the browser into files; swap the heavy copies out
-        setData((prev) => (prev === payload ? { ...result.data, inbox: prev.inbox } : prev));
-      }
+    (payload: AdminPersistedData): Promise<void> => {
+      // one save at a time, so each one starts from the version the previous one produced
+      const job = async () => {
+        const seq = ++pushSeqRef.current;
+        setSaveState("saving");
+        const result = await pushContent(payload, serverUpdatedAtRef.current);
+        if (result.ok) serverUpdatedAtRef.current = result.updatedAt;
+        if (seq !== pushSeqRef.current) return;
+        if (!result.ok) {
+          if (result.error === "CONFLICT") {
+            setSaveState("conflict");
+            showHint(
+              "Someone saved newer changes on the site — reload this page. Your last edit was NOT saved.",
+              30000
+            );
+            return;
+          }
+          setSaveState("error");
+          showHint(
+            result.error === "SESSION_EXPIRED"
+              ? "Session expired — NOT saved on the server. Log in again."
+              : `NOT saved on the server (${result.error}) — check the connection, then edit again`,
+            20000
+          );
+          return;
+        }
+        lastPushedRef.current = JSON.stringify({ ...result.data, inbox: [] });
+        setAdminPending(false);
+        setSaveState("saved");
+        setSavedAt(Date.now());
+        showHint("Saved on the server — visible on all devices", 2800);
+        if (result.changed) {
+          // photos were moved from the browser into files; swap the heavy copies out
+          setData((prev) => (prev === payload ? { ...result.data, inbox: prev.inbox } : prev));
+        }
+      };
+      const run = pushChainRef.current.then(job, job);
+      pushChainRef.current = run.catch(() => undefined);
+      return run;
     },
     [showHint]
   );
@@ -226,6 +251,16 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       void doPush(data);
     }, 700);
   }, [data, hydrated, doPush]);
+
+  useEffect(() => {
+    if (saveState !== "pending" && saveState !== "saving" && saveState !== "error") return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [saveState]);
 
   const refreshInbox = useCallback(async () => {
     if (!serverRef.current) return;

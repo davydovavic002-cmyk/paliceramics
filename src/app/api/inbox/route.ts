@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { clientIp } from "@/lib/clientIp";
+import { isRateLimited } from "@/lib/rateLimit";
 import { InboxPersistError } from "@/lib/inboxDb";
 import { persistInbox } from "@/lib/inboxStore";
 import { validateInboxSubmit } from "@/lib/inboxServer";
@@ -6,6 +8,11 @@ import { validateInboxSubmit } from "@/lib/inboxServer";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  // Spam guard: a real visitor sends a few requests, a bot sends hundreds.
+  if (isRateLimited("inbox", clientIp(request), 12, 10 * 60 * 1000)) {
+    return NextResponse.json({ ok: false, error: "Too many requests" }, { status: 429 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

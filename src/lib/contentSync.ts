@@ -76,11 +76,14 @@ async function externalizeImages<T>(value: T): Promise<T> {
 }
 
 export type PushResult =
-  | { ok: true; data: AdminPersistedData; changed: boolean }
+  | { ok: true; data: AdminPersistedData; changed: boolean; updatedAt: string | null }
   | { ok: false; error: string };
 
 /** Uploads photos as files, then saves the content JSON on the server. */
-export async function pushContent(data: AdminPersistedData): Promise<PushResult> {
+export async function pushContent(
+  data: AdminPersistedData,
+  baseUpdatedAt: string | null
+): Promise<PushResult> {
   try {
     // customer messages live in their own server inbox, never in the content file
     const withoutInbox: AdminPersistedData = { ...data, inbox: [] };
@@ -89,12 +92,18 @@ export async function pushContent(data: AdminPersistedData): Promise<PushResult>
 
     const res = await fetch("/api/admin/content", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // the version this admin last saw; the server refuses the save if someone else saved since
+        "X-Base-Updated-At": baseUpdatedAt ?? "",
+      },
       body: JSON.stringify(slim),
     });
     if (res.status === 401) return { ok: false, error: "SESSION_EXPIRED" };
+    if (res.status === 409) return { ok: false, error: "CONFLICT" };
     if (!res.ok) return { ok: false, error: `HTTP_${res.status}` };
-    return { ok: true, data: slim, changed };
+    const saved = (await res.json().catch(() => null)) as { updatedAt?: string } | null;
+    return { ok: true, data: slim, changed, updatedAt: saved?.updatedAt ?? null };
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : "NETWORK" };
   }

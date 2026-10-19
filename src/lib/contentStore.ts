@@ -42,6 +42,35 @@ export async function writeContent(data: Record<string, unknown>): Promise<Store
   return stored;
 }
 
+export class ContentConflictError extends Error {
+  constructor() {
+    super("CONFLICT");
+  }
+}
+
+/** One content write at a time, so the check below and the write cannot interleave. */
+let writeQueue: Promise<unknown> = Promise.resolve();
+
+/**
+ * Saves the content only if the caller saw the latest version.
+ * baseUpdatedAt: "" = the caller saw no file yet, undefined = no check (old clients).
+ */
+export function writeContentChecked(
+  data: Record<string, unknown>,
+  baseUpdatedAt: string | undefined
+): Promise<StoredContent> {
+  const job = async () => {
+    if (baseUpdatedAt !== undefined) {
+      const current = await readContent();
+      if ((current?.updatedAt ?? "") !== baseUpdatedAt) throw new ContentConflictError();
+    }
+    return writeContent(data);
+  };
+  const run = writeQueue.then(job, job);
+  writeQueue = run.catch(() => undefined);
+  return run;
+}
+
 const EXT_BY_MIME: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
