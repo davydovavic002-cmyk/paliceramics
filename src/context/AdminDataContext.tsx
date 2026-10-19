@@ -39,7 +39,7 @@ import {
   type AdminWorkshopFormatCopy,
 } from "@/lib/adminTypes";
 
-export type AdminSaveState = "idle" | "pending" | "saving" | "saved" | "error" | "conflict";
+export type AdminSaveState = "idle" | "pending" | "saving" | "saved" | "error";
 
 interface AdminDataContextValue {
   data: AdminPersistedData;
@@ -190,18 +190,47 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       const job = async () => {
         const seq = ++pushSeqRef.current;
         setSaveState("saving");
-        const result = await pushContent(payload, serverUpdatedAtRef.current);
+        let toSend = payload;
+        let merged = false;
+        let result = await pushContent(toSend, serverUpdatedAtRef.current);
+        if (!result.ok && result.error === "CONFLICT") {
+          // Changed on another device/tab: take its newer sections, keep the sections edited here, retry.
+          try {
+            const res = await fetch("/api/admin/content", { cache: "no-store" });
+            const json = (await res.json()) as {
+              ok?: boolean;
+              data?: AdminPersistedData | null;
+              updatedAt?: string | null;
+            };
+            if (res.ok && json.ok) {
+              const theirs = (json.data ?? {}) as Record<string, unknown>;
+              const mine = payload as unknown as Record<string, unknown>;
+              const baseRaw = lastPushedRef.current;
+              const base = (baseRaw ? JSON.parse(baseRaw) : {}) as Record<string, unknown>;
+              const out: Record<string, unknown> = { ...theirs };
+              for (const key of Object.keys(mine)) {
+                if (key === "inbox") continue;
+                if (JSON.stringify(mine[key]) !== JSON.stringify(base[key])) out[key] = mine[key];
+                else if (!(key in out)) out[key] = mine[key];
+              }
+              out.inbox = payload.inbox;
+              toSend = out as unknown as AdminPersistedData;
+              serverUpdatedAtRef.current = json.updatedAt ?? null;
+              merged = true;
+              result = await pushContent(toSend, serverUpdatedAtRef.current);
+            }
+          } catch {
+            /* falls through to the error below */
+          }
+        }
         if (result.ok) serverUpdatedAtRef.current = result.updatedAt;
+        if (merged && result.ok) {
+          // show the merged result (other device's changes + ours)
+          payload = toSend;
+          setData((prev) => ({ ...(result.data as AdminPersistedData), inbox: prev.inbox }));
+        }
         if (seq !== pushSeqRef.current) return;
         if (!result.ok) {
-          if (result.error === "CONFLICT") {
-            setSaveState("conflict");
-            showHint(
-              "Someone saved newer changes on the site — reload this page. Your last edit was NOT saved.",
-              30000
-            );
-            return;
-          }
           setSaveState("error");
           showHint(
             result.error === "SESSION_EXPIRED"

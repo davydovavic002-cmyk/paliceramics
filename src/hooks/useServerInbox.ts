@@ -85,5 +85,26 @@ export function useServerInbox(enabled: boolean) {
     window.dispatchEvent(new Event("pali-inbox-changed"));
   };
 
-  return { messages, loading, serverMode, toggleRead, setStatus };
+  const remove = async (id: string) => {
+    const res = await fetch(`/api/admin/inbox?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (res.ok || res.status === 404) {
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      window.dispatchEvent(new Event("pali-inbox-changed"));
+    }
+    return res.ok;
+  };
+
+  const markAllRead = async () => {
+    const res = await fetch("/api/admin/inbox", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ all: true, read: true }),
+    });
+    if (res.ok) {
+      setMessages((prev) => prev.map((m) => ({ ...m, read: true })));
+      window.dispatchEvent(new Event("pali-inbox-changed"));
+    }
+  };
+
+  return { messages, loading, serverMode, toggleRead, setStatus, remove, markAllRead };
 }

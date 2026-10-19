@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
-import { changeAdminPassword, getAdminSession, requireAdminSession } from "@/lib/auth";
-import { isDatabaseConfigured } from "@/lib/db";
+import {
+  changeAdminPassword,
+  changeFilePassword,
+  getAdminSession,
+} from "@/lib/auth";
+import { isDatabaseConfigured, isDatabaseReachable } from "@/lib/db";
+import { isRateLimited } from "@/lib/rateLimit";
+import { clientIp } from "@/lib/clientIp";
 
 export async function POST(request: Request) {
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "Database not configured" }, { status: 503 });
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    await requireAdminSession();
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  if (isRateLimited("password", clientIp(request), 8, 10 * 60 * 1000)) {
+    return NextResponse.json({ ok: false, error: "Too many attempts" }, { status: 429 });
   }
 
   let body: { currentPassword?: string; nextPassword?: string };
@@ -20,20 +25,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const current = body.currentPassword?.trim() ?? "";
+  const next = body.nextPassword?.trim() ?? "";
 
-  const result = await changeAdminPassword(
-    session.adminId,
-    body.currentPassword?.trim() ?? "",
-    body.nextPassword?.trim() ?? ""
-  );
+  const useDb =
+    session.adminId !== "file-admin" && isDatabaseConfigured() && (await isDatabaseReachable());
+  const result = useDb
+    ? await changeAdminPassword(session.adminId, current, next)
+    : await changeFilePassword(current, next);
 
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 });
   }
-
   return NextResponse.json({ ok: true });
 }

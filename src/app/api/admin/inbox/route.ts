@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth";
-import { listInbox, updateInbox } from "@/lib/inboxStore";
+import { deleteInbox, listInbox, markAllInboxRead, updateInbox } from "@/lib/inboxStore";
 
 export const dynamic = "force-dynamic";
 
@@ -35,11 +35,21 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  let body: { id?: string; read?: boolean; status?: string };
+  let body: { id?: string; read?: boolean; status?: string; all?: boolean };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+  }
+
+  if (body.all === true && body.read === true) {
+    try {
+      await markAllInboxRead();
+      return NextResponse.json({ ok: true });
+    } catch (error) {
+      console.error("[admin/inbox]", error);
+      return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+    }
   }
 
   if (!body.id) {
@@ -50,6 +60,22 @@ export async function PATCH(request: Request) {
     const updated = await updateInbox(body.id, { read: body.read, status: body.status });
     if (!updated) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
     return NextResponse.json({ ok: true, message: updated });
+  } catch (error) {
+    console.error("[admin/inbox]", error);
+    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!(await authorized())) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+  const id = new URL(request.url).searchParams.get("id");
+  if (!id) return NextResponse.json({ ok: false, error: "Missing id" }, { status: 400 });
+  try {
+    const removed = await deleteInbox(id);
+    if (!removed) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("[admin/inbox]", error);
     return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });

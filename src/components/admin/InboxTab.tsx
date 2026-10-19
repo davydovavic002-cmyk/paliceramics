@@ -7,6 +7,8 @@ import {
   Gift,
   Inbox,
   Mail,
+  Trash2,
+  CheckCheck,
   MessageSquare,
   Users,
 } from "lucide-react";
@@ -195,6 +197,16 @@ export function InboxTab() {
             {counts.unread} unread
           </span>
         ) : null}
+        {server.serverMode && counts.unread > 0 ? (
+          <button
+            type="button"
+            onClick={() => void server.markAllRead()}
+            className="admin-btn admin-btn-secondary ml-2 self-center px-2.5 py-1.5 text-[11px]"
+          >
+            <CheckCheck className="h-3.5 w-3.5" strokeWidth={1.75} />
+            Mark all as read
+          </button>
+        ) : null}
       </div>
 
       {server.loading ? (
@@ -220,12 +232,12 @@ export function InboxTab() {
                     type="button"
                     onClick={() => setSelectedId(message.id)}
                     className={[
-                      "admin-group-item flex-col items-start gap-0.5 py-2",
+                      "admin-group-item w-full flex-col items-start gap-0.5 py-2 text-left",
                       active ? "admin-group-item-active" : "",
                       !message.read && !active ? "border-l-2 border-admin-accent pl-2" : "",
                     ].join(" ")}
                   >
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex w-full items-start justify-between gap-2">
                       <span
                         className={[
                           "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
@@ -240,10 +252,10 @@ export function InboxTab() {
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-1.5 text-xs font-medium text-admin-heading line-clamp-2">
+                    <p className="mt-1.5 w-full text-left text-xs font-medium text-admin-heading line-clamp-2">
                       {messagePreview(message) || "—"}
                     </p>
-                    <time className="mt-1 block text-[11px] text-admin-dim">
+                    <time className="mt-1 block w-full text-left text-[11px] text-admin-dim">
                       {formatDate(message.createdAt)}
                     </time>
                   </button>
@@ -258,6 +270,12 @@ export function InboxTab() {
               serverMode={server.serverMode}
               onToggleRead={() => handleToggleRead(activeMessage.id)}
               onConfirmVoucher={() => void server.setStatus(activeMessage.id, "confirmed")}
+              onDelete={() => {
+                if (window.confirm("Delete this message for good? This cannot be undone.")) {
+                  setSelectedId(null);
+                  void server.remove(activeMessage.id);
+                }
+              }}
             />
           ) : null}
         </div>
@@ -271,11 +289,13 @@ function MessageDetail({
   serverMode,
   onToggleRead,
   onConfirmVoucher,
+  onDelete,
 }: {
   message: AdminInboxMessage;
   serverMode: boolean;
   onToggleRead: () => void;
   onConfirmVoucher: () => void;
+  onDelete: () => void;
 }) {
   const status = message.payload.status;
   const HIDDEN_KEYS = new Set(["workshopId", "slotId", "type", "status", "lang"]);
@@ -349,6 +369,16 @@ function MessageDetail({
         >
           {message.read ? "Mark as unread" : "Mark as read"}
         </button>
+        {serverMode ? (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
+          </button>
+        ) : null}
         {serverMode && message.type === "certificate" && status !== "confirmed" && status !== "used" ? (
           <button
             type="button"

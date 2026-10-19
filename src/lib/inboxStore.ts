@@ -5,6 +5,8 @@ import { isDatabaseConfigured, isDatabaseReachable } from "@/lib/db";
 import { dataDir, readContent } from "@/lib/contentStore";
 import {
   InboxPersistError,
+  deleteInboxMessage as deleteDbInbox,
+  markAllInboxRead as markAllDbInbox,
   listInboxMessages as listDbInbox,
   persistInboxMessage as persistDbInbox,
   updateInboxMessage as updateDbInbox,
@@ -166,6 +168,26 @@ export async function updateInbox(
     records[index] = next;
     await writeFileInbox(records);
     return next;
+  });
+}
+
+export async function deleteInbox(id: string): Promise<boolean> {
+  if (await databaseAvailable()) return deleteDbInbox(id);
+  return exclusive(async () => {
+    const records = await readFileInbox();
+    const next = records.filter((r) => r.id !== id);
+    if (next.length === records.length) return false;
+    await writeFileInbox(next);
+    return true;
+  });
+}
+
+export async function markAllInboxRead(): Promise<void> {
+  if (await databaseAvailable()) return markAllDbInbox();
+  return exclusive(async () => {
+    const records = await readFileInbox();
+    if (!records.some((r) => !r.read)) return;
+    await writeFileInbox(records.map((r) => (r.read ? r : { ...r, read: true })));
   });
 }
 

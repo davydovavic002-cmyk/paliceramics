@@ -2,6 +2,10 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { createHash, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { promises as fs } from "fs";
+import path from "path";
+import { randomBytes } from "crypto";
+import { dataDir } from "@/lib/contentStore";
 import { prisma, isDatabaseConfigured, isDatabaseReachable } from "@/lib/db";
 
 const COOKIE_NAME = "pali_admin_session";
@@ -68,6 +72,10 @@ export async function getAdminSession(): Promise<{ adminId: string } | null> {
     const { payload } = await jwtVerify(token, sessionSecret());
     const adminId = payload.sub;
     if (!adminId || typeof adminId !== "string") return null;
+    if (adminId === FILE_ADMIN_ID) {
+      const auth = await readFileAuth();
+      if (auth.sessionsValidFrom && (payload.iat ?? 0) < auth.sessionsValidFrom) return null;
+    }
     return { adminId };
   } catch {
     return null;
@@ -87,22 +95,68 @@ function digest(value: string): Buffer {
 }
 
 /**
- * Password for file mode (no database). Set ADMIN_PASSWORD on the VPS;
- * Without it the demo password "pali" works only outside production.
+ * File mode (no database). The password lives in data/admin-auth.json once the owner changes it
+ * inside the admin; until then ADMIN_PASSWORD from .env.local is used (no default in production).
  */
-function filePassword(): string | null {
+type FileAuth = { passwordHash?: string; sessionsValidFrom?: number };
+const authFile = () => path.join(dataDir(), "admin-auth.json");
+
+async function readFileAuth(): Promise<FileAuth> {
+  try {
+    const parsed = JSON.parse(await fs.readFile(authFile(), "utf8")) as FileAuth;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+async function writeFileAuth(next: FileAuth) {
+  await fs.mkdir(dataDir(), { recursive: true });
+  const tmp = `${authFile()}.${randomBytes(4).toString("hex")}.tmp`;
+  await fs.writeFile(tmp, JSON.stringify(next), { encoding: "utf8", mode: 0o600 });
+  await fs.rename(tmp, authFile());
+}
+
+function envPassword(): string | null {
   const configured = process.env.ADMIN_PASSWORD?.trim();
   if (configured) return configured;
   // In production there is no default password: set ADMIN_PASSWORD in .env.local.
   return process.env.NODE_ENV === "production" ? null : "pali";
 }
 
-async function loginWithFilePassword(password: string): Promise<boolean> {
-  const expected = filePassword();
+async function checkFilePassword(password: string): Promise<boolean> {
+  const auth = await readFileAuth();
+  if (auth.passwordHash) return verifyPassword(password, auth.passwordHash);
+  const expected = envPassword();
   if (!expected) return false;
-  if (!timingSafeEqual(digest(password), digest(expected))) return false;
+  return timingSafeEqual(digest(password), digest(expected));
+}
+
+async function loginWithFilePassword(password: string): Promise<boolean> {
+  if (!(await checkFilePassword(password))) return false;
   await createAdminSession(FILE_ADMIN_ID);
   return true;
+}
+
+/** Everyone who logged in before now has to log in again; this device stays logged in. */
+export async function signOutEverywhere(): Promise<void> {
+  const auth = await readFileAuth();
+  await writeFileAuth({ ...auth, sessionsValidFrom: Math.floor(Date.now() / 1000) });
+  await createAdminSession(FILE_ADMIN_ID);
+}
+
+export async function changeFilePassword(
+  currentPassword: string,
+  nextPassword: string
+): Promise<{ ok: boolean; error?: string }> {
+  if (nextPassword.length < 8) return { ok: false, error: "PASSWORD_TOO_SHORT" };
+  if (!(await checkFilePassword(currentPassword))) return { ok: false, error: "INVALID_CURRENT" };
+  await writeFileAuth({
+    passwordHash: await hashPassword(nextPassword),
+    sessionsValidFrom: Math.floor(Date.now() / 1000),
+  });
+  await createAdminSession(FILE_ADMIN_ID);
+  return { ok: true };
 }
 
 export async function loginAdmin(password: string): Promise<boolean> {

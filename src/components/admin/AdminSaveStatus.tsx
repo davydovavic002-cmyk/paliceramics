@@ -24,10 +24,6 @@ export function AdminSaveStatus() {
     label = "NOT saved — press Save";
     tone = "text-red-700";
   }
-  if (saveState === "conflict") {
-    label = "Changed elsewhere — reload the page";
-    tone = "text-red-700";
-  }
 
   return (
     <div className="flex items-center gap-1.5">
@@ -38,7 +34,7 @@ export function AdminSaveStatus() {
       >
         {busy ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.75} />
-        ) : saveState === "error" || saveState === "conflict" ? (
+        ) : saveState === "error" ? (
           <TriangleAlert className="h-3.5 w-3.5" strokeWidth={1.75} />
         ) : saveState === "saved" ? (
           <Check className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -47,13 +43,13 @@ export function AdminSaveStatus() {
       </span>
       <button
         type="button"
-        onClick={saveState === "conflict" ? () => window.location.reload() : saveNow}
+        onClick={saveNow}
         disabled={busy}
         className="admin-btn admin-btn-secondary px-2.5 py-1.5 text-[11px] disabled:opacity-60"
         title="Send all changes to the live site right now"
       >
         <Save className="h-3.5 w-3.5" strokeWidth={1.75} />
-        {saveState === "conflict" ? "Reload" : "Save to site"}
+        Save to site
       </button>
     </div>
   );

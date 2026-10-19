@@ -97,3 +97,12 @@ export async function updateInboxMessage(
     data,
   }) as Promise<DbInboxMessage>;
 }
+
+export async function deleteInboxMessage(id: string): Promise<boolean> {
+  const res = await prisma.inboxMessage.deleteMany({ where: { id } });
+  return res.count > 0;
+}
+
+export async function markAllInboxRead(): Promise<void> {
+  await prisma.inboxMessage.updateMany({ where: { read: false }, data: { read: true } });
+}
