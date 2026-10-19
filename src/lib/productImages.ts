@@ -88,3 +88,9 @@ export function filterProjectImages(urls: string[]): string[] {
     .map((url) => resolvePublicImageUrl(url))
     .filter((url): url is string => Boolean(url));
 }
+
+
+/** Widths the server can resize uploaded photos to (see api/media/[name]). */
+export function mediaSrc(src: string, width: number): string {
+  return src.startsWith("/api/media/") && !src.includes("?") ? `${src}?w=${width}` : src;
+}

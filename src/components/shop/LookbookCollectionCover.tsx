@@ -9,7 +9,7 @@ import { shopCollectionHref, getCollectionById, type LookbookCollection } from "
 import { MADE_TO_ORDER_DETAIL_HREF } from "@/lib/customOrderContent";
 import { appendReturnTo, HOME_LOOKBOOK_RETURN_TO } from "@/lib/shopReturnTo";
 import { isDataImageUrl } from "@/lib/productImageUpload";
-import { resolvePublicImageUrl } from "@/lib/productImages";
+import { mediaSrc, resolvePublicImageUrl } from "@/lib/productImages";
 import { images } from "@/lib/images";
 import { RichText } from "@/components/ui/RichText";
 
@@ -55,7 +55,7 @@ export function LookbookCollectionCover({
     >
       <div data-cover-media className="lookbook-cover__media pointer-events-none absolute inset-0 z-0">
         <Image
-          src={imageSrc}
+          src={mediaSrc(imageSrc, 800)}
           alt={name}
           fill
           priority={imagePriority}

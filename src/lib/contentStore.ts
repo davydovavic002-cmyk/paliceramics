@@ -111,6 +111,44 @@ export async function readUpload(
   }
 }
 
+const RESIZE_WIDTHS = new Set([160, 400, 640, 800, 1200]);
+
+/**
+ * Smaller WebP copy of an uploaded photo, cached on disk (data/cache) so it is made only once.
+ * Returns null whenever anything is off, and the caller then serves the original file.
+ */
+export async function readUploadResized(name: string, width: number): Promise<Buffer | null> {
+  if (!RESIZE_WIDTHS.has(width) || !SAFE_NAME.test(name) || name.endsWith(".gif")) return null;
+  const cacheDir = path.join(dataDir(), "cache");
+  const cacheFile = path.join(cacheDir, `${width}-${name}.webp`);
+  try {
+    return await fs.readFile(cacheFile);
+  } catch {
+    // not cached yet
+  }
+  try {
+    const original = await fs.readFile(path.join(uploadsDir(), name));
+    const sharp = (await import("sharp")).default;
+    sharp.cache(false);
+    const out = await sharp(original)
+      .rotate()
+      .resize({ width, withoutEnlargement: true })
+      .webp({ quality: 78 })
+      .toBuffer();
+    try {
+      await fs.mkdir(cacheDir, { recursive: true });
+      const tmp = `${cacheFile}.${randomBytes(4).toString("hex")}.tmp`;
+      await fs.writeFile(tmp, out);
+      await fs.rename(tmp, cacheFile);
+    } catch {
+      // cache is optional
+    }
+    return out;
+  } catch {
+    return null;
+  }
+}
+
 /** Public copy of content: customer messages never leave the admin. */
 export function publicContent(data: Record<string, unknown>): Record<string, unknown> {
   const { inbox: _inbox, ...rest } = data;

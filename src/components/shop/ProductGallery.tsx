@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { isDataImageUrl } from "@/lib/productImageUpload";
-import { filterProjectImages } from "@/lib/productImages";
+import { filterProjectImages, mediaSrc } from "@/lib/productImages";
 
 interface ProductGalleryProps {
   images: string[];
@@ -560,7 +560,7 @@ export function ProductGallery({
         <div className="absolute inset-0">
           <Image
             key={activeSrc}
-            src={activeSrc}
+            src={mediaSrc(activeSrc, 1200)}
             alt={title}
             fill
             priority={safeActive === 0}
@@ -654,7 +654,7 @@ export function ProductGallery({
                 ].join(" ")}
               >
                 <Image
-                  src={src}
+                  src={mediaSrc(src, 160)}
                   alt=""
                   fill
                   quality={60}

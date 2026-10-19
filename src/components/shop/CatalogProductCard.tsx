@@ -9,6 +9,7 @@ import { useMotionFlags } from "@/context/DemoControlsContext";
 import type { ShopProduct } from "@/lib/shopCatalog";
 import { isOutOfStock } from "@/lib/shopCatalog";
 import { isDataImageUrl } from "@/lib/productImageUpload";
+import { mediaSrc } from "@/lib/productImages";
 import { appendReturnTo } from "@/lib/shopReturnTo";
 import { resolveProductReturnTo, saveShopScrollPosition } from "@/lib/shopScrollRestore";
 import { t } from "@/lib/galleryContent";
@@ -99,7 +100,7 @@ export function CatalogProductCard({
           ].join(" ")}
         >
           <Image
-            src={product.image}
+            src={mediaSrc(product.image, 640)}
             alt={title}
             fill
             unoptimized={unoptimizedImage}
@@ -147,7 +148,7 @@ export function CatalogProductCard({
             />
           ) : null}
           <Image
-            src={product.image}
+            src={mediaSrc(product.image, 640)}
             alt={title}
             fill
             priority={imagePriority}
@@ -205,7 +206,7 @@ export function CatalogProductCard({
     >
       <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden bg-[color-mix(in_srgb,var(--theme-surface)_85%,#2a2826)]">
         <Image
-          src={product.image}
+          src={mediaSrc(product.image, 640)}
           alt={title}
           fill
           unoptimized={unoptimizedImage}
