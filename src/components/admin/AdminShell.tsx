@@ -10,6 +10,7 @@ import {
   Package,
 } from "lucide-react";
 import { AdminSavedToast } from "./AdminSavedToast";
+import { AdminSaveStatus } from "./AdminSaveStatus";
 import { downloadAdminBackup } from "@/lib/adminBackup";
 
 export type AdminView = "products" | "workshops" | "site" | "inbox";
@@ -142,6 +143,7 @@ export function AdminShell({
                   </button>
                 ))}
               </div></div>
+              <AdminSaveStatus />
               <button
                 type="button"
                 onClick={downloadAdminBackup}

@@ -59,7 +59,7 @@ function isKnownPublicImage(src: string): boolean {
 
 /** Public assets shipped with the site — no ad-hoc placeholder swatches. */
 export function isProjectProductImage(src: string | undefined | null): src is string {
-  return Boolean(src?.startsWith("/images/"));
+  return Boolean(src?.startsWith("/images/") || src?.startsWith("/api/media/"));
 }
 
 /** Remap deleted /images paths and drop URLs that no longer exist in public/. */
@@ -71,6 +71,8 @@ export function resolvePublicImageUrl(src: string | undefined | null): string | 
 
   if (remapped.startsWith("data:")) return remapped;
   if (remapped.startsWith("/uploads/")) return remapped;
+  // photos uploaded through the admin and stored on the server (data/uploads)
+  if (remapped.startsWith("/api/media/")) return remapped;
   if (!remapped.startsWith("/images/")) return undefined;
 
   const optimized = preferOptimizedImage(remapped);

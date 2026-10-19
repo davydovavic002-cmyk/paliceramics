@@ -39,9 +39,15 @@ import {
   type AdminWorkshopFormatCopy,
 } from "@/lib/adminTypes";
 
+export type AdminSaveState = "idle" | "pending" | "saving" | "saved" | "error";
+
 interface AdminDataContextValue {
   data: AdminPersistedData;
   savedHint: string;
+  saveState: AdminSaveState;
+  savedAt: number | null;
+  /** push to the server right now (no waiting for the debounce) */
+  saveNow: () => void;
   flashSaved: () => void;
   /** @deprecated use collections */
   categories: AdminCategoryItem[];
@@ -111,6 +117,8 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AdminPersistedData>(seedAdminData);
   const [hydrated, setHydrated] = useState(false);
   const [savedHint, setSavedHint] = useState("");
+  const [saveState, setSaveState] = useState<AdminSaveState>("idle");
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const dataRef = useRef(data);
   dataRef.current = data;
   const serverRef = useRef(false);
@@ -166,6 +174,41 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     };
   }, [showHint]);
 
+  const doPush = useCallback(
+    async (payload: AdminPersistedData) => {
+      const seq = ++pushSeqRef.current;
+      setSaveState("saving");
+      const result = await pushContent(payload);
+      if (seq !== pushSeqRef.current) return;
+      if (!result.ok) {
+        setSaveState("error");
+        showHint(
+          result.error === "SESSION_EXPIRED"
+            ? "Session expired — NOT saved on the server. Log in again."
+            : `NOT saved on the server (${result.error}) — check the connection, then edit again`,
+          20000
+        );
+        return;
+      }
+      lastPushedRef.current = JSON.stringify({ ...result.data, inbox: [] });
+      setAdminPending(false);
+      setSaveState("saved");
+      setSavedAt(Date.now());
+      showHint("Saved on the server — visible on all devices", 2800);
+      if (result.changed) {
+        // photos were moved from the browser into files; swap the heavy copies out
+        setData((prev) => (prev === payload ? { ...result.data, inbox: prev.inbox } : prev));
+      }
+    },
+    [showHint]
+  );
+
+  const saveNow = useCallback(() => {
+    if (!serverRef.current) return;
+    window.clearTimeout(pushTimerRef.current);
+    void doPush(dataRef.current);
+  }, [doPush]);
+
   useEffect(() => {
     if (!hydrated) return;
     saveAdminData(data);
@@ -177,29 +220,12 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     if (snapshot === lastPushedRef.current) return;
 
     setAdminPending(true);
+    setSaveState("pending");
     window.clearTimeout(pushTimerRef.current);
-    pushTimerRef.current = window.setTimeout(async () => {
-      const seq = ++pushSeqRef.current;
-      const result = await pushContent(data);
-      if (seq !== pushSeqRef.current) return;
-      if (!result.ok) {
-        showHint(
-          result.error === "SESSION_EXPIRED"
-            ? "Session expired — NOT saved on the server. Log in again."
-            : `NOT saved on the server (${result.error}) — check the connection, then edit again`,
-          20000
-        );
-        return;
-      }
-      lastPushedRef.current = JSON.stringify({ ...result.data, inbox: [] });
-      setAdminPending(false);
-      showHint("Saved on the server — visible on all devices", 2800);
-      if (result.changed) {
-        // photos were moved from the browser into files; swap the heavy copies out
-        setData((prev) => (prev === data ? { ...result.data, inbox: prev.inbox } : prev));
-      }
+    pushTimerRef.current = window.setTimeout(() => {
+      void doPush(data);
     }, 700);
-  }, [data, hydrated, showHint]);
+  }, [data, hydrated, doPush]);
 
   const refreshInbox = useCallback(async () => {
     if (!serverRef.current) return;
@@ -649,6 +675,9 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     () => ({
       data,
       savedHint,
+      saveState,
+      savedAt,
+      saveNow,
       flashSaved,
       categories,
       collections: data.collections,
@@ -704,6 +733,9 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     [
       data,
       savedHint,
+      saveState,
+      savedAt,
+      saveNow,
       flashSaved,
       categories,
       addCollection,
