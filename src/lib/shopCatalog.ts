@@ -1,7 +1,7 @@
 import type { AdminCollection, AdminPersistedData, AdminProduct } from "@/lib/adminTypes";
 import {
   defaultProductDescription,
-  loadAdminData,
+  readAdminDataSync,
   pickBilingual,
   seedAdminData,
 } from "@/lib/adminTypes";
@@ -127,7 +127,7 @@ export function getShopCatalogFromData(data: AdminPersistedData): ShopProduct[] 
 }
 
 export function getShopCatalogSnapshot(): ShopProduct[] {
-  const data = loadAdminData() ?? seedAdminData();
+  const data = readAdminDataSync();
   return getShopCatalogFromData(data);
 }
 

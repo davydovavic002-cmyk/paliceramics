@@ -12,7 +12,6 @@ import type {
 import {
   ADMIN_UPDATE_EVENT,
   readAdminDataSync,
-  seedAdminData,
 } from "@/lib/adminTypes";
 
 export type SiteContentData = {
@@ -34,7 +33,7 @@ function buildSiteContent(data: AdminPersistedData): SiteContentData {
 }
 
 function readSiteContent(): SiteContentData {
-  const data = typeof window === "undefined" ? seedAdminData() : readAdminDataSync();
+  const data = readAdminDataSync();
   return buildSiteContent(data);
 }
 

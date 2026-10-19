@@ -4,6 +4,7 @@ import {
   ADMIN_DATA_KEY,
   ADMIN_UPDATE_EVENT,
   seedAdminData,
+  setServerSnapshot,
   type AdminInboxMessage,
   type AdminPersistedData,
 } from "@/lib/adminTypes";
@@ -209,7 +210,9 @@ export async function syncPublicContent(): Promise<void> {
   const localOnly = (local?.inbox ?? []).filter((m) => /^msg-[a-z0-9]+$/.test(m.id));
   const base = (remote.data ?? local ?? seedAdminData()) as AdminPersistedData;
   const merged = { ...base, inbox: [...localOnly, ...bookingsAsInbox(remote.bookedSlots)] };
-  if (!safeSet(ADMIN_DATA_KEY, JSON.stringify(merged))) return;
+  // keep the in-page copy fresh too, otherwise it would win over the newer local cache
+  setServerSnapshot(merged as AdminPersistedData);
+  safeSet(ADMIN_DATA_KEY, JSON.stringify(merged));
   safeSet(CONTENT_VERSION_KEY, version);
   window.dispatchEvent(new Event(ADMIN_UPDATE_EVENT));
 }

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
   ADMIN_UPDATE_EVENT,
   readAdminDataSync,
-  seedAdminData,
   type AdminPersistedData,
 } from "@/lib/adminTypes";
 import type {
@@ -37,7 +36,7 @@ function buildAdminContent(data: AdminPersistedData): AdminContentData {
 }
 
 function readAdminContent(): AdminContentData {
-  const data = typeof window === "undefined" ? seedAdminData() : readAdminDataSync();
+  const data = readAdminDataSync();
   return buildAdminContent(data);
 }
 

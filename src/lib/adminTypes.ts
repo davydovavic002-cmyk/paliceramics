@@ -820,8 +820,34 @@ export function loadAdminData(): AdminPersistedData | null {
   }
 }
 
-/** SSR-safe admin read — seed on server, localStorage on client first paint. */
+/**
+ * The latest content saved on the server. The root layout fills it in on the server and
+ * inlines it into the HTML, so the very first paint already has the real photos and texts.
+ */
+export const SERVER_SNAPSHOT_KEY = "__PALI_CONTENT__";
+
+export function getServerSnapshot(): AdminPersistedData | null {
+  const holder = globalThis as unknown as Record<string, AdminPersistedData | undefined>;
+  return holder[SERVER_SNAPSHOT_KEY] ?? null;
+}
+
+export function setServerSnapshot(data: AdminPersistedData | null) {
+  const holder = globalThis as unknown as Record<string, AdminPersistedData | null | undefined>;
+  holder[SERVER_SNAPSHOT_KEY] = data;
+}
+
+function hasUnsavedAdminEdits(): boolean {
+  try {
+    return typeof window !== "undefined" && Boolean(localStorage.getItem("pali-admin-pending"));
+  } catch {
+    return false;
+  }
+}
+
+/** Public-site read: server copy first (same on server and in the browser), then local cache, then demo seed. */
 export function readAdminDataSync(): AdminPersistedData {
+  const snapshot = getServerSnapshot();
+  if (snapshot && !hasUnsavedAdminEdits()) return normalizeAdminData(snapshot);
   if (typeof window === "undefined") return seedAdminData();
   return normalizeAdminData(loadAdminData() ?? seedAdminData());
 }

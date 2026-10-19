@@ -4,6 +4,7 @@ import { DemoControlsProvider } from "@/context/DemoControlsContext";
 import { CookieConsentProvider } from "@/context/CookieConsentContext";
 import { ServerContentSync } from "@/components/site/ServerContentSync";
 import { NavigationProgress } from "@/components/site/NavigationProgress";
+import { loadServerSnapshotScript } from "@/lib/serverSnapshot";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,12 +19,16 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const snapshotScript = await loadServerSnapshotScript();
   return (
     <html lang="pl" suppressHydrationWarning>
       <body className="font-body antialiased">
+        {snapshotScript ? <script dangerouslySetInnerHTML={{ __html: snapshotScript }} /> : null}
         <script
           dangerouslySetInnerHTML={{
             __html:
