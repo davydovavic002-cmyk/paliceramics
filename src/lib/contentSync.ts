@@ -187,7 +187,21 @@ function bookingsAsInbox(bookedSlots: Record<string, number>): AdminInboxMessage
 }
 
 /** Visitors (and the admin's own browser): pull the latest saved content into the local cache. */
-export async function syncPublicContent(): Promise<void> {
+let syncInFlight: Promise<void> | null = null;
+let lastSyncStartedAt = 0;
+
+/** One sync at a time, and not again within 5 s: the page and the "tab became visible" event used to fetch the same 42 KB three times. */
+export function syncPublicContent(): Promise<void> {
+  if (syncInFlight) return syncInFlight;
+  if (Date.now() - lastSyncStartedAt < 5000) return Promise.resolve();
+  lastSyncStartedAt = Date.now();
+  syncInFlight = runPublicContentSync().finally(() => {
+    syncInFlight = null;
+  });
+  return syncInFlight;
+}
+
+async function runPublicContentSync(): Promise<void> {
   if (safeGet(ADMIN_PENDING_KEY)) return;
 
   const remote = await fetchPublicContent();

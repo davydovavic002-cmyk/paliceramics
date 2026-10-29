@@ -15,8 +15,8 @@ export const privacyMeta = {
     en: "Last updated: July 2026",
   },
   intro: {
-    pl: "Niniejsza polityka opisuje, jak Pali Ceramics (dalej: „Studio”) przetwarza dane osobowe w związku ze stroną paliceramics.com, rezerwacjami warsztatów, listą oczekujących oraz voucherami upominkowymi.",
-    en: "This policy describes how Pali Ceramics (“the Studio”) processes personal data in connection with paliceramics.com, workshop bookings, waitlists, and gift vouchers.",
+    pl: "Niniejsza polityka opisuje, jak Pali Ceramics (dalej: „Studio”) przetwarza dane osobowe w związku ze stroną paliceramics.pl, rezerwacjami warsztatów, listą oczekujących oraz voucherami upominkowymi.",
+    en: "This policy describes how Pali Ceramics (“the Studio”) processes personal data in connection with paliceramics.pl, workshop bookings, waitlists, and gift vouchers.",
   },
 };
 

@@ -15,8 +15,8 @@ export const termsMeta = {
     en: "Published: 15 Aug 2024 · Last updated: 15 Aug 2024",
   },
   intro: {
-    pl: "Regulamin określa zasady korzystania ze strony paliceramics.com oraz warunki sprzedaży ceramiki i uczestnictwa w warsztatach.",
-    en: "These terms govern use of paliceramics.com and the conditions for buying ceramics and joining workshops.",
+    pl: "Regulamin określa zasady korzystania ze strony paliceramics.pl oraz warunki sprzedaży ceramiki i uczestnictwa w warsztatach.",
+    en: "These terms govern use of paliceramics.pl and the conditions for buying ceramics and joining workshops.",
   },
 };
 
@@ -25,13 +25,13 @@ export const termsSections: TermsSection[] = [
     title: { pl: "1. Postanowienia ogólne", en: "1. General provisions" },
     body: {
       pl: [
-        "Niniejszy regulamin określa zasady korzystania ze strony internetowej paliceramics.com oraz warunki sprzedaży ceramiki i uczestnictwa w warsztatach.",
+        "Niniejszy regulamin określa zasady korzystania ze strony internetowej paliceramics.pl oraz warunki sprzedaży ceramiki i uczestnictwa w warsztatach.",
         "Sprzedawca: Palina Fedarovich, Sękocińska 11A, 02-313 Warszawa, Polska, email: palipali.ceramic@gmail.com",
         "Klient — każda osoba fizyczna, która dokonuje zakupu produktów ceramicznych lub rejestracji na warsztat.",
         "Klient przyjmuje regulamin poprzez złożenie zamówienia lub zapisanie się na warsztat.",
       ],
       en: [
-        "These terms define the rules for using paliceramics.com and the conditions for selling ceramics and workshop participation.",
+        "These terms define the rules for using paliceramics.pl and the conditions for selling ceramics and workshop participation.",
         "Seller: Palina Fedarovich, Sękocińska 11A, 02-313 Warsaw, Poland, email: palipali.ceramic@gmail.com",
         "Customer — any natural person who purchases ceramic products or registers for a workshop.",
         "The customer accepts these terms by placing an order or signing up for a workshop.",
