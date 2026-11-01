@@ -4,6 +4,7 @@ import { isRateLimited } from "@/lib/rateLimit";
 import { InboxPersistError } from "@/lib/inboxDb";
 import { persistInbox } from "@/lib/inboxStore";
 import { validateInboxSubmit } from "@/lib/inboxServer";
+import { notifyStudio } from "@/lib/notifyStudio";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,8 @@ export async function POST(request: Request) {
 
   try {
     const result = await persistInbox(message);
+    // Email the studio; runs in the background and never blocks or breaks the form.
+    void notifyStudio(message.type, message.payload, result.voucherCode);
     return NextResponse.json({
       ok: true,
       id: result.id,
